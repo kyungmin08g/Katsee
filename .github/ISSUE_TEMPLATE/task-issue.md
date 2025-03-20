@@ -1,5 +1,5 @@
 ---
-name: 작업 이슈
+name: Task Issue
 about: 추가할 기능에 관한 내용을 작성합니다.
 title: Task
 labels: ''
