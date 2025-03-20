@@ -1,5 +1,5 @@
 ---
-name: 버그 이슈
+name: Bug Issue
 about: 버그에 관한 내용을 작성합니다.
 title: Bug
 labels: ''
