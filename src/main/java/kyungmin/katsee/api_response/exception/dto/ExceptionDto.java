@@ -1,10 +1,9 @@
-package kyungmin.katsee.api_response.dto;
+package kyungmin.katsee.api_response.exception.dto;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@ToString
 @Builder
 @AllArgsConstructor
 public class ExceptionDto {

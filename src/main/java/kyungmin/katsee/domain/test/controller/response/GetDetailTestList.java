@@ -9,8 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "테스트 상세 조회 응답 객체")
-public class GetDetailTestResponse {
-  private int id;
+public class GetDetailTestList {
+  private Long id;
   private String title;
   private String content;
 }
