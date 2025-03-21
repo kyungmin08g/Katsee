@@ -3,6 +3,8 @@ package kyungmin.katsee.domain.test.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kyungmin.katsee.api_response.ApiResponse;
+import kyungmin.katsee.api_response.exception.GeneralException;
+import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.test.TestEntity;
 import kyungmin.katsee.domain.test.controller.request.CreateTestRequest;
 import kyungmin.katsee.domain.test.controller.request.UpdateTestRequest;
@@ -39,7 +41,8 @@ public class TestController {
   public ApiResponse<?> details(
     @PathVariable("id") String id
   ) {
-    return ApiResponse.onSuccess(testService.details(Long.valueOf(id)));
+    throw new GeneralException(ErrorStatus.NOT_FOUND, "찾을 수 없습니다.");
+//    return ApiResponse.onSuccess(testService.details(Long.valueOf(id)));
   }
 
   @GetMapping(value = "/detail/list/{id}")
