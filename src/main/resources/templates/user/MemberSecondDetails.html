@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/MemberSecondDetails.css">
+</head>
+<body>
+    <div class="container">
+        <progress value="35" max="100" id="progress"></progress>
+
+        <div class="question-container">
+            <h1>당신의 대화 스타일은 <br>무엇인가요?</h1>
+            <div class="sub-text">저는 이런 대화 스타일을 가지고 있어요 <span class="required">*</span></div>
+            <div class="description">더 정확한 매칭을 할 수 있어요 (복수 선택 가능)</div>
+        </div>
+
+        <div class="option-container">
+            <div class="option" id="option-1" onclick="choice(this)">
+                <span>길고 깊은 대화를 선호함</span>
+            </div>
+
+            <div class="option" id="option-2" onclick="choice(this)">
+                <span>짧고 가벼운 대화를 선호함</span>
+            </div>
+
+            <div class="option" id="option-3" onclick="choice(this)">
+                <span>분위기에 따라 다름</span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="prev-button" onclick="prevPage()">이전</button>
+            <button class="next-button" onclick="nextJoin()">다음</button>
+        </div>
+    </div>
+
+    <script>
+        let data = [];
+        function choice(option) {
+            let isDedication = false;
+            data.forEach((element, number) => {
+                if(option.id === element.id) {
+                    data.splice(number, 1);
+                    option.style.backgroundColor = '#FFFFFF';
+                    option.style.border = '1px solid #E0E0E0';
+
+                    isDedication = true;
+                }
+            });
+
+            if(!isDedication) {
+                const item = document.getElementById(option.id);
+                item.style.backgroundColor = '#E6F0FF';
+                item.style.border = '1px solid #6CA5FF';
+
+                data.push({
+                    id: item.id,
+                    item: item.innerText
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function(event) {
+            const item = window.localStorage.getItem('talkStyle');
+            if(item !== null) {
+                JSON.parse(item).data.forEach(element => {
+                    const optionItem = document.getElementById(element.id);
+                    optionItem.style.backgroundColor = '#E6F0FF';
+                    optionItem.style.border = '1px solid #6CA5FF';
+
+                    data.push({
+                        id: element.id,
+                        item: optionItem.innerText
+                    });
+                });
+            }
+        });
+
+        function nextJoin() {
+            if(data.length === 0) {
+                alert('대화 스타일을 선택해주세요');
+                return;
+            }
+
+            window.localStorage.setItem('talkStyle', JSON.stringify({data}));
+            window.location.href = '/MemberDetails3.html';
+        }
+
+        function prevPage() {
+            window.location.href = '/MemberDetails1.html';
+        }
+    </script>
+</body>
+</html>

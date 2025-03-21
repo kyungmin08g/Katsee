@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/Login.css"/>
+</head>
+<body>
+    <div class="logo"><img src="/static/images/Logo.png" alt="service-logo" class="service-logo"></div>
+    <div class="service-name">Katsee</div>
+
+    <div class="input-label">아이디</div>
+    <input type="text" class="input-field" id="user-id-input" placeholder="아이디를 입력해주세요">
+    <div class="input-label">비밀번호</div>
+    <input type="password" class="input-field" id="user-password-input" placeholder="비밀번호를 입력해주세요">
+
+    <button class="login-button" onclick="login()">로그인</button>
+    <div class="signup-section">
+        계정이 없으신가요?
+        <a href="#" class="signup-link" onclick="changeJoinPage()">회원가입</a>
+    </div>
+
+    <script>
+        function login() {
+            const userId = document.getElementById('user-id-input');
+            const password = document.getElementById('user-password-input');
+            console.log(`userId: ${userId.value}, password: ${password.value}`);
+
+            if(userId.value === '' || password.value === '') {
+                alert('필수 입력항목을 체크해주세요');
+                return;
+            }
+
+            /**
+             * @TODO 로그인 API 호출
+             */
+
+            userId.value = '';
+            password.value = '';
+            window.location.href = '/UserHome.html';
+        }
+
+        function changeJoinPage() {
+            location.href = '/SignUpFirstChapter.html';
+        }
+    </script>
+</body>
+</html>

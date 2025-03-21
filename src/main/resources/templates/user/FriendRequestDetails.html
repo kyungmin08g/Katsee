@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/FriendRequestDetails.css">
+</head>
+<body>
+    <div class="header">
+        <a href="/RequestList.html">
+            <img src="/static/images/Left.png" alt="x" class="close-btn">
+        </a>
+        <h3>친구 요청 목록</h3>
+    </div>
+
+    <div class="profile-container" id="container">
+        <div class="profile-header">
+            <div class="profile-pic-container">
+                <img src="/static/images/ProfileImage.png" class="profile-pic">
+            </div>
+            <div class="profile-info-main">
+                <div class="profile-info">
+                    <div class="user-name">
+                        <p>홍길동</p>
+                        <span class="user-gender-age">남 (18)</span>
+                    </div>
+                    <p class="user-bio">안녕하세요. 저는 고등학생 개발자에요!</p>
+                </div>
+                <div class="interest-tag">
+                    <img src="/static/images/Interest-Icon.png" class="interest-icon">
+                    <span>IT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="match-rate-container">
+            <div class="match-rate-header">
+                <div class="match-percentage">98%</div>
+                <div>
+                    <div class="match-text">추천 적합도 98%</div>
+                    <div class="match-message">조건과 잘 맞아요!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-sections">
+            <div class="section">
+                <div class="section-title">성격 유형</div>
+                <div class="section-content">대화 스타일</div>
+            </div>
+            <div class="section">
+                <div class="section-title">내향적</div>
+                <div class="section-content">짧고 가벼운 대화를 선호함</div>
+            </div>
+            <div class="section">
+                <div class="section-title">원하는 친구 스타일</div>
+                <div class="section-content">운동 메이트</div>
+            </div>
+            <div class="section">
+                <div class="section-title">원하는 관계 정도</div>
+                <div class="section-content">자주 소통하는 사이</div>
+            </div>
+            <div class="section">
+                <div class="section-title">음성 / 영상 대화 가능 여부</div>
+                <div class="section-content">영상 통화 가능</div>
+            </div>
+            <div class="section">
+                <div class="section-title">오프라인 만남 여부</div>
+                <div class="section-content">온라인 친구만 찾고 싶어요</div>
+            </div>
+            <div class="section">
+                <div class="section-title">관심사 선호도</div>
+                <div class="section-content">보통 관심</div>
+            </div>
+            <div class="section">
+                <div class="section-title">관심사 레벨</div>
+                <div class="section-content">고수</div>
+            </div>
+        </div>
+
+        <p class="note">* 친구 맺을 시 채팅이 가능합니다.</p>
+
+        <button class="send-request-btn1" onclick="refuse()">거절</button>
+        <button class="send-request-btn2" onclick="approval()">친구 맺기</button>
+    </div>
+
+    <script>
+        getMemberDetailData();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('container');
+            container.classList.add('active');
+        });
+
+        function getMemberDetailData() {
+            /**
+             * @TODO 회원 상세 정보 조회 API 호출
+             */
+        }
+
+        function approval() {
+            alert('축하해요! 홍길동님과 친구가 되었어요');
+        }
+
+        function refuse() {
+            alert('거절하였습니다.');
+        }
+    </script>
+</body>
+</html>

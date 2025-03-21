@@ -1,0 +1,137 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    width: 393px;
+    height: 852px;
+    background-color: #fff;
+}
+
+.header {
+    padding: 10px 10px 10px 20px;
+    text-align: left;
+    font-size: 22px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+.form-container {
+    padding: 16px;
+}
+
+.input-field {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.input-title {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.input-content {
+    width: 100%;
+    height: 300px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    resize: none;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #6CA5FF;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid #eee;
+    margin-top: auto;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    color: #666;
+    text-decoration: none;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-active {
+    color: #6CA5FF;
+}
+
+.image-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.file-upload {
+    width: 100%;
+    position: relative;
+    margin: 20px auto;
+    cursor: pointer;
+}
+
+.file-upload-label {
+    display: block;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    text-align: center;
+    color: #495057;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.file-upload-label:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.file-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}

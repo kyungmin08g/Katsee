@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/admin/AdminNoticeRegister.css">
+</head>
+<body>
+    <div class="header">공지사항 작성</div>
+
+    <div class="form-container">
+        <input type="text" class="input-title" placeholder="제목을 입력해주세요" id="title-input">
+        <textarea class="input-content" placeholder="내용을 입력해주세요" id="content-input"></textarea>
+        <div class="file-upload">
+            <label class="file-upload-label">썸네일 사진을 올려주세요</label>
+            <input type="file" accept="image/*" onchange="previewImage(this);">
+            <img class="file-upload-preview" id="preview">
+        </div>
+        <button class="submit-btn" onclick="createNotice()">등록하기</button>
+    </div>
+
+    <div class="nav-bar">
+        <a href="/AdminHome.html" class="nav-item">
+            <img src="/images/Home.png" alt="" class="nav-icon">
+            <div>홈</div>
+        </a>
+        <a href="/AdminNotice.html" class="nav-item nav-active">
+            <img src="/images/taking1.png" alt="" class="nav-icon">
+            <div>공지사항</div>
+        </a>
+    </div>
+
+    <script>
+        let image = null;
+        function previewImage(input) {
+            const preview = document.getElementById('preview');
+            const label = document.querySelector('.file-upload-label');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { label.textContent = input.files[0].name; }
+                reader.readAsDataURL(input.files[0]);
+                image = input.files[0];
+                console.log(image);
+            }
+        }
+
+        function createNotice() {
+            const titleInput = document.getElementById('title-input');
+            const contentInput = document.getElementById('content-input');
+            console.log(`제목: ${titleInput.value}, 내용: ${contentInput.value}`);
+            console.log(image);
+
+            /**
+             * @TODO 공지사항 등록 API 호출
+             */
+
+            window.location.href = '/AdminNotice.html';
+        }
+    </script>
+</body>
+</html>

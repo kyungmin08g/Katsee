@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/admin/AdminNoticeModify.css">
+</head>
+<body>
+    <div class="header">공지사항 수정</div>
+    <div class="form-container">
+        <input type="text" class="input-title" placeholder="제목을 입력해주세요" id="title-input">
+        <textarea class="input-content" placeholder="내용을 입력해주세요" id="content-input"></textarea>
+        <div class="file-upload">
+            <label class="file-upload-label">썸네일 사진을 올려주세요</label>
+            <input type="file" accept="image/*" onchange="previewImage(this);">
+            <img class="file-upload-preview" id="preview">
+        </div>
+        <button class="submit-btn" onclick="modify()">수정하기</button>
+    </div>
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item">
+            <img src="/images/Home.png" alt="" class="nav-icon">
+            <div>홈</div>
+        </a>
+        <a href="#" class="nav-item nav-active">
+            <img src="/images/Note.png" alt="" class="nav-icon">
+            <div>공지사항</div>
+        </a>
+    </div>
+
+    <script>
+        let image = null;
+        function previewImage(input) {
+            const preview = document.getElementById('preview');
+            const label = document.querySelector('.file-upload-label');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { label.textContent = input.files[0].name; }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function modify() {
+            console.log('수정');
+            const titleInput = document.getElementById('title-input');
+            const contentInput = document.getElementById('content-input');
+            console.log(`제목: ${titleInput.value}, 내용: ${contentInput.value}`);
+            console.log(image);
+
+            /**
+             * @TODO 공지사항 수정 API 호출
+             */
+
+            window.location.href = '/AdminNoticeDetailsSelect.html';
+        }
+
+        function data() {
+            /**
+             * @TODO 해당 공지사항 조회 API 호출
+             */
+        }
+        data();
+    </script>
+</body>
+</html>
