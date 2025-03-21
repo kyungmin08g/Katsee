@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static kyungmin.katsee.api_response.exception.GeneralException.getErrorHttpStatus;
 
 @RestControllerAdvice
-public class GeneralExceptionHandler {
+public class ExceptionAdvice {
 
   @ExceptionHandler(value = GeneralException.class)
-  public ApiResponse<?> exceptionHandler() {
+  public ApiResponse<?> exceptionHandler(Exception e) {
     ExceptionDto exception = getErrorHttpStatus();
+    e.printStackTrace();
     return ApiResponse.onFailure(
       exception.getCode(),
       exception.getMessage(),
