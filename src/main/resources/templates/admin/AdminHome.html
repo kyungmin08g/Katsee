@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/admin/AdminHome.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">홈</div>
+            <div class="greeting">반가워요, 관리자 님! 🎉</div>
+            <a href="/AdminNotice.html" class="notification">
+                <img src="/images/Bell.png" alt="bell" class="bell-icon">
+            </a>
+        </div>
+
+        <div class="matches-section">
+            <div class="matches-title">서비스 사용자 통계</div>
+            <div class="matches-stats">
+                <div class="stats-box">
+                    <div class="stats-label">전체 사용자</div>
+                    <div class="stats-value" id="stats-value">134명</div>
+                </div>
+                <div class="stats-box">
+                    <div class="stats-label">주요 연령대</div>
+                    <div class="stats-value blue-text" id="blue-text">20대</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="/AdminHome.html" class="nav-item active">
+                <img src="/images/home1.png" alt="" class="icon">
+                홈
+            </a>
+            <a href="/AdminNotice.html" class="nav-item">
+                <img src="/images/Note.png" alt="" class="icon">
+                공지사항
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function data() {
+            const statsValue = document.getElementById('stats-value');
+            const blueText = document.getElementById('blue-text');
+            /**
+             * @TODO 전체 사용자/주요 연령대 조회 API 호출
+             */
+
+            console.log('데이터 호출 성공');
+            // statsValue.innerText = '134명';
+            // blueText.innerText = '20대';
+        }
+        data();
+    </script>
+</body>
+</html>

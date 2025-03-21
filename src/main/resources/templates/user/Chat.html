@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/Chat.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="header">
+            <a href="/ChattingList.html" class="back-button">&#10094;</a>
+            <div class="profile-pic">
+                <img src="/static/images/ProfileImage.png" alt="profile-icon">
+            </div>
+            <div class="user-name">홍길동</div>
+        </div>
+
+        <div class="messages" id="messages"></div>
+
+        <div class="message-input-container">
+            <input type="text" class="message-input" id="message-input" placeholder="메시지를 입력해주세요">
+            <a href="#" class="send-button" onclick="send()">
+                <img src="/static/images/Send.png" alt="send" class="send">
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 테스트 초기 데이터
+        let chatList = [
+            {
+                chattingId: 1,
+                contentId: 1,
+                member: {
+                    id: 'test1',
+                    profileUrl: '/static/images/ProfileImage.png',
+                    name: '홍길동',
+                    age: 18,
+                    gender: '남',
+                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
+                    interest: 'IT',
+                },
+                content: '네^^ 반갑습니다!',
+                createAt: '2025.03.27'
+            },
+            {
+                chattingId: 1,
+                contentId: 2,
+                member: {
+                    id: 'test2',
+                    profileUrl: '/static/images/ProfileImage.png',
+                    name: '남길동',
+                    age: 20,
+                    gender: '남',
+                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
+                    interest: 'IT',
+                },
+                content: '안녕하세요! 김경민입니다!',
+                createAt: '2025.03.28'
+            },
+            {
+                chattingId: 1,
+                contentId: 1,
+                member: {
+                    id: 'test1',
+                    profileUrl: '/static/images/ProfileImage.png',
+                    name: '홍길동',
+                    age: 18,
+                    gender: '남',
+                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
+                    interest: 'IT',
+                },
+                content: '찾고 있었어요ㅠㅠ',
+                createAt: '2025.03.28'
+            }
+        ];
+
+        // 백엔드에서 나중에 아래처럼 구성하면됨.
+        function memberData() {
+            /**
+             * @TODO 채팅 내용 조회 API 호출
+             */
+
+            // 예시
+            chatList.push({
+                chattingId: 1,
+                contentId: 2,
+                member: {
+                    id: 'test2',
+                    profileUrl: '/static/images/ProfileImage.png',
+                    name: '남길동',
+                    age: 20,
+                    gender: '남',
+                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
+                    interest: 'IT',
+                },
+                content: '안녕하세요! 김경민입니다.',
+                createAt: '2025.03.28'
+            });
+        }
+
+        function chattingContents() {
+            const messages = document.getElementById('messages');
+
+            chatList.forEach((data, number) => {
+                switch(data.contentId) {
+                    case 1: {
+                        const messageRow = document.createElement('div');
+                        messageRow.className = 'message-row';
+
+                        const messageProfile = document.createElement('div');
+                        messageProfile.className = 'message-profile';
+
+                        const profileImg = document.createElement('img');
+                        profileImg.src = data.member.profileUrl;
+                        profileImg.alt = 'profile-icon';
+
+                        const messageContent = document.createElement('div');
+                        messageContent.className = 'message-content';
+
+                        const messageParagraph = document.createElement('p');
+                        messageParagraph.className = 'message received';
+                        messageParagraph.textContent = data.content;
+
+                        messageProfile.appendChild(profileImg);
+                        messageContent.appendChild(messageParagraph);
+                        messageRow.appendChild(messageProfile);
+                        messageRow.appendChild(messageContent);
+                        messages.appendChild(messageRow);
+                        break;
+                    };
+                    case 2: {
+                        const messages = document.getElementById('messages');
+                        const paragraph = document.createElement('p');
+                        paragraph.className = 'message sent';
+                        paragraph.textContent = data.content;
+                        messages.appendChild(paragraph);
+                        break;
+                    };
+                }
+            });
+        }
+
+        chattingContents();
+
+        function send() {
+            const messageInput = document.getElementById('message-input');
+            console.log(`Message: ${messageInput.value}`);
+            messageInput.value = '';
+        }
+    </script>
+</body>
+</html>

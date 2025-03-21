@@ -1,0 +1,79 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 852px;
+    width: 393px;
+    box-sizing: border-box;
+    /* padding-top: 20px; */ /* 아이폰에서 접속했을때 요소들이 너무 아래에 위치해 있어서 지금은 잠시 top 설정 잠금 */
+}
+
+.logo {
+    margin-bottom: 0;
+}
+
+.service-logo {
+    width: 212px;
+    height: 212px;
+}
+
+.service-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.input-label {
+    align-self: flex-start;
+    margin-left: 34px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.input-field {
+    width: 300px;
+    padding: 15px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    border: none;
+    background-color: #F8F8F8;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.login-button {
+    width: 329px;
+    padding: 15px;
+    background-color: #6CA5FF;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.signup-section {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.signup-link {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}

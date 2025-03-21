@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/JoinThird.css">
+</head>
+<body>
+    <div class="container">
+        <progress value="90" max="100" id="progress"></progress>
+        <h1>당신의 관심사가<br>무엇인가요?</h1>
+        <div class="subtitle">저는 이런 관심사가 있어요! <span class="required">*</span></div>
+        <div class="description">선택한 관심사에 따라 맞춤형 컨텐츠 추천해요 (복수 선택 가능)</div>
+
+        <div class="option-list">
+            <div class="option" id="option-1" onclick="choice(this)">
+                <div class="option-icon">🎮</div>
+                <div class="option-text">게임 (콘솔, PC, 모바일 등)</div>
+            </div>
+
+            <div class="option" id="option-2" onclick="choice(this)">
+                <div class="option-icon">🎬</div>
+                <div class="option-text">영화 & 드라마 (액션, 로맨스, SF 등)</div>
+            </div>
+
+            <div class="option" id="option-3" onclick="choice(this)">
+                <div class="option-icon">📚</div>
+                <div class="option-text">독서 (소설, 인문학, 자기계발 등)</div>
+            </div>
+
+            <div class="option" id="option-4" onclick="choice(this)">
+                <div class="option-icon">💪</div>
+                <div class="option-text">운동 (헬스, 러닝, 요가, 클라이밍 등)</div>
+            </div>
+
+            <div class="option" id="option-5" onclick="choice(this)">
+                <div class="option-icon">🎨</div>
+                <div class="option-text">예술 (그림, 글쓰기, 사진, 영상 등)</div>
+            </div>
+
+            <div class="option" id="option-6" onclick="choice(this)">
+                <div class="option-icon">✈️</div>
+                <div class="option-text">여행 (국내, 해외, 배낭여행 등)</div>
+            </div>
+
+            <div class="option selected" id="option-7" onclick="choice(this)">
+                <div class="option-icon">💻</div>
+                <div class="option-text">IT (코딩, 시스템, 네트워크 등)</div>
+            </div>
+
+            <div class="option" id="option-8" onclick="choice(this)">
+                <div class="option-icon">🎸</div>
+                <div class="option-text">음악 (팝, 힙합, 록, 재즈, 클래식 등)</div>
+            </div>
+
+            <div class="option" id="option-9" onclick="choice(this)">
+                <div class="option-icon">🍔</div>
+                <div class="option-text">맛집 탐방 (카페, 한식, 양식 등)</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="prev-button" onclick="prevPage()">이전</button>
+            <button class="next-button" onclick="nextJoin()">회원가입 완료</button>
+        </div>
+    </div>
+
+    <script>
+        let data = [];
+        function choice(option) {
+            let isDedication = false;
+            data.forEach((element, number) => {
+                if(option.id === element.id) {
+                    data.splice(number, 1);
+                    option.style.backgroundColor = '#FFFFFF';
+                    option.style.border = '1px solid #E0E0E0';
+
+                    isDedication = true;
+                }
+            });
+
+            if(!isDedication) {
+                const item = document.getElementById(option.id);
+                item.style.backgroundColor = '#E6F0FF';
+                item.style.border = '1px solid #6CA5FF';
+
+                data.push({
+                    id: item.id,
+                    item: item.innerText
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function(event) {
+            const item = window.localStorage.getItem('thirdMemberData');
+            if(item !== null) {
+                JSON.parse(item).data.forEach(element => {
+                    const optionItem = document.getElementById(element.id);
+                    optionItem.style.backgroundColor = '#E6F0FF';
+                    optionItem.style.border = '1px solid #6CA5FF';
+
+                    data.push({
+                        id: element.id,
+                        item: optionItem.innerText
+                    });
+                });
+            }
+        });
+
+        function singleDataParse(i) {
+            return JSON.parse(window.localStorage.getItem(i));
+        }
+
+        function nextJoin() {
+            if(data.length === 0) {
+                alert('관심사를 선택해주세요');
+                return;
+            }
+            window.localStorage.setItem('thirdMemberData', JSON.stringify({data}));
+
+            let count = ['firstMemberData', 'secondMemberData', 'thirdMemberData'];
+            let requestBody = {};
+            count.forEach((i, j) => {
+                switch(j) {
+                    case 0: requestBody.firstMemberData = singleDataParse('firstMemberData');
+                    case 1: requestBody.secondMemberData = singleDataParse('secondMemberData');
+                    case 2: {
+                        let listData = [];
+                        JSON.parse(window.localStorage.getItem('thirdMemberData')).data.forEach(element => {
+                            listData.push(element.item);
+                        });
+
+                        requestBody.thirdMemberData = listData;
+                    };
+                }
+            });
+            console.log(requestBody);
+
+            window.localStorage.clear();
+            window.location.href = '/Login.html';
+        }
+
+        function prevPage() {
+            window.location.href = '/SignUpSecondChapter.html';
+        }
+    </script>
+</body>
+</html>

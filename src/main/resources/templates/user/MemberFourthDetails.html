@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/MemberFourthDetails.css">
+</head>
+<body>
+    <div class="container">
+        <progress value="65" max="100" id="progress"></progress>
+
+        <div class="question-container">
+            <h1>당신이 원하는 관계 정도는 <br>무엇인가요?</h1>
+            <div class="sub-text">저는 이런 관계 정도를 원해요 <span class="required">*</span></div>
+            <div class="description">더 정확한 매칭을 할 수 있어요</div>
+        </div>
+
+        <div class="option-container">
+            <div class="option" id="option-1" onclick="choice(this)">
+                <span>가볍게 연락하는 정도</span>
+            </div>
+
+            <div class="option" id="option-2" onclick="choice(this)">
+                <span>자주 소통하는 사이</span>
+            </div>
+
+            <div class="option" id="option-3" onclick="choice(this)">
+                <span>오프라인에서 만나는 것도 가능</span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="prev-button" onclick="prevPage()">이전</button>
+            <button class="next-button" onclick="nextJoin()">다음</button>
+        </div>
+    </div>
+
+    <script>
+        let interestOptionData = null;
+        function choice(option) {
+            for(let i = 0; i < 8; i++) {
+                const optionItem = document.getElementById(`option-${i}`);
+                if(optionItem && optionItem.style.backgroundColor === 'rgb(230, 240, 255)') {
+                    optionItem.style.backgroundColor = '#FFFFFF';
+                    optionItem.style.border = '1px solid #E0E0E0';
+                }
+            }
+
+            const item = document.getElementById(option.id);
+            item.style.backgroundColor = '#E6F0FF';
+            item.style.border = '1px solid #6CA5FF';
+
+            interestOptionData = JSON.stringify({
+                id: item.id,
+                item: item.innerText
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function(event) {
+            const item = window.localStorage.getItem('relationshipDepth');
+            if(item !== null) {
+                const optionItem = document.getElementById(JSON.parse(item).id);
+                optionItem.style.backgroundColor = '#E6F0FF';
+                optionItem.style.border = '1px solid #6CA5FF';
+
+                interestOptionData = JSON.stringify({
+                    id: optionItem.id,
+                    item: optionItem.innerText
+                });
+            }
+        });
+
+        function nextJoin() {
+            if(interestOptionData == null) {
+                alert('관계 정도를 선택해주세요');
+                return;
+            }
+
+            window.localStorage.setItem('relationshipDepth', interestOptionData);
+            window.location.href = '/MemberDetails5.html';
+        }
+
+        function prevPage() {
+            window.location.href = '/MemberDetails3.html';
+        }
+    </script>
+</body>
+</html>
