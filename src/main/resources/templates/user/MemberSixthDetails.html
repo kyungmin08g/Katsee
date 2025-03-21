@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/MemberSixthDetails.css">
+</head>
+<body>
+    <div class="container">
+        <progress value="85" max="100" id="progress"></progress>
+
+        <div class="question-container">
+            <h1>오프라인 만남을 원하시나요?</h1>
+            <div class="sub-text">오프라인 만남을 원하는지 선택해주세요 <span class="required">*</span></div>
+            <div class="description">더 정확한 매칭을 할 수 있어요</div>
+        </div>
+
+        <div class="option-container">
+            <div class="option" id="option-1" onclick="choice(this)">
+                <span>온라인 친구만 찾고 싶어요</span>
+            </div>
+
+            <div class="option" id="option-2" onclick="choice(this)">
+                <span>근처에서 만날 친구도 괜찮아요</span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="prev-button" onclick="prevPage()">이전</button>
+            <button class="next-button" onclick="nextJoin()">다음</button>
+        </div>
+    </div>
+
+    <script>
+        let interestOptionData = null;
+        function choice(option) {
+            for(let i = 0; i < 8; i++) {
+                const optionItem = document.getElementById(`option-${i}`);
+                if(optionItem && optionItem.style.backgroundColor === 'rgb(230, 240, 255)') {
+                    optionItem.style.backgroundColor = '#FFFFFF';
+                    optionItem.style.border = '1px solid #E0E0E0';
+                }
+            }
+
+            const item = document.getElementById(option.id);
+            item.style.backgroundColor = '#E6F0FF';
+            item.style.border = '1px solid #6CA5FF';
+
+            interestOptionData = JSON.stringify({
+                id: item.id,
+                item: item.innerText
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function(event) {
+            const item = window.localStorage.getItem('isOffline');
+            if(item !== null) {
+                const optionItem = document.getElementById(JSON.parse(item).id);
+                optionItem.style.backgroundColor = '#E6F0FF';
+                optionItem.style.border = '1px solid #6CA5FF';
+
+                interestOptionData = JSON.stringify({
+                    id: optionItem.id,
+                    item: optionItem.innerText
+                });
+            }
+        });
+
+        function nextJoin() {
+            if(interestOptionData == null) {
+                alert('오프라인 만남 여부를 선택해주세요');
+                return;
+            }
+
+            window.localStorage.setItem('isOffline', interestOptionData);
+            window.location.href = '/MemberDetails7.html';
+        }
+
+        function prevPage() {
+            window.location.href = '/MemberDetails5.html';
+        }
+    </script>
+</body>
+</html>

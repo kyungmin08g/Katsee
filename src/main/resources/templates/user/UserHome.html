@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/UserHome.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">홈</div>
+            <div class="greeting">반가워요, 김경민 님! 🎉</div>
+            <a href="#" class="notification" onclick="notice()">
+                <img src="/static/images/Bell.png" alt="bell" class="bell-icon">
+            </a>
+        </div>
+
+        <div class="matches-section">
+            <div class="matches-title">매칭 현황 통계</div>
+            <div class="matches-stats">
+                <div class="stats-box">
+                    <div class="stats-label">전체 매칭</div>
+                    <div class="stats-value">32건</div>
+                </div>
+                <div class="stats-box">
+                    <div class="stats-label">신규 매칭</div>
+                    <div class="stats-value blue-text">2건</div>
+                </div>
+            </div>
+            <div class="button-row">
+                <div class="action-button button-blue">요청 대기 3건</div>
+                <div class="action-button button-green">친구 맺기 4건</div>
+                <div class="action-button button-red">거절 2건</div>
+            </div>
+        </div>
+
+        <div class="section-title">지금 가장 핫한 관심사 탑 3</div>
+        <div class="tag-div">
+            <span class="tag"># 음악</span>
+            <span class="tag"># IT</span>
+            <span class="tag"># 맛집 탐방</span>
+        </div>
+
+        <div class="section-title">이번 주 인기 관심사</div>
+        <div class="tag-div">
+            <span class="tag"># 음악</span>
+            <span class="tag"># IT</span>
+            <span class="tag"># 맛집 탐방</span>
+        </div>
+
+        <div class="section-title">관심사와 상관없는 친구 추천</div>
+        <div id="card"></div>
+
+        <div class="navigation">
+            <a href="/FriendRecommend.html" class="nav-item">
+                <img src="/static/images/Friends.png" alt="" class="icon">
+                친구 추천
+            </a>
+            <a href="/RequestList.html" class="nav-item">
+                <img src="/static/images/Love.png" alt="" class="icon">
+                친구 요청
+            </a>
+            <a href="/UserHome.html" class="nav-item active">
+                <img src="/static/images/home1.png" alt="" class="icon">
+                홈
+            </a>
+            <a href="/ChattingList.html" class="nav-item">
+                <img src="/static/images/Chat.png" alt="" class="icon">
+                채팅
+            </a>
+            <a href="/MyPage.html" class="nav-item">
+                <img src="/static/images/User.png" alt="" class="icon">
+                마이페이지
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 테스트 초기 데이터
+        let memberDataList = [
+            {
+                id: 'test1',
+                profileUrl: null,
+                name: '홍길동',
+                age: 18,
+                gender: '남',
+                introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
+                interest: 'IT',
+                suitable: 97
+            },
+            {
+                id: 'test2',
+                profileUrl: null,
+                name: '남길동',
+                age: 20,
+                gender: '남',
+                introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
+                interest: 'IT',
+                suitable: 83
+            }
+        ];
+
+        // 백엔드에서 나중에 아래처럼 구성하면됨.
+        function memberData() {
+            /**
+             * @TODO 친구 추천 목록 조회 API 호출
+             */
+
+            memberDataList.push({
+                id: 'test1',
+                profileUrl: '/static/images/ProfileImage.png',
+                name: '홍길동',
+                age: 18,
+                gender: '남',
+                introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
+                interest: 'IT',
+                suitable: 97
+            });
+        }
+
+        function setMemberElement() {
+            const card = document.getElementById('card');
+            memberDataList.forEach((data, number) => {
+                const friendCard = document.createElement('div');
+                friendCard.className = 'friend-card';
+
+                const profilePicDiv = document.createElement('div');
+                profilePicDiv.className = 'profile-pic bear-profile';
+
+                const profileImg = document.createElement('img');
+                profileImg.src = '/static/images/ProfileImage.png';
+                profileImg.alt = 'profile-icon';
+                profileImg.id = `profileImage${number}`;
+                profilePicDiv.appendChild(profileImg);
+
+                const userInfoDiv = document.createElement('div');
+                userInfoDiv.className = 'user-info';
+
+                const userNameDiv = document.createElement('div');
+                userNameDiv.className = 'user-name';
+
+                const nameP = document.createElement('p');
+                nameP.id = `name${number}`;
+                nameP.textContent = data.name;
+
+                const genderAgeSpan = document.createElement('span');
+                genderAgeSpan.id = `genderAndAge${number}`;
+                genderAgeSpan.textContent = `${data.gender} (${data.age})`;
+
+                userNameDiv.appendChild(nameP);
+                userNameDiv.appendChild(genderAgeSpan);
+
+                const userBioDiv = document.createElement('div');
+                userBioDiv.className = 'user-bio';
+                userBioDiv.id = `introduction${number}`;
+                userBioDiv.textContent = data.introduction;
+
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+
+                const interestIcon = document.createElement('img');
+                interestIcon.src = '/static/images/Interest-Icon.png';
+                interestIcon.alt = 'interest-icon';
+
+                const interestP = document.createElement('p');
+                interestP.className = 'interest';
+                interestP.id = `interest${number}`;
+                interestP.textContent = data.interest;
+
+                categoryDiv.appendChild(interestIcon);
+                categoryDiv.appendChild(interestP);
+
+                userInfoDiv.appendChild(userNameDiv);
+                userInfoDiv.appendChild(userBioDiv);
+                userInfoDiv.appendChild(categoryDiv);
+
+                const matchButtonDiv = document.createElement('div');
+                matchButtonDiv.className = 'match-rate-and-button';
+
+                const matchRateDiv = document.createElement('div');
+                matchRateDiv.className = 'match-rate';
+                matchRateDiv.id = `suitable${number}`;
+                matchRateDiv.textContent = `적합도 ${data.suitable}%`;
+
+                const detailBtn = document.createElement('button');
+                detailBtn.className = 'detail-btn';
+                detailBtn.textContent = '상세 정보';
+                detailBtn.onclick = function() {
+                    location.href = '/FriendDetailsInfor.html';
+                };
+
+                matchButtonDiv.appendChild(matchRateDiv);
+                matchButtonDiv.appendChild(detailBtn);
+
+                friendCard.appendChild(profilePicDiv);
+                friendCard.appendChild(userInfoDiv);
+                friendCard.appendChild(matchButtonDiv);
+                card.appendChild(friendCard);
+            });
+        }
+        setMemberElement();
+
+        function notice() {
+            window.location.href = '/UserNotice.html';
+        }
+    </script>
+</body>
+</html>

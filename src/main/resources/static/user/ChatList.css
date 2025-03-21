@@ -1,0 +1,154 @@
+* {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #FDFDFD;
+    width: 393px;
+    height: 852px;
+    overflow: hidden;
+    overflow-y: scroll;
+    margin: 0 auto;
+}
+
+html, body {
+    height: 852px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.header {
+    width: 393px;
+    padding: 16px 20px;
+    background-color: #fff;
+    font-weight: bold;
+    font-size: 22px;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+}
+
+.subheader {
+    width: 393px;
+    padding: 12px 20px;
+    background-color: #FDFDFD;
+    color: #000000;
+    font-weight: bold;
+    margin-top: 56px;
+}
+
+.card-container {
+    height: 736px;
+    width: 393px;
+    overflow-y: auto;
+    padding-bottom: 80px;
+}
+
+.chat-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-left: 14px;
+    margin-right: 14px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #edf2f7;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.chat-info {
+    flex: 1;
+    margin-bottom: 4px;
+}
+
+.chat-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.chat-message {
+    font-size: 14px;
+    color: #666;
+}
+
+.status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #FF3B30;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.navigation {
+    position: fixed;
+    bottom: 0px;
+    width: 393px;
+    display: flex;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+    padding: 8px 0;
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 12px;
+    color: #888;
+    text-decoration: none;
+}
+
+.nav-item.active {
+    color: #6CA5FF;
+}
+
+.icon {
+    width: 26px;
+    height: 26px;
+    margin-bottom: 8px;
+}
+
+.bear-profile {
+    background-color: #edf2f7;
+}
+
+.card-div {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 42%;
+}
+
+.card-p {
+    font-weight: bold;
+    font-size: 18px;
+}

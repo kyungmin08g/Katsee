@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsee</title>
+    <link rel="stylesheet" href="/static/user/MemberSeventhDetails.css">
+</head>
+<body>
+    <div class="container">
+        <progress value="95" max="100" id="progress"></progress>
+
+        <div class="question-container">
+            <h1>당신의 관심사에 대한 선호도는 <br>얼마인가요?</h1>
+            <div class="box">김경민님께서 <span>IT</span>에 관심이 있다고 말씀하셨어요!</div>
+            <div class="sub-text">당신의 관심사 선호도를 선택해주세요 <span class="required">*</span></div>
+            <div class="description">더 정확한 매칭을 할 수 있어요</div>
+        </div>
+
+        <div class="option-container">
+            <div class="option" id="option-1" onclick="choice(this)">
+                <span>강한 관심</span>
+            </div>
+
+            <div class="option" id="option-2" onclick="choice(this)">
+                <span>보통 관심</span>
+            </div>
+
+            <div class="option" id="option-3" onclick="choice(this)">
+                <span>약한 관심</span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="prev-button" onclick="prevPage()">이전</button>
+            <button class="next-button" onclick="nextJoin()">다음</button>
+        </div>
+    </div>
+
+    <script>
+        let interestOptionData = null;
+        function choice(option) {
+            for(let i = 0; i < 8; i++) {
+                const optionItem = document.getElementById(`option-${i}`);
+                if(optionItem && optionItem.style.backgroundColor === 'rgb(230, 240, 255)') {
+                    optionItem.style.backgroundColor = '#FFFFFF';
+                    optionItem.style.border = '1px solid #E0E0E0';
+                }
+            }
+
+            const item = document.getElementById(option.id);
+            item.style.backgroundColor = '#E6F0FF';
+            item.style.border = '1px solid #6CA5FF';
+
+            interestOptionData = JSON.stringify({
+                id: item.id,
+                item: item.innerText
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function(event) {
+            const item = window.localStorage.getItem('interestPreferences');
+            if(item !== null) {
+                const optionItem = document.getElementById(JSON.parse(item).id);
+                optionItem.style.backgroundColor = '#E6F0FF';
+                optionItem.style.border = '1px solid #6CA5FF';
+
+                interestOptionData = JSON.stringify({
+                    id: optionItem.id,
+                    item: optionItem.innerText
+                });
+            }
+        });
+
+        function nextJoin() {
+            if(interestOptionData == null) {
+                alert('관심사 선호도를 선택해주세요');
+                return;
+            }
+
+            window.localStorage.setItem('interestPreferences', interestOptionData);
+            window.location.href = '/MemberDetails8.html';
+        }
+
+        function prevPage() {
+            window.location.href = '/MemberDetails6.html';
+        }
+    </script>
+</body>
+</html>
