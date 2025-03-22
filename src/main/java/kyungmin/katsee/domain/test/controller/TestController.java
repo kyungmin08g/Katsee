@@ -41,8 +41,7 @@ public class TestController {
   public ApiResponse<?> details(
     @PathVariable("id") String id
   ) {
-    throw new GeneralException(ErrorStatus.NOT_FOUND, "찾을 수 없습니다.");
-//    return ApiResponse.onSuccess(testService.details(Long.valueOf(id)));
+    return ApiResponse.onSuccess(testService.details(Long.valueOf(id)));
   }
 
   @GetMapping(value = "/detail/list/{id}")
