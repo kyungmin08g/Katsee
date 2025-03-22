@@ -57,4 +57,24 @@ public class MemberService {
     );
   }
 
+  // 회원 조회
+  public GetMember getMember(String id) {
+    List<String> interests = new ArrayList<>();
+
+    Member member = memberRepository.findById(id).orElseThrow();
+    member.getInterest().forEach(interest -> {
+      interests.add(interest.getInterest().value);
+    });
+
+    return GetMember.builder()
+      .memberId(member.getMemberId())
+      .profileUrl(member.getProfileUrl())
+      .nickName(member.getNickName())
+      .age(member.getAge())
+      .gender(member.getGender().value)
+      .introduction(member.getIntroduction())
+      .interests(interests)
+      .build();
+  }
+
 }

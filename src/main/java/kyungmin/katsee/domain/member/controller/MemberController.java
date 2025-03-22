@@ -24,6 +24,10 @@ public class MemberController {
   // 회원 상세 정보 등록 API
 
   // 회원 조회 API
+  @GetMapping(value = "/{id}")
+  public ApiResponse<?> getMember(@PathVariable("id") String memberId) {
+    return ApiResponse.onSuccess(memberService.getMember(memberId));
+  }
 
   // 회원 상세 API
 
