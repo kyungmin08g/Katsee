@@ -18,7 +18,20 @@ public class SecurityConfig {
     http.httpBasic(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(auth -> auth
-      .requestMatchers("/", "/create/**", "/detail/**", "/detail/list/**", "/update/**", "/delete/**")
+      .requestMatchers("/")
+      .permitAll()
+      .requestMatchers( // 테스트 관련 엔드포인트 처리
+        "/create/**", "/detail/**",
+        "/detail/list/**", "/update/**",
+        "/delete/**"
+      )
+      .permitAll()
+      .requestMatchers( // Enum API 관련 엔드포인트 처리
+        "/enum/matching-status", "/enum/friend-style", "/enum/interest",
+        "/enum/interest-level", "/enum/interest-preference", "/enum/offline-meeting",
+        "/enum/online-talk-style", "/enum/personality-type", "/enum/relationship-depth",
+        "/enum/talk-style"
+      )
       .permitAll()
       .requestMatchers( // Swagger 관련 Url 처리
         "/swagger-ui/**",
