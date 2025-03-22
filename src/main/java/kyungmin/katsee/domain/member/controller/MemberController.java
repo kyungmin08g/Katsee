@@ -42,5 +42,10 @@ public class MemberController {
   // 회원 수정 API
 
   // 회원 삭제 API
+  @GetMapping(value = "/delete/{id}")
+  public ApiResponse<?> deleteMember(@PathVariable("id") String memberId) {
+    memberService.deleteMember(memberId);
+    return ApiResponse.onSuccess();
+  }
 
 }

@@ -90,4 +90,9 @@ public class MemberService {
         .message("사용 가능한 아이디입니다.")
         .build();
   }
+
+  // 회원 삭제
+  public void deleteMember(String memberId) {
+    memberRepository.deleteById(memberId);
+  }
 }
