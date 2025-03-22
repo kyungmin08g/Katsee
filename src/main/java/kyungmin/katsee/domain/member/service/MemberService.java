@@ -3,7 +3,8 @@ package kyungmin.katsee.domain.member.service;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.MemberInterest;
 import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
-import kyungmin.katsee.domain.member.controller.response.GetMember;
+import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
+import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
 import kyungmin.katsee.domain.member.enums.Gender;
 import kyungmin.katsee.domain.member.enums.Interest;
 import kyungmin.katsee.domain.member.enums.Role;
@@ -58,7 +59,7 @@ public class MemberService {
   }
 
   // 회원 조회
-  public GetMember getMember(String id) {
+  public GetMemberResponse getMember(String id) {
     List<String> interests = new ArrayList<>();
 
     Member member = memberRepository.findById(id).orElseThrow();
@@ -66,7 +67,7 @@ public class MemberService {
       interests.add(interest.getInterest().value);
     });
 
-    return GetMember.builder()
+    return GetMemberResponse.builder()
       .memberId(member.getMemberId())
       .profileUrl(member.getProfileUrl())
       .nickName(member.getNickName())
@@ -77,4 +78,16 @@ public class MemberService {
       .build();
   }
 
+  // 회원 ID 중복 여부
+  public GetDuplicateIdResponse duplicateId(String memberId) {
+    return (memberRepository.existsById(memberId)) ?
+      GetDuplicateIdResponse.builder()
+        .isDuplicate(true)
+        .message("아이디가 중복됩니다.")
+        .build() :
+      GetDuplicateIdResponse.builder()
+        .isDuplicate(false)
+        .message("사용 가능한 아이디입니다.")
+        .build();
+  }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Schema(description = "회원 조회 응답 객체")
-public class GetMember {
+public class GetMemberResponse {
 
   @Schema(description = "회원 ID")
   private String memberId;
