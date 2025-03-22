@@ -1,5 +1,7 @@
 package kyungmin.katsee.domain.member.service;
 
+import kyungmin.katsee.api_response.exception.GeneralException;
+import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.MemberInterest;
 import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
@@ -25,7 +27,6 @@ public class MemberService {
   // 회원 등록
   public void registerMember(MemberRegisterRequest request) {
     List<MemberInterest> interests = new ArrayList<>();
-
     memberRepository.save(
       Member.builder()
         .memberId(request.memberId())
@@ -39,7 +40,8 @@ public class MemberService {
         .build()
     );
 
-    Member member = memberRepository.findById(request.memberId()).orElseThrow();
+    Member member = memberRepository.findById(request.memberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
     request.interests().forEach(interest -> {
       // 관심사 유형 저장
       MemberInterest memberInterest = MemberInterest.builder()
@@ -62,7 +64,8 @@ public class MemberService {
   public GetMemberResponse getMember(String id) {
     List<String> interests = new ArrayList<>();
 
-    Member member = memberRepository.findById(id).orElseThrow();
+    Member member = memberRepository.findById(id)
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
     member.getInterest().forEach(interest -> {
       interests.add(interest.getInterest().value);
     });

@@ -18,7 +18,7 @@ public class SecurityConfig {
     http.httpBasic(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(auth -> auth
-      .requestMatchers("/**", "/member/**")
+      .requestMatchers("/**", "/member/register", "/member/register", "/member/get/**", "/member/duplicate/**", "/member/delete/**")
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리
         "/create/**", "/detail/**",
