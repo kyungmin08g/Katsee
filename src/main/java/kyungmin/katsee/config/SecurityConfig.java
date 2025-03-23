@@ -1,6 +1,5 @@
 package kyungmin.katsee.config;
 
-import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.domain.member.security.filter.JwtAuthFilter;
 import kyungmin.katsee.domain.member.security.filter.LoginAuthFilter;
 import kyungmin.katsee.domain.member.security.jwt.provider.JwtProvider;
@@ -62,7 +61,6 @@ public class SecurityConfig {
     http.sessionManagement(session ->
       session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     );
-
     http.addFilterBefore(new LoginAuthFilter(authenticationManager(authConfig), jwtProvider, redisService), UsernamePasswordAuthenticationFilter.class);
     http.addFilterAt(jwtAuthFilter, LoginAuthFilter.class);
 

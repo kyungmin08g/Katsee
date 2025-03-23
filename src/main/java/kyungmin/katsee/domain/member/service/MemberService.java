@@ -12,7 +12,6 @@ import kyungmin.katsee.domain.member.enums.Interest;
 import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.MemberInterestRepository;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
-import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -37,12 +37,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       String refreshToken = redisService.getRefreshToken(jwtProvider.getMemberId(accessToken));
 
       if (jwtProvider.getValidateToken(accessToken)) {
-        log.info("액세스 토큰이 유효함");
         authentication(accessToken);
         filterChain.doFilter(request, response);
         return;
       } else if (refreshToken != null) {
-        log.info("리프레쉬 토큰 발급");
         authentication(refreshToken);
         response.addHeader("Authorization", "Bearer " + refreshToken);
         filterChain.doFilter(request, response);
