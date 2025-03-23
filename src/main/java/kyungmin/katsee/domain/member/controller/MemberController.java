@@ -3,9 +3,11 @@ package kyungmin.katsee.domain.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kyungmin.katsee.api_response.ApiResponse;
+import kyungmin.katsee.domain.member.controller.request.MemberDetailsRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
 import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
+import kyungmin.katsee.domain.member.service.CreateMemberService;
 import kyungmin.katsee.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "회원 관련 API")
 public class MemberController {
   private final MemberService memberService;
+  private final CreateMemberService createService;
 
   @PostMapping(value = "/login")
   @Operation(description = "회원 로그인")
@@ -26,11 +29,17 @@ public class MemberController {
   @PostMapping(value = "/member/register")
   @Operation(description = "회원 등록")
   public ApiResponse<?> memberRegister(@RequestBody MemberRegisterRequest request) {
-    memberService.registerMember(request);
+    createService.createMember(request);
     return ApiResponse.onSuccess();
   }
 
   // 회원 상세 정보 등록 API
+  @PostMapping(value = "/member/register/details")
+  @Operation(description = "회원 상세 정보 등록")
+  public ApiResponse<?> registerMemberDetails(@RequestBody MemberDetailsRequest request) {
+    createService.createMemberDetails(request);
+    return ApiResponse.onSuccess();
+  }
 
   // 회원 조회 API
   @GetMapping(value = "/member/get/{id}")
@@ -46,16 +55,8 @@ public class MemberController {
     return ApiResponse.onSuccess(memberService.duplicateId(memberId));
   }
 
-  // 회원 상세 API
+  // 회원 상세 조회 API
 
   // 회원 수정 API
-
-  // 회원 삭제 API
-  @DeleteMapping(value = "/member/delete/{id}")
-  @Operation(description = "회원 삭제")
-  public ApiResponse<?> deleteMember(@PathVariable("id") String memberId) {
-    memberService.deleteMember(memberId);
-    return ApiResponse.onSuccess();
-  }
 
 }

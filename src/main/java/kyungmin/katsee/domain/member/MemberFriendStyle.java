@@ -2,13 +2,11 @@ package kyungmin.katsee.domain.member;
 
 import jakarta.persistence.*;
 import kyungmin.katsee.domain.member.enums.FriendStyle;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 @Entity
+@Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

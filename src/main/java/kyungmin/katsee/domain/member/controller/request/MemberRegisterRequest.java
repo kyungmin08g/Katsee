@@ -1,6 +1,7 @@
 package kyungmin.katsee.domain.member.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kyungmin.katsee.domain.member.enums.Interest;
 
 import java.util.List;
 
@@ -29,5 +30,5 @@ public record MemberRegisterRequest(
   String introduction,
 
   @Schema(description = "관심사")
-  List<String> interests
+  List<Interest> interests
 ) { }
