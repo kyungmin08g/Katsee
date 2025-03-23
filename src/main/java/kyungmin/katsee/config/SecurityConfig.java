@@ -23,7 +23,7 @@ public class SecurityConfig {
   private final AuthenticationConfiguration authConfig;
   private final JwtProvider jwtProvider;
   private final RedisService redisService;
-  private final MemberRepository memberRepository;
+  private final JwtAuthFilter jwtAuthFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,7 +64,7 @@ public class SecurityConfig {
     );
 
     http.addFilterBefore(new LoginAuthFilter(authenticationManager(authConfig), jwtProvider, redisService), UsernamePasswordAuthenticationFilter.class);
-    http.addFilterAt(new JwtAuthFilter(authenticationManager(authConfig), jwtProvider, redisService, memberRepository), LoginAuthFilter.class);
+    http.addFilterAt(jwtAuthFilter, LoginAuthFilter.class);
 
     return http.build();
   }

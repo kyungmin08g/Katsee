@@ -30,7 +30,6 @@ public class LoginAuthFilter extends UsernamePasswordAuthenticationFilter {
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
     String memberId = request.getParameter("memberId");
     String password = request.getParameter("password");
-
     return authenticationManager.authenticate(
       new UsernamePasswordAuthenticationToken(memberId, password)
     );
@@ -48,7 +47,6 @@ public class LoginAuthFilter extends UsernamePasswordAuthenticationFilter {
     String accessToken = jwtProvider.createToken(memberId, role, accessTokenExpireTime);
     String refreshToken = jwtProvider.createToken(memberId, role, refreshTokenExpireTime);
 
-    // 액세스 토큰 & 리프레시 토큰 발급
     response.addHeader("Authorization", "Bearer " + accessToken);
     redisService.saveRefreshToken(memberId, refreshToken);
     log.info("Login success!");
@@ -60,6 +58,6 @@ public class LoginAuthFilter extends UsernamePasswordAuthenticationFilter {
     HttpServletResponse response,
     AuthenticationException failed
   ) throws IOException, ServletException {
-    log.error("Login failure.. {}", failed.getMessage());
+    log.error("Login failure {}", failed.getMessage());
   }
 }
