@@ -1,5 +1,6 @@
 package kyungmin.katsee.config;
 
+import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.domain.member.security.filter.JwtAuthFilter;
 import kyungmin.katsee.domain.member.security.filter.LoginAuthFilter;
 import kyungmin.katsee.domain.member.security.jwt.provider.JwtProvider;
@@ -20,9 +21,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
   private final AuthenticationConfiguration authConfig;
-  private final JwtAuthFilter jwtAuthFilter;
   private final JwtProvider jwtProvider;
   private final RedisService redisService;
+  private final MemberRepository memberRepository;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -63,7 +64,7 @@ public class SecurityConfig {
     );
 
     http.addFilterBefore(new LoginAuthFilter(authenticationManager(authConfig), jwtProvider, redisService), UsernamePasswordAuthenticationFilter.class);
-    http.addFilterAt(jwtAuthFilter, LoginAuthFilter.class);
+    http.addFilterAt(new JwtAuthFilter(authenticationManager(authConfig), jwtProvider, redisService, memberRepository), LoginAuthFilter.class);
 
     return http.build();
   }
