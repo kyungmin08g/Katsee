@@ -11,14 +11,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/member")
 @RequiredArgsConstructor
 @Tag(name = "회원 관련 API")
 public class MemberController {
   private final MemberService memberService;
 
+  @PostMapping(value = "/login")
+  @Operation(description = "회원 로그인")
+  public ApiResponse<?> login(@RequestParam String memberId, @RequestParam String password) {
+    return ApiResponse.onSuccess();
+  }
+
   // 회원 등록 API
-  @PostMapping(value = "/register")
+  @PostMapping(value = "/member/register")
   @Operation(description = "회원 등록")
   public ApiResponse<?> memberRegister(@RequestBody MemberRegisterRequest request) {
     memberService.registerMember(request);
@@ -28,14 +33,14 @@ public class MemberController {
   // 회원 상세 정보 등록 API
 
   // 회원 조회 API
-  @GetMapping(value = "/get/{id}")
+  @GetMapping(value = "/member/get/{id}")
   @Operation(description = "회원 조회")
   public ApiResponse<GetMemberResponse> getMember(@PathVariable("id") String memberId) {
     return ApiResponse.onSuccess(memberService.getMember(memberId));
   }
 
   // 회원 ID 중복 여부
-  @GetMapping(value = "/duplicate/{id}")
+  @GetMapping(value = "/member/duplicate/{id}")
   @Operation(description = "회원 ID 중복 여부 확인")
   public ApiResponse<GetDuplicateIdResponse> getDuplicateId(@PathVariable("id") String memberId) {
     return ApiResponse.onSuccess(memberService.duplicateId(memberId));
@@ -46,7 +51,7 @@ public class MemberController {
   // 회원 수정 API
 
   // 회원 삭제 API
-  @DeleteMapping(value = "/delete/{id}")
+  @DeleteMapping(value = "/member/delete/{id}")
   @Operation(description = "회원 삭제")
   public ApiResponse<?> deleteMember(@PathVariable("id") String memberId) {
     memberService.deleteMember(memberId);

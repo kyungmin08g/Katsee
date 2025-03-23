@@ -1,15 +1,28 @@
 package kyungmin.katsee.config;
 
+import kyungmin.katsee.domain.member.security.filter.JwtAuthFilter;
+import kyungmin.katsee.domain.member.security.filter.LoginAuthFilter;
+import kyungmin.katsee.domain.member.security.jwt.provider.JwtProvider;
+import kyungmin.katsee.domain.member.security.redis.RedisService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+  private final AuthenticationConfiguration authConfig;
+  private final JwtAuthFilter jwtAuthFilter;
+  private final JwtProvider jwtProvider;
+  private final RedisService redisService;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -18,7 +31,10 @@ public class SecurityConfig {
     http.httpBasic(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(auth -> auth
-      .requestMatchers("/**", "/member/register", "/member/register", "/member/get/**", "/member/duplicate/**", "/member/delete/**")
+      .requestMatchers(
+        "/member/register", "/member/register", "/member/duplicate/**",
+        "/member/delete/**", "/login"
+      )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리
         "/create/**", "/detail/**",
@@ -46,7 +62,15 @@ public class SecurityConfig {
       session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     );
 
+    http.addFilterBefore(new LoginAuthFilter(authenticationManager(authConfig), jwtProvider, redisService), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterAt(jwtAuthFilter, LoginAuthFilter.class);
+
     return http.build();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    return authConfig.getAuthenticationManager();
   }
 
   @Bean

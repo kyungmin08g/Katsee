@@ -13,6 +13,7 @@ import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.MemberInterestRepository;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 public class MemberService {
   private final MemberRepository memberRepository;
   private final MemberInterestRepository interestRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   // 회원 등록
   public void registerMember(MemberRegisterRequest request) {
@@ -30,7 +32,7 @@ public class MemberService {
     memberRepository.save(
       Member.builder()
         .memberId(request.memberId())
-        .password(request.password())
+        .password(passwordEncoder.encode(request.password()))
         .profileUrl(request.profileUrl())
         .nickName(request.nickName())
         .age(request.age())
