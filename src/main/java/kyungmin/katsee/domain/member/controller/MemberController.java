@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kyungmin.katsee.api_response.ApiResponse;
 import kyungmin.katsee.domain.member.controller.request.MemberDetailsRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
+import kyungmin.katsee.domain.member.controller.request.UpdateMemberDetailRequest;
 import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
@@ -67,5 +68,10 @@ public class MemberController {
   }
 
   // 회원 수정 API
-
+  @PatchMapping(value = "/member/update")
+  @Operation(description = "회원 정보 수정")
+  public ApiResponse<?> updateMemberDetail(@RequestBody UpdateMemberDetailRequest request) {
+    detailMemberService.memberDetailUpdate(request);
+    return ApiResponse.onSuccess();
+  }
 }

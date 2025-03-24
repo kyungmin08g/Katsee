@@ -2,9 +2,11 @@ package kyungmin.katsee.domain.member.service;
 
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
-import kyungmin.katsee.domain.member.Member;
+import kyungmin.katsee.domain.member.*;
+import kyungmin.katsee.domain.member.controller.request.UpdateMemberDetailRequest;
 import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.enums.*;
+import kyungmin.katsee.domain.member.repository.MemberInterestRepository;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class DetailMemberService {
   private final MemberRepository memberRepository;
+  private final MemberInterestRepository interestRepository;
 
   public GetMemberDetailResponse getMemberDetail() {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
@@ -91,5 +94,131 @@ public class DetailMemberService {
           )
           .toList()
       ).build();
+  }
+
+  public void memberDetailUpdate(UpdateMemberDetailRequest request) {
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+
+    // 상세 정보 초기화
+    member.getInterest().clear();
+    member.getPersonalityType().clear();
+    member.getTalkStyle().clear();
+    member.getFriendStyle().clear();
+    member.getOnlineTalkStyle().clear();
+    member.getRelationshipDepth().clear();
+    member.getIsOfflineMeeting().clear();
+    member.getInterestPreference().clear();
+    member.getInterestLevel().clear();
+
+    // 회원 정보 수정
+    memberRepository.save(
+      member.toBuilder()
+        .memberId(SecurityUtil.authMemberId())
+        .profileUrl(request.profileUrl())
+        .nickName(request.nickName())
+        .age(request.age())
+        .gender(request.gender())
+        .introduction(request.introduction())
+        .interest(
+          request.interests().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberInterest.builder()
+                  .interest(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .personalityType(
+          request.personalityTypes().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberPersonalityType.builder()
+                  .personality(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .talkStyle(
+          request.talkStyles().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberTalkStyle.builder()
+                  .talkStyle(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .friendStyle(
+          request.friendStyles().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberFriendStyle.builder()
+                  .friendStyle(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .relationshipDepth(
+          request.relationshipDepth().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberRelationshipDepth.builder()
+                  .depth(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .onlineTalkStyle(
+          request.onlineTalkStyles().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberOnlineTalkStyle.builder()
+                  .onlineTalkStyle(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .isOfflineMeeting(
+          request.offlineTalkStyles().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberOfflineMeeting.builder()
+                  .isOffline(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .interestPreference(
+          request.interestPreference().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberInterestPreference.builder()
+                  .preference(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        )
+        .interestLevel(
+          request.interestLevel().stream()
+            .flatMap(i ->
+              Stream.of(
+                MemberInterestLevel.builder()
+                  .level(i)
+                  .member(member)
+                  .build()
+              )
+            ).toList()
+        ).build()
+    );
   }
 }
