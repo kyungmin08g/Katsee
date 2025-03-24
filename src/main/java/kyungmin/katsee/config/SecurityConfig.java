@@ -32,8 +32,7 @@ public class SecurityConfig {
 
     http.authorizeHttpRequests(auth -> auth
       .requestMatchers(
-        "/member/register", "/member/register", "/member/duplicate/**",
-        "/member/delete/**", "/login"
+        "/member/create", "/member/duplicate/**", "/login"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리

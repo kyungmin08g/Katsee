@@ -3,89 +3,50 @@ package kyungmin.katsee.domain.member.service;
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.member.Member;
-import kyungmin.katsee.domain.member.MemberInterest;
-import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
+import kyungmin.katsee.domain.member.controller.request.MemberCreateRequest;
+import kyungmin.katsee.domain.member.controller.request.MemberDetailRequest;
+import kyungmin.katsee.domain.member.controller.request.UpdateDetailRequest;
 import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
+import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
-import kyungmin.katsee.domain.member.enums.Gender;
 import kyungmin.katsee.domain.member.enums.Interest;
-import kyungmin.katsee.domain.member.enums.Role;
-import kyungmin.katsee.domain.member.repository.MemberInterestRepository;
-import kyungmin.katsee.domain.member.repository.MemberRepository;
+import kyungmin.katsee.domain.member.repository.*;
+import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
   private final MemberRepository memberRepository;
-  private final MemberInterestRepository interestRepository;
-  private final BCryptPasswordEncoder passwordEncoder;
 
-  // 회원 등록
-  public void registerMember(MemberRegisterRequest request) {
-    List<MemberInterest> interests = new ArrayList<>();
-    memberRepository.save(
-      Member.builder()
-        .memberId(request.memberId())
-        .password(passwordEncoder.encode(request.password()))
-        .profileUrl(request.profileUrl())
-        .nickName(request.nickName())
-        .age(request.age())
-        .gender(Gender.valueOf(request.gender()))
-        .introduction(request.introduction())
-        .role(Role.USER)
-        .build()
-    );
+  private final CreateMemberService createService;
+  private final DetailMemberService detailMemberService;
 
-    Member member = memberRepository.findById(request.memberId())
+  public GetMemberResponse getMember() {
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
-    request.interests().forEach(interest -> {
-      // 관심사 유형 저장
-      MemberInterest memberInterest = MemberInterest.builder()
-        .interest(Interest.valueOf(interest))
-        .member(member)
-        .build();
-      interests.add(memberInterest);
-
-      interestRepository.save(memberInterest);
-    });
-
-    memberRepository.save(
-      member.toBuilder()
-        .interest(interests)
-        .build()
-    );
-  }
-
-  // 회원 조회
-  public GetMemberResponse getMember(String id) {
-    List<String> interests = new ArrayList<>();
-
-    Member member = memberRepository.findById(id)
-      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
-    member.getInterest().forEach(interest -> {
-      interests.add(interest.getInterest().value);
-    });
 
     return GetMemberResponse.builder()
       .memberId(member.getMemberId())
       .profileUrl(member.getProfileUrl())
       .nickName(member.getNickName())
       .age(member.getAge())
-      .gender(member.getGender().value)
+      .gender(member.getGender().name())
       .introduction(member.getIntroduction())
-      .interests(interests)
+      .interests(
+        member.getInterest().stream()
+          .flatMap(i ->
+            Stream.of(Interest.valueOf(i.getInterest().name()))
+          ).toList()
+      )
       .build();
   }
 
-  // 회원 ID 중복 여부
-  public GetDuplicateIdResponse duplicateId(String memberId) {
-    return (memberRepository.existsById(memberId)) ?
+  public GetDuplicateIdResponse duplicateId(String id) {
+    return (memberRepository.existsById(id)) ?
       GetDuplicateIdResponse.builder()
         .isDuplicate(true)
         .message("아이디가 중복됩니다.")
@@ -96,8 +57,19 @@ public class MemberService {
         .build();
   }
 
-  // 회원 삭제
-  public void deleteMember(String memberId) {
-    memberRepository.deleteById(memberId);
+  public void createMember(MemberCreateRequest request) {
+    createService.createMember(request);
+  }
+
+  public void createMemberDetail(MemberDetailRequest request) {
+    createService.createMemberDetail(request);
+  }
+
+  public GetMemberDetailResponse getMemberDetail() {
+    return detailMemberService.getMemberDetail();
+  }
+
+  public void updateMemberDetail(UpdateDetailRequest request) {
+    detailMemberService.updateMemberDetail(request);
   }
 }

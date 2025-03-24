@@ -1,11 +1,12 @@
 package kyungmin.katsee.domain.member.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kyungmin.katsee.domain.member.enums.Interest;
 
 import java.util.List;
 
 @Schema(description = "회원 등록 요청 객체")
-public record MemberRegisterRequest(
+public record MemberCreateRequest(
 
   @Schema(description = "회원 ID")
   String memberId,
@@ -28,6 +29,6 @@ public record MemberRegisterRequest(
   @Schema(description = "소개")
   String introduction,
 
-  @Schema(description = "관심사")
-  List<String> interests
+  @Schema(description = "관심사 유형")
+  List<Interest> interests
 ) { }

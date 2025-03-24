@@ -63,39 +63,39 @@ public class Member {
   @Comment("수정된 날짜/시간")
   private LocalDateTime updatedAt;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("관심사 유형")
   private List<MemberInterest> interest;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("성격 유형")
   private List<MemberPersonalityType> personalityType;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("대화 스타일")
   private List<MemberTalkStyle> talkStyle;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("원하는 친구 스타일")
   private List<MemberFriendStyle> friendStyle;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
-  @Comment("원하는 친구 스타일")
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Comment("관계 깊이 정도")
   private List<MemberRelationshipDepth> relationshipDepth;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("온라인 대화 가능 여부")
   private List<MemberOnlineTalkStyle> onlineTalkStyle;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("오프라인 만남 허용 여부")
   private List<MemberOfflineMeeting> isOfflineMeeting;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("관심사 선호도")
   private List<MemberInterestPreference> interestPreference;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true)
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   @Comment("관심사 레벨")
   private List<MemberInterestLevel> interestLevel;
 
