@@ -1,6 +1,7 @@
 package kyungmin.katsee.domain.member.controller.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kyungmin.katsee.domain.member.enums.Interest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,5 +33,5 @@ public class GetMemberResponse {
   private String introduction;
 
   @Schema(description = "관심사 유형")
-  private List<String> interests;
+  private List<Interest> interests;
 }

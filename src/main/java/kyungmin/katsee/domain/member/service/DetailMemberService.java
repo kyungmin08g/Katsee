@@ -3,10 +3,9 @@ package kyungmin.katsee.domain.member.service;
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.member.*;
-import kyungmin.katsee.domain.member.controller.request.UpdateMemberDetailRequest;
+import kyungmin.katsee.domain.member.controller.request.UpdateDetailRequest;
 import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.enums.*;
-import kyungmin.katsee.domain.member.repository.MemberInterestRepository;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class DetailMemberService {
   private final MemberRepository memberRepository;
-  private final MemberInterestRepository interestRepository;
 
   public GetMemberDetailResponse getMemberDetail() {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
@@ -35,72 +33,63 @@ public class DetailMemberService {
         member.getInterest().stream()
           .flatMap(i ->
             Stream.of(Interest.valueOf(i.getInterest().name()))
-          )
-          .toList()
+          ).toList()
       )
       .personalityTypes(
         member.getPersonalityType().stream()
           .flatMap(i ->
             Stream.of(PersonalityType.valueOf(i.getPersonality().name()))
-          )
-          .toList()
+          ).toList()
       )
       .talkStyles(
         member.getTalkStyle().stream()
           .flatMap(i ->
             Stream.of(TalkStyle.valueOf(i.getTalkStyle().name()))
-          )
-          .toList()
+          ).toList()
       )
       .friendStyles(
         member.getFriendStyle().stream()
           .flatMap(i ->
             Stream.of(FriendStyle.valueOf(i.getFriendStyle().name()))
-          )
-          .toList()
+          ).toList()
       )
       .onlineTalkStyles(
         member.getOnlineTalkStyle().stream()
           .flatMap(i ->
             Stream.of(OnlineTalkStyle.valueOf(i.getOnlineTalkStyle().name()))
-          )
-          .toList()
+          ).toList()
       )
       .relationshipDepth(
         member.getRelationshipDepth().stream()
           .flatMap(i ->
             Stream.of(RelationshipDepth.valueOf(i.getDepth().name()))
-          )
-          .toList()
+          ).toList()
       )
       .offlineTalkStyles(
         member.getIsOfflineMeeting().stream()
           .flatMap(i ->
             Stream.of(OfflineMeeting.valueOf(i.getIsOffline().name()))
-          )
-          .toList()
+          ).toList()
       )
       .interestPreference(
         member.getInterestPreference().stream()
           .flatMap(i ->
             Stream.of(InterestPreference.valueOf(i.getPreference().name()))
-          )
-          .toList()
+          ).toList()
       )
       .interestLevel(
         member.getInterestLevel().stream()
           .flatMap(i ->
             Stream.of(InterestLevel.valueOf(i.getLevel().name()))
-          )
-          .toList()
+          ).toList()
       ).build();
   }
 
-  public void memberDetailUpdate(UpdateMemberDetailRequest request) {
-    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+  public void updateMemberDetail(UpdateDetailRequest request) {
+    String memberId = SecurityUtil.authMemberId();
+    Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
-    // 상세 정보 초기화
     member.getInterest().clear();
     member.getPersonalityType().clear();
     member.getTalkStyle().clear();
@@ -111,10 +100,9 @@ public class DetailMemberService {
     member.getInterestPreference().clear();
     member.getInterestLevel().clear();
 
-    // 회원 정보 수정
     memberRepository.save(
       member.toBuilder()
-        .memberId(SecurityUtil.authMemberId())
+        .memberId(memberId)
         .profileUrl(request.profileUrl())
         .nickName(request.nickName())
         .age(request.age())

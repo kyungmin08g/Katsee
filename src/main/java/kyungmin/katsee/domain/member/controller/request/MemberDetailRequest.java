@@ -6,7 +6,7 @@ import kyungmin.katsee.domain.member.enums.*;
 import java.util.List;
 
 @Schema(description = "회원 상세 정보 등록 요청 객체")
-public record MemberDetailsRequest(
+public record MemberDetailRequest(
 
   @Schema(description = "성격 유형")
   List<PersonalityType> personality,

@@ -3,8 +3,8 @@ package kyungmin.katsee.domain.member.service;
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.member.*;
-import kyungmin.katsee.domain.member.controller.request.MemberDetailsRequest;
-import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
+import kyungmin.katsee.domain.member.controller.request.MemberDetailRequest;
+import kyungmin.katsee.domain.member.controller.request.MemberCreateRequest;
 import kyungmin.katsee.domain.member.enums.Gender;
 import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.*;
@@ -22,7 +22,7 @@ public class CreateMemberService {
   private final BCryptPasswordEncoder passwordEncoder;
   private final MemberInterestRepository interestRepository;
 
-  public void createMember(MemberRegisterRequest request) {
+  public void createMember(MemberCreateRequest request) {
     memberRepository.save(
       Member.builder()
         .memberId(request.memberId())
@@ -49,7 +49,7 @@ public class CreateMemberService {
     });
   }
 
-  public void createMemberDetails(MemberDetailsRequest request) {
+  public void createMemberDetail(MemberDetailRequest request) {
     String memberId = SecurityUtil.authMemberId();
     Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));

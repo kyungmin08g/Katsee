@@ -6,7 +6,7 @@ import kyungmin.katsee.domain.member.enums.*;
 import java.util.List;
 
 @Schema(description = "회원 정보 수정 요청 객체")
-public record UpdateMemberDetailRequest(
+public record UpdateDetailRequest(
 
   @Schema(description = "프로필 사진")
   String profileUrl,
