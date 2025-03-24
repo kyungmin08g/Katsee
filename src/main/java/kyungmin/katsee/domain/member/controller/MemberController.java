@@ -6,8 +6,10 @@ import kyungmin.katsee.api_response.ApiResponse;
 import kyungmin.katsee.domain.member.controller.request.MemberDetailsRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberRegisterRequest;
 import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
+import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
 import kyungmin.katsee.domain.member.service.CreateMemberService;
+import kyungmin.katsee.domain.member.service.DetailMemberService;
 import kyungmin.katsee.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
   private final MemberService memberService;
   private final CreateMemberService createService;
+  private final DetailMemberService detailMemberService;
 
+  // 회원 로그인
   @PostMapping(value = "/login")
   @Operation(description = "회원 로그인")
   public ApiResponse<?> login(@RequestParam String memberId, @RequestParam String password) {
@@ -56,6 +60,11 @@ public class MemberController {
   }
 
   // 회원 상세 조회 API
+  @GetMapping(value = "/member/detail")
+  @Operation(description = "회원 상세 조회")
+  public ApiResponse<GetMemberDetailResponse> getMemberDetail() {
+    return ApiResponse.onSuccess(detailMemberService.getMemberDetail());
+  }
 
   // 회원 수정 API
 

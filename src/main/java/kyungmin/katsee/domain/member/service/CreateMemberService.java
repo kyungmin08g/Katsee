@@ -12,12 +12,11 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreateMemberService {
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder passwordEncoder;
@@ -55,70 +54,68 @@ public class CreateMemberService {
     Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
-    if (member.getRole() == Role.USER) {
-      request.personality().forEach(personality -> {
-        member.getPersonalityType().add(
-          MemberPersonalityType.builder()
-            .personality(personality)
-            .member(member)
-            .build()
-        );
-      });
-
-      request.talkStyle().forEach(talkStyle -> {
-        member.getTalkStyle().add(
-          MemberTalkStyle.builder()
-            .talkStyle(talkStyle)
-            .member(member)
-            .build()
-        );
-      });
-
-      request.friendStyle().forEach(friendStyle -> {
-        member.getFriendStyle().add(
-          MemberFriendStyle.builder()
-            .friendStyle(friendStyle)
-            .member(member)
-            .build()
-        );
-      });
-
-      request.voiceOrVideoTalk().forEach(online -> {
-        member.getOnlineTalkStyle().add(
-          MemberOnlineTalkStyle.builder()
-            .onlineTalkStyle(online)
-            .member(member)
-            .build()
-        );
-      });
-
-      member.getRelationshipDepth().add(
-        MemberRelationshipDepth.builder()
-          .depth(request.relationshipDepth())
+    request.personality().forEach(personality -> {
+      member.getPersonalityType().add(
+        MemberPersonalityType.builder()
+          .personality(personality)
           .member(member)
           .build()
       );
+    });
 
-      member.getIsOfflineMeeting().add(
-        MemberOfflineMeeting.builder()
-          .isOffline(request.isOffline())
+    request.talkStyle().forEach(talkStyle -> {
+      member.getTalkStyle().add(
+        MemberTalkStyle.builder()
+          .talkStyle(talkStyle)
           .member(member)
           .build()
       );
+    });
 
-      member.getInterestPreference().add(
-        MemberInterestPreference.builder()
-          .preference(request.interestPreferences())
+    request.friendStyle().forEach(friendStyle -> {
+      member.getFriendStyle().add(
+        MemberFriendStyle.builder()
+          .friendStyle(friendStyle)
           .member(member)
           .build()
       );
+    });
 
-      member.getInterestLevel().add(
-        MemberInterestLevel.builder()
-          .level(request.interestLevel())
+    request.voiceOrVideoTalk().forEach(online -> {
+      member.getOnlineTalkStyle().add(
+        MemberOnlineTalkStyle.builder()
+          .onlineTalkStyle(online)
           .member(member)
           .build()
       );
-    }
+    });
+
+    member.getRelationshipDepth().add(
+      MemberRelationshipDepth.builder()
+        .depth(request.relationshipDepth())
+        .member(member)
+        .build()
+    );
+
+    member.getIsOfflineMeeting().add(
+      MemberOfflineMeeting.builder()
+        .isOffline(request.isOffline())
+        .member(member)
+        .build()
+    );
+
+    member.getInterestPreference().add(
+      MemberInterestPreference.builder()
+        .preference(request.interestPreferences())
+        .member(member)
+        .build()
+    );
+
+    member.getInterestLevel().add(
+      MemberInterestLevel.builder()
+        .level(request.interestLevel())
+        .member(member)
+        .build()
+    );
   }
 }

@@ -23,7 +23,7 @@ public class MemberService {
     Member member = memberRepository.findById(id)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
     member.getInterest().forEach(interest -> {
-      interests.add(interest.getInterest().value);
+      interests.add(interest.getInterest().name());
     });
 
     return GetMemberResponse.builder()
@@ -31,7 +31,7 @@ public class MemberService {
       .profileUrl(member.getProfileUrl())
       .nickName(member.getNickName())
       .age(member.getAge())
-      .gender(member.getGender().value)
+      .gender(member.getGender().name())
       .introduction(member.getIntroduction())
       .interests(interests)
       .build();
