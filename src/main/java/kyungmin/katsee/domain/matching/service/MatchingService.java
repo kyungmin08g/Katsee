@@ -4,6 +4,7 @@ import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.matching.Matching;
 import kyungmin.katsee.domain.matching.controller.response.GetMatchingStatisticsResponse;
+import kyungmin.katsee.domain.matching.controller.response.GetMatchingStatusResponse;
 import kyungmin.katsee.domain.matching.enums.MatchStatus;
 import kyungmin.katsee.domain.matching.repository.Matching2Repository;
 import kyungmin.katsee.domain.matching.repository.MatchingRepository;
@@ -41,18 +42,36 @@ public class MatchingService {
   public GetMatchingStatisticsResponse getMatchingStatistics() {
     AtomicInteger fullStatistics = new AtomicInteger();
     AtomicInteger newStatistics = new AtomicInteger();
-    LocalDateTime now = LocalDateTime.now();
+    String now = LocalDateTime.now().toString().split("T")[0];
 
-    matching2Repository.findByMemberId(
-      SecurityUtil.authMemberId()
-    ).forEach(matching -> {
-      if (matching.getCreatedAt() == now) newStatistics.getAndIncrement();
+    matching2Repository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
+      if (matching.getCreatedAt().toString().split("T")[0].equals(now)) newStatistics.getAndIncrement();
       fullStatistics.getAndIncrement();
     });
 
     return GetMatchingStatisticsResponse.builder()
       .fullStatistics(fullStatistics.get())
       .newStatistics(newStatistics.get())
+      .build();
+  }
+
+  public GetMatchingStatusResponse getMatchingStatus() {
+    AtomicInteger atmosphere = new AtomicInteger();
+    AtomicInteger friend = new AtomicInteger();
+    AtomicInteger refusal = new AtomicInteger();
+
+    matching2Repository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
+      switch (matching.getMatchStatus()) {
+        case ATMOSPHERE: atmosphere.getAndIncrement(); break;
+        case FRIEND: friend.getAndIncrement(); break;
+        case REFUSE: refusal.getAndIncrement(); break;
+      }
+    });
+
+    return GetMatchingStatusResponse.builder()
+      .atmosphere(atmosphere.get())
+      .friend(friend.get())
+      .refusal(refusal.get())
       .build();
   }
 }

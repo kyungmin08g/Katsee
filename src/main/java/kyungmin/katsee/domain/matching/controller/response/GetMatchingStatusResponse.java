@@ -10,11 +10,11 @@ import lombok.Getter;
 public class GetMatchingStatusResponse {
 
   @Schema(description = "대기 상태")
-  private int atmosphereStatus;
+  private int atmosphere;
 
   @Schema(description = "친구 상태")
-  private int friendStatus;
+  private int friend;
 
   @Schema(description = "거절 상태")
-  private int refusalStatus;
+  private int refusal;
 }
