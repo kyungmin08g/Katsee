@@ -3,26 +3,27 @@ package kyungmin.katsee.domain.matching.service;
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.matching.Matching;
+import kyungmin.katsee.domain.matching.controller.request.UpdateMatchingStatusRequest;
 import kyungmin.katsee.domain.matching.controller.response.GetMatchingStatisticsResponse;
 import kyungmin.katsee.domain.matching.controller.response.GetMatchingStatusResponse;
 import kyungmin.katsee.domain.matching.enums.MatchStatus;
-import kyungmin.katsee.domain.matching.repository.Matching2Repository;
 import kyungmin.katsee.domain.matching.repository.MatchingRepository;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MatchingService {
   private final MatchingRepository matchingRepository;
   private final MemberRepository memberRepository;
-  private final Matching2Repository matching2Repository;
 
   private Member getMember(String memberId) {
     return memberRepository.findById(memberId)
@@ -44,7 +45,7 @@ public class MatchingService {
     AtomicInteger newStatistics = new AtomicInteger();
     String now = LocalDateTime.now().toString().split("T")[0];
 
-    matching2Repository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
+    matchingRepository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
       if (matching.getCreatedAt().toString().split("T")[0].equals(now)) newStatistics.getAndIncrement();
       fullStatistics.getAndIncrement();
     });
@@ -60,7 +61,7 @@ public class MatchingService {
     AtomicInteger friend = new AtomicInteger();
     AtomicInteger refusal = new AtomicInteger();
 
-    matching2Repository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
+    matchingRepository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
       switch (matching.getMatchStatus()) {
         case ATMOSPHERE: atmosphere.getAndIncrement(); break;
         case FRIEND: friend.getAndIncrement(); break;
@@ -73,5 +74,9 @@ public class MatchingService {
       .friend(friend.get())
       .refusal(refusal.get())
       .build();
+  }
+
+  public void updateMatchingStatus(UpdateMatchingStatusRequest request) {
+    matchingRepository.update(SecurityUtil.authMemberId(), request);
   }
 }
