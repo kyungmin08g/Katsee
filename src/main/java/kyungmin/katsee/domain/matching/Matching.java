@@ -5,12 +5,18 @@ import kyungmin.katsee.domain.matching.enums.MatchStatus;
 import kyungmin.katsee.domain.member.Member;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "matching")
 public class Matching {
 
@@ -18,6 +24,15 @@ public class Matching {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "match_status_id")
   private Long id;
+
+  @CreatedDate
+  @Column(updatable = false)
+  @Comment("생성일")
+  LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Comment("수정일")
+  LocalDateTime updatedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
