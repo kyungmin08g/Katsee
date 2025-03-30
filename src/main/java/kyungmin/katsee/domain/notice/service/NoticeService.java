@@ -7,10 +7,15 @@ import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.domain.notice.Notice;
 import kyungmin.katsee.domain.notice.controller.request.CreateNoticeRequest;
+import kyungmin.katsee.domain.notice.controller.response.GetNoticeResponse;
 import kyungmin.katsee.domain.notice.repository.NoticeRepository;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+/**
+ * 여기선 CRUD만 하면됨.
+ */
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +35,23 @@ public class NoticeService {
           .thumbnailUrl(request.thumbnail_url())
           .title(request.title())
           .content(request.content())
+          .member(member)
           .build()
       );
     }
-    System.out.println("??");
+  }
+
+  // 공지 조회
+  public GetNoticeResponse getNotice(String noticeId) {
+    Notice notice = noticeRepository.findById(Long.parseLong(noticeId))
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));
+    return GetNoticeResponse.builder()
+      .id(notice.getId())
+      .thumbnailUrl(notice.getThumbnailUrl())
+      .title(notice.getTitle())
+      .content(notice.getContent())
+      .createdAt(notice.getCreatedAt())
+      .build();
   }
 
 }
