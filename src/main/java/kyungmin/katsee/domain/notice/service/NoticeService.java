@@ -14,6 +14,9 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
@@ -47,6 +50,25 @@ public class NoticeService {
       .content(notice.getContent())
       .createdAt(notice.getCreatedAt())
       .build();
+  }
+
+  public List<GetNoticeResponse> getNoticeList() {
+    List<GetNoticeResponse> noticeList = new ArrayList<>();
+    List<Notice> notice = noticeRepository.findAll();
+
+    notice.forEach(n -> {
+      noticeList.add(
+        GetNoticeResponse.builder()
+          .id(n.getId())
+          .thumbnailUrl(n.getThumbnailUrl())
+          .title(n.getTitle())
+          .content(n.getContent())
+          .createdAt(n.getCreatedAt())
+          .build()
+      );
+    });
+
+    return noticeList;
   }
 
   public void updateNotice(UpdateNoticeRequest request) {

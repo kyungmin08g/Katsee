@@ -10,6 +10,8 @@ import kyungmin.katsee.domain.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/notice")
 @RequiredArgsConstructor
@@ -28,6 +30,12 @@ public class NoticeController {
   @Operation(description = "공지 조회")
   public ApiResponse<GetNoticeResponse> getNotice(@PathVariable("id") String noticeId) {
     return ApiResponse.onSuccess(noticeService.getNotice(noticeId));
+  }
+
+  @GetMapping(value = "/list")
+  @Operation(description = "공지 목록 조회")
+  public ApiResponse<List<GetNoticeResponse>> getNoticeList() {
+    return ApiResponse.onSuccess(noticeService.getNoticeList());
   }
 
   @PatchMapping(value = "/update")
