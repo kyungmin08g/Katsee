@@ -72,4 +72,9 @@ public class CommentService {
         .build()
     );
   }
+
+  // 댓글 삭제
+  public void deleteComment(String commentId) {
+    commentRepository.deleteById(Long.parseLong(commentId));
+  }
 }

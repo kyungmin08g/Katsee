@@ -41,4 +41,10 @@ public class CommentController {
   }
 
   // 댓글 삭제
+  @DeleteMapping(value = "/delete/{id}")
+  @Operation(description = "댓글 삭제")
+  public ApiResponse<?> updateComment(@PathVariable("id") String id) {
+    commentService.deleteComment(id);
+    return ApiResponse.onSuccess();
+  }
 }
