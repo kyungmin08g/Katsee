@@ -3,10 +3,7 @@ package kyungmin.katsee.domain.comments;
 import jakarta.persistence.*;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.notice.Notice;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,10 +38,10 @@ public class Comments {
   @Comment("수정일")
   private LocalDateTime updatedAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "parents_comments_id")
-  @Comment("부모 댓글")
-  private Comments parentsCommentsId;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "parents_comments_id")
+//  @Comment("부모 댓글")
+//  private Comments parentsCommentsId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "notice_id")

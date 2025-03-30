@@ -1,0 +1,32 @@
+package kyungmin.katsee.domain.comments.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import kyungmin.katsee.api_response.ApiResponse;
+import kyungmin.katsee.domain.comments.controller.request.CreateCommentRequest;
+import kyungmin.katsee.domain.comments.service.CommentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/comment")
+@RequiredArgsConstructor
+@Tag(name = "댓글 관련 API")
+public class CommentController {
+  private final CommentService commentService;
+
+  // 댓글 생성
+  @PostMapping(value = "/create")
+  @Operation(description = "댓글 생성")
+  public ApiResponse<?> crateComment(@RequestBody CreateCommentRequest request) {
+    commentService.createComment(request);
+    return ApiResponse.onSuccess();
+  }
+
+  // 댓글 조회
+  // 댓글 수정
+  // 댓글 삭제
+}
