@@ -14,6 +14,9 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
@@ -47,6 +50,35 @@ public class NoticeService {
       .content(notice.getContent())
       .createdAt(notice.getCreatedAt())
       .build();
+  }
+
+  // 관리자 공지 목록 조회
+  public List<GetNoticeResponse> getAdminNoticeList() {
+    List<GetNoticeResponse> noticeList = new ArrayList<>();
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+
+    if (member.getRole().equals(Role.ADMIN)) {
+      List<Notice> notice = noticeRepository.findAll().stream()
+        .filter(n ->
+          n.getMember().getMemberId().equals(SecurityUtil.authMemberId())
+        ).toList();
+
+      notice.forEach(n -> {
+        noticeList.add(
+          GetNoticeResponse.builder()
+            .id(n.getId())
+            .thumbnailUrl(n.getThumbnailUrl())
+            .title(n.getTitle())
+            .content(n.getContent())
+            .createdAt(n.getCreatedAt())
+            .build()
+        );
+      });
+    }
+    else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
+
+    return noticeList;
   }
 
   public void updateNotice(UpdateNoticeRequest request) {
