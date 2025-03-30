@@ -38,6 +38,12 @@ public class NoticeController {
     return ApiResponse.onSuccess(noticeService.getAdminNoticeList());
   }
 
+  @GetMapping(value = "/all-list")
+  @Operation(description = "모든 공지 목록 조회")
+  public ApiResponse<List<GetNoticeResponse>> getAllNoticeList() {
+    return ApiResponse.onSuccess(noticeService.getAllNoticeList());
+  }
+
   @PatchMapping(value = "/update")
   @Operation(description = "공지 수정")
   public ApiResponse<?> update(@RequestBody UpdateNoticeRequest request) {

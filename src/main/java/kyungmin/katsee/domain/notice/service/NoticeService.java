@@ -81,6 +81,26 @@ public class NoticeService {
     return noticeList;
   }
 
+  // 모든 공지 목록 조회
+  public List<GetNoticeResponse> getAllNoticeList() {
+    List<GetNoticeResponse> noticeList = new ArrayList<>();
+    List<Notice> notice = noticeRepository.findAll();
+
+    notice.forEach(n -> {
+      noticeList.add(
+        GetNoticeResponse.builder()
+          .id(n.getId())
+          .thumbnailUrl(n.getThumbnailUrl())
+          .title(n.getTitle())
+          .content(n.getContent())
+          .createdAt(n.getCreatedAt())
+          .build()
+      );
+    });
+
+    return noticeList;
+  }
+
   public void updateNotice(UpdateNoticeRequest request) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
