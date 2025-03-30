@@ -4,6 +4,7 @@ import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.comments.Comments;
 import kyungmin.katsee.domain.comments.controller.request.CreateCommentRequest;
+import kyungmin.katsee.domain.comments.controller.response.GetCommentResponse;
 import kyungmin.katsee.domain.comments.repository.CommentsRepository;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
@@ -34,5 +35,21 @@ public class CommentService {
         .member(member)
         .build()
     );
+  }
+
+  // 댓글 조회
+  public GetCommentResponse getComment(String commentId) {
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+    Comments comment = commentRepository.findById(Long.parseLong(commentId))
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "댓글을 찾을 수 없습니다."));
+
+    return GetCommentResponse.builder()
+      .commentId(Long.parseLong(commentId))
+      .noticeId(comment.getNotice().getId())
+      .memberId(member.getMemberId())
+      .content(comment.getContent())
+      .createAt(comment.getCreatedAt())
+      .build();
   }
 }

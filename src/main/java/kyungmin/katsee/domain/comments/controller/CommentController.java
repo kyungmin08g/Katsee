@@ -6,10 +6,7 @@ import kyungmin.katsee.api_response.ApiResponse;
 import kyungmin.katsee.domain.comments.controller.request.CreateCommentRequest;
 import kyungmin.katsee.domain.comments.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/comment")
@@ -27,6 +24,12 @@ public class CommentController {
   }
 
   // 댓글 조회
+  @GetMapping(value = "/{id}")
+  @Operation(description = "댓글 조회")
+  public ApiResponse<?> crateComment(@PathVariable("id") String commentId) {
+    return ApiResponse.onSuccess(commentService.getComment(commentId));
+  }
+
   // 댓글 수정
   // 댓글 삭제
 }
