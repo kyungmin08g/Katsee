@@ -33,9 +33,9 @@ public class NoticeController {
   }
 
   @GetMapping(value = "/list")
-  @Operation(description = "모든 공지 목록 조회")
-  public ApiResponse<List<GetNoticeResponse>> getAllNoticeList() {
-    return ApiResponse.onSuccess(noticeService.getAllNoticeList());
+  @Operation(description = "공지 목록 조회")
+  public ApiResponse<List<GetNoticeResponse>> getNoticeList() {
+    return ApiResponse.onSuccess(noticeService.getNoticeList());
   }
 
   @PatchMapping(value = "/update")

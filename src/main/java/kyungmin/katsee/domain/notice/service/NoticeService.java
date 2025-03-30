@@ -52,8 +52,7 @@ public class NoticeService {
       .build();
   }
 
-  // 모든 공지 목록 조회
-  public List<GetNoticeResponse> getAllNoticeList() {
+  public List<GetNoticeResponse> getNoticeList() {
     List<GetNoticeResponse> noticeList = new ArrayList<>();
     List<Notice> notice = noticeRepository.findAll();
 
