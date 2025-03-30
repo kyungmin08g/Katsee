@@ -33,12 +33,6 @@ public class NoticeController {
   }
 
   @GetMapping(value = "/list")
-  @Operation(description = "공지 목록 조회")
-  public ApiResponse<List<GetNoticeResponse>> getAdminNoticeList() {
-    return ApiResponse.onSuccess(noticeService.getAdminNoticeList());
-  }
-
-  @GetMapping(value = "/all-list")
   @Operation(description = "모든 공지 목록 조회")
   public ApiResponse<List<GetNoticeResponse>> getAllNoticeList() {
     return ApiResponse.onSuccess(noticeService.getAllNoticeList());
