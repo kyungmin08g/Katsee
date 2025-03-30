@@ -7,6 +7,7 @@ import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.domain.notice.Notice;
 import kyungmin.katsee.domain.notice.controller.request.CreateNoticeRequest;
+import kyungmin.katsee.domain.notice.controller.request.UpdateNoticeRequest;
 import kyungmin.katsee.domain.notice.controller.response.GetNoticeResponse;
 import kyungmin.katsee.domain.notice.repository.NoticeRepository;
 import kyungmin.katsee.utils.SecurityUtil;
@@ -25,8 +26,7 @@ public class NoticeService {
 
   // 공지 생성
   public void create(CreateNoticeRequest request) {
-    String memberId = SecurityUtil.authMemberId();
-    Member member = memberRepository.findById(memberId)
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
     if (member.getRole().equals(Role.ADMIN)) {
@@ -39,6 +39,7 @@ public class NoticeService {
           .build()
       );
     }
+    else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
   }
 
   // 공지 조회
@@ -52,6 +53,25 @@ public class NoticeService {
       .content(notice.getContent())
       .createdAt(notice.getCreatedAt())
       .build();
+  }
+
+  // 공지 수정
+  public void updateNotice(UpdateNoticeRequest request) {
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+
+    if (member.getRole().equals(Role.ADMIN)) {
+      noticeRepository.save(
+        Notice.builder()
+          .id(Long.parseLong(request.id()))
+          .thumbnailUrl(request.thumbnail_url())
+          .title(request.title())
+          .content(request.content())
+          .member(member)
+          .build()
+      );
+    }
+    else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
   }
 
 }
