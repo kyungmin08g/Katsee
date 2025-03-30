@@ -4,6 +4,7 @@ import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.comments.Comments;
 import kyungmin.katsee.domain.comments.controller.request.CreateCommentRequest;
+import kyungmin.katsee.domain.comments.controller.request.UpdateCommentRequest;
 import kyungmin.katsee.domain.comments.controller.response.GetCommentResponse;
 import kyungmin.katsee.domain.comments.repository.CommentsRepository;
 import kyungmin.katsee.domain.member.Member;
@@ -51,5 +52,24 @@ public class CommentService {
       .content(comment.getContent())
       .createAt(comment.getCreatedAt())
       .build();
+  }
+
+  // 댓글 수정
+  public void updateComment(UpdateCommentRequest request) {
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+    Notice notice = noticeRepository.findById(Long.parseLong(request.noticeId()))
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "공지를 찾을 수 없습니다."));
+    Comments comment = commentRepository.findById(Long.parseLong(request.commentId()))
+        .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "댓글을 찾을 수 없습니다."));
+
+    commentRepository.save(
+      Comments.builder()
+        .id(comment.getId())
+        .notice(notice)
+        .content(request.content())
+        .member(member)
+        .build()
+    );
   }
 }
