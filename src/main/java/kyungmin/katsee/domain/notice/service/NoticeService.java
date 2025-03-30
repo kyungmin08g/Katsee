@@ -14,18 +14,13 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- * 여기선 CRUD만 하면됨.
- */
-
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
   private final NoticeRepository noticeRepository;
   private final MemberRepository memberRepository;
 
-  // 공지 생성
-  public void create(CreateNoticeRequest request) {
+  public void createNotice(CreateNoticeRequest request) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
@@ -42,7 +37,6 @@ public class NoticeService {
     else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
   }
 
-  // 공지 조회
   public GetNoticeResponse getNotice(String noticeId) {
     Notice notice = noticeRepository.findById(Long.parseLong(noticeId))
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));
@@ -55,7 +49,6 @@ public class NoticeService {
       .build();
   }
 
-  // 공지 수정
   public void updateNotice(UpdateNoticeRequest request) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
@@ -74,7 +67,6 @@ public class NoticeService {
     else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
   }
 
-  // 공지 삭제
   public void deleteNotice(String noticeId) {
     Notice notice = noticeRepository.findById(Long.parseLong(noticeId))
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));

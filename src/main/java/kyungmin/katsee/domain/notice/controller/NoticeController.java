@@ -17,22 +17,19 @@ import org.springframework.web.bind.annotation.*;
 public class NoticeController {
   private final NoticeService noticeService;
 
-  // 공지 생성 (도메인: 관리자)
   @PostMapping(value = "/create")
   @Operation(description = "공지 생성")
   public ApiResponse<?> create(@RequestBody CreateNoticeRequest request) {
-    noticeService.create(request);
+    noticeService.createNotice(request);
     return ApiResponse.onSuccess();
   }
 
-  // 공지 조회 (도메인: 공통)
   @GetMapping(value = "/{id}")
   @Operation(description = "공지 조회")
   public ApiResponse<GetNoticeResponse> getNotice(@PathVariable("id") String noticeId) {
     return ApiResponse.onSuccess(noticeService.getNotice(noticeId));
   }
 
-  // 공지 수정 (도메인: 관리자)
   @PatchMapping(value = "/update")
   @Operation(description = "공지 수정")
   public ApiResponse<?> update(@RequestBody UpdateNoticeRequest request) {
@@ -40,7 +37,6 @@ public class NoticeController {
     return ApiResponse.onSuccess();
   }
 
-  // 공지 삭제 (도메인: 관리자)
   @DeleteMapping(value = "/delete/{id}")
   @Operation(description = "공지 삭제")
   public ApiResponse<?> delete(@PathVariable("id") String noticeId) {
