@@ -74,4 +74,13 @@ public class NoticeService {
     else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
   }
 
+  // 공지 삭제
+  public void deleteNotice(String noticeId) {
+    Notice notice = noticeRepository.findById(Long.parseLong(noticeId))
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));
+
+    if (notice.getMember().getRole().equals(Role.ADMIN))
+      noticeRepository.deleteById(notice.getId());
+    else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
+  }
 }

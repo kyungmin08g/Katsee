@@ -28,7 +28,7 @@ public class NoticeController {
   // 공지 조회 (도메인: 공통)
   @GetMapping(value = "/{id}")
   @Operation(description = "공지 조회")
-  public ApiResponse<GetNoticeResponse> create(@PathVariable("id") String noticeId) {
+  public ApiResponse<GetNoticeResponse> getNotice(@PathVariable("id") String noticeId) {
     return ApiResponse.onSuccess(noticeService.getNotice(noticeId));
   }
 
@@ -41,4 +41,10 @@ public class NoticeController {
   }
 
   // 공지 삭제 (도메인: 관리자)
+  @DeleteMapping(value = "/delete/{id}")
+  @Operation(description = "공지 삭제")
+  public ApiResponse<?> delete(@PathVariable("id") String noticeId) {
+    noticeService.deleteNotice(noticeId);
+    return ApiResponse.onSuccess();
+  }
 }
