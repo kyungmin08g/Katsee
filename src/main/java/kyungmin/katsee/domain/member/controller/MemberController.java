@@ -9,15 +9,20 @@ import kyungmin.katsee.domain.member.controller.request.UpdateDetailRequest;
 import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
+import kyungmin.katsee.domain.member.controller.response.GetRecommendFriendResponse;
 import kyungmin.katsee.domain.member.service.MemberService;
+import kyungmin.katsee.domain.member.service.RecommendFriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "회원 관련 API")
 public class MemberController {
   private final MemberService memberService;
+  private final RecommendFriendService recommendService;
 
   @PostMapping(value = "/login")
   @Operation(description = "로그인")
@@ -62,5 +67,11 @@ public class MemberController {
   @Operation(description = "회원 ID 중복 여부 확인")
   public ApiResponse<GetDuplicateIdResponse> getDuplicateId(@PathVariable("id") String memberId) {
     return ApiResponse.onSuccess(memberService.duplicateId(memberId));
+  }
+
+  @GetMapping(value = "/recommend/friend")
+  @Operation(description = "친구 추천")
+  public ApiResponse<List<GetRecommendFriendResponse>> recommendFriends() {
+    return ApiResponse.onSuccess(recommendService.recommendFriends());
   }
 }
