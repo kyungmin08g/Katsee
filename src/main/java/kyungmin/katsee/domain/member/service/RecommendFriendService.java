@@ -11,9 +11,10 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @Service
@@ -28,6 +29,8 @@ public class RecommendFriendService {
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
     recommendFriendRepository.friends().forEach(friend -> {
+      if (friend.getMemberId().equals(member.getMemberId())) return;
+      if (friend.getMemberId().equals("admin")) return;
       int fitness = 0;
       /*
        🤔 최고점 30점 | 총 100점
@@ -45,37 +48,42 @@ public class RecommendFriendService {
 
       // 관심사 유형
       List<Interest> interests = member.getInterest().stream()
-        .flatMap(f -> Stream.of(f.getInterest()))
-        .toList();
+        .flatMap(f ->
+          Stream.of(f.getInterest())
+        ).toList();
       boolean isInterest = friend.getInterest().stream()
         .flatMap(f ->
           Stream.of(f.getInterest())
         ).toList().stream()
         .anyMatch(interests::contains);
       if (isInterest) fitness += 30;
-      else fitness -= 5;
+      else fitness -= 25;
 
       // 관심사 선호도
       List<InterestPreference> interestPreferences = member.getInterestPreference().stream()
         .flatMap(f ->
           Stream.of(f.getPreference())
         ).toList();
-      switch (interestPreferences.get(0)) {
-        case LOW: fitness += 2; break;
-        case GENERALLY: fitness += 6; break;
-        case POWERFUL: fitness += 14; break;
-      }
+      boolean isInterestPreferences = friend.getInterestPreference().stream()
+        .flatMap(f ->
+          Stream.of(f.getPreference())
+        ).toList().stream()
+        .anyMatch(interestPreferences::contains);
+      if (isInterestPreferences) fitness += 14;
+      else  if (fitness != 0) fitness -= 3;
 
       // 관심사 레벨
       List<InterestLevel> interestLevel = member.getInterestLevel().stream()
         .flatMap(f ->
           Stream.of(f.getLevel())
         ).toList();
-      switch (interestLevel.get(0)) {
-        case BEGINNER: fitness += 2; break;
-        case INTERMEDIATE: fitness += 6; break;
-        case MASTER: fitness += 12; break;
-      }
+      boolean isInterestLevel = friend.getInterestLevel().stream()
+        .flatMap(f ->
+          Stream.of(f.getLevel())
+        ).toList().stream()
+        .anyMatch(interestLevel::contains);
+      if (isInterestLevel) fitness += 12;
+      else  if (fitness != 0) fitness -= 3;
 
       // 친구 스타일
       List<FriendStyle> friendStyle = member.getFriendStyle().stream()
@@ -88,7 +96,7 @@ public class RecommendFriendService {
         ).toList().stream()
         .anyMatch(friendStyle::contains);
       if (isFriendStyle) fitness += 13;
-      else fitness -= 5;
+      else  if (fitness != 0) fitness -= 3;
 
       // 성격 유형
       List<PersonalityType> personalityType = member.getPersonalityType().stream()
@@ -101,7 +109,7 @@ public class RecommendFriendService {
         ).toList().stream()
         .anyMatch(personalityType::contains);
       if (isPersonalityType) fitness += 12;
-      else fitness -= 5;
+      else if (fitness != 0) fitness -= 3;
 
       // 대화 스타일
       List<TalkStyle> talkStyle = member.getTalkStyle().stream()
@@ -114,17 +122,20 @@ public class RecommendFriendService {
         ).toList().stream()
         .anyMatch(talkStyle::contains);
       if (isTalkStyle) fitness += 10;
-      else fitness -= 5;
+      else if (fitness != 0) fitness -= 3;
 
       // 오프라인 만남 가능 여부
       List<OfflineMeeting> offlineMeeting = member.getIsOfflineMeeting().stream()
         .flatMap(f ->
           Stream.of(f.getIsOffline())
         ).toList();
-      switch (offlineMeeting.get(0)) {
-        case ONLINE: fitness -= 5; break;
-        case OFFLINE: fitness += 4; break;
-      }
+      boolean isOfflineMeeting = friend.getIsOfflineMeeting().stream()
+        .flatMap(f ->
+          Stream.of(f.getIsOffline())
+        ).toList().stream()
+        .anyMatch(offlineMeeting::contains);
+      if (isOfflineMeeting) fitness += 4;
+      else if (fitness != 0) fitness -= 3;
 
       // 온라인 대화 가능 여부
       List<OnlineTalkStyle> onlineTalkStyle = member.getOnlineTalkStyle().stream()
@@ -137,7 +148,7 @@ public class RecommendFriendService {
         ).toList().stream()
         .anyMatch(onlineTalkStyle::contains);
       if (isOnlineTalkStyle) fitness += 3;
-      else fitness -= 5;
+      else  if (fitness != 0) fitness -= 3;
 
       // 관계 깊이 정도
       List<RelationshipDepth> relationshipDepth = member.getRelationshipDepth().stream()
@@ -150,10 +161,12 @@ public class RecommendFriendService {
         ).toList().stream()
         .anyMatch(relationshipDepth::contains);
       if (isRelationshipDepth) fitness += 2;
-      else fitness -= 5;
+      else  if (fitness != 0) fitness -= 3;
 
-      // 적합도 60 이하는 추천 목록에서 제거
-      if (fitness > 60) {
+      System.out.println("친구 ID: " + friend.getMemberId() + ", 매칭 적합도: " + fitness);
+
+      // 적합도 50 이하는 추천 목록에서 제거
+      if (fitness > 50) {
         recommendFriends.add(
           GetRecommendFriendResponse.builder()
             .fitness(fitness)
@@ -172,7 +185,13 @@ public class RecommendFriendService {
             ).build()
         );
       }
+      fitness = 0;
     });
+
+    // 적합도 순으로 정렬
+    recommendFriends.sort((o1, o2) ->
+      o2.getFitness().compareTo(o1.getFitness())
+    );
 
     return recommendFriends;
   }

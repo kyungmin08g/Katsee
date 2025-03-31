@@ -21,7 +21,6 @@ public class RecommendFriendRepository {
       .selectFrom(member)
       .innerJoin(matching)
       .on(matching.matchStatus.ne(MatchStatus.REFUSE)) // 한번 거절한 건은 추천 X
-      .where(member.memberId.eq(matching.friend.memberId))
       .fetch();
   }
 }
