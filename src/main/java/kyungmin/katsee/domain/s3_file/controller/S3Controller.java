@@ -10,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping(value = "/s3")
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class S3Controller {
   // S3 파일 업로드 및 조회 API
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(description = "S3 이미지 업로드")
-  public ApiResponse<GetS3FileResponse> uploadFile(@RequestPart(name = "file") MultipartFile file) throws IOException {
+  public ApiResponse<GetS3FileResponse> uploadFile(@RequestPart(name = "file") MultipartFile file) {
     return ApiResponse.onSuccess(s3Service.upload(file));
   }
 

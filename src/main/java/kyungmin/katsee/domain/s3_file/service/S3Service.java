@@ -2,6 +2,8 @@ package kyungmin.katsee.domain.s3_file.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import kyungmin.katsee.api_response.exception.GeneralException;
+import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.s3_file.S3File;
 import kyungmin.katsee.domain.s3_file.controller.response.GetS3FileResponse;
 import kyungmin.katsee.domain.s3_file.repository.S3FileRepository;
@@ -23,23 +25,27 @@ public class S3Service {
   private String bucket;
 
   // S3 파일 업로드 및 조회
-  public GetS3FileResponse upload(MultipartFile file) throws IOException {
+  public GetS3FileResponse upload(MultipartFile file) {
     String originalFileName = file.getOriginalFilename();
-    if (originalFileName == null) return null;
+    assert originalFileName != null;
     String fileName = UUID.randomUUID() + "." + originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
 
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentType(file.getContentType());
     objectMetadata.setContentLength(file.getSize());
 
-    amazonS3.putObject(bucket, originalFileName, file.getInputStream(), objectMetadata);
-    s3FileRepository.save(
-      S3File.builder()
-        .originalName(file.getOriginalFilename())
-        .fileName(fileName)
-        .fileUrl(amazonS3.getUrl(bucket, originalFileName).toString())
-        .build()
-    );
+    try {
+      amazonS3.putObject(bucket, originalFileName, file.getInputStream(), objectMetadata);
+      s3FileRepository.save(
+        S3File.builder()
+          .originalName(file.getOriginalFilename())
+          .fileName(fileName)
+          .fileUrl(amazonS3.getUrl(bucket, originalFileName).toString())
+          .build()
+      );
+    } catch (IOException e) {
+      throw new GeneralException(ErrorStatus.INTERNAL_ERROR, "S3 이미지 업로드가 실패했습니다.");
+    }
 
     return GetS3FileResponse.builder()
       .originalName(originalFileName)
