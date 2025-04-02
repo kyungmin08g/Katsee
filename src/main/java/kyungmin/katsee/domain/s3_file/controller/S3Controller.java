@@ -17,12 +17,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3Controller {
   private final S3Service s3Service;
 
-  // S3 파일 업로드 및 조회 API
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(description = "S3 이미지 업로드")
   public ApiResponse<GetS3FileResponse> uploadFile(@RequestPart(name = "file") MultipartFile file) {
     return ApiResponse.onSuccess(s3Service.upload(file));
   }
 
-  // S3 파일 삭제 API
+  @DeleteMapping(value = "/delete")
+  @Operation(description = "S3 이미지 삭제")
+  public ApiResponse<Void> deleteFile(@RequestParam String fileUrl) {
+    s3Service.delete(fileUrl);
+    return ApiResponse.onSuccess();
+  }
 }

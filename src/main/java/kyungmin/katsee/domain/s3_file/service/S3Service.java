@@ -10,13 +10,16 @@ import kyungmin.katsee.domain.s3_file.repository.S3FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class S3Service {
   private final S3FileRepository s3FileRepository;
   private final AmazonS3 amazonS3;
@@ -24,23 +27,24 @@ public class S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
-  // S3 파일 업로드 및 조회
   public GetS3FileResponse upload(MultipartFile file) {
-    String originalFileName = file.getOriginalFilename();
-    assert originalFileName != null;
-    String fileName = UUID.randomUUID() + "." + originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+    if (file.isEmpty()) throw new GeneralException(ErrorStatus.BAD_REQUEST, "파일이 비어있습니다.");
+
+    String originalFileName = file.getOriginalFilename().replace(" ", ""); // 띄어쓰기 제거
+    String fileName = Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes()) + "." +
+      originalFileName.substring(originalFileName.lastIndexOf(".") + 1); // 이상한 이모지를 포함한 이름이 있을 수 있어서 예비로 구현
 
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentType(file.getContentType());
     objectMetadata.setContentLength(file.getSize());
 
     try {
-      amazonS3.putObject(bucket, originalFileName, file.getInputStream(), objectMetadata);
+      amazonS3.putObject(bucket, fileName, file.getInputStream(), objectMetadata);
       s3FileRepository.save(
         S3File.builder()
-          .originalName(file.getOriginalFilename())
+          .originalName(originalFileName)
           .fileName(fileName)
-          .fileUrl(amazonS3.getUrl(bucket, originalFileName).toString())
+          .fileUrl(amazonS3.getUrl(bucket, fileName).toString())
           .build()
       );
     } catch (IOException e) {
@@ -50,7 +54,13 @@ public class S3Service {
     return GetS3FileResponse.builder()
       .originalName(originalFileName)
       .fileName(fileName)
-      .s3Url(amazonS3.getUrl(bucket, originalFileName).toString())
+      .s3Url(amazonS3.getUrl(bucket, fileName).toString())
       .build();
+  }
+
+  public void delete(String fileUrl) {
+    String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+    amazonS3.deleteObject(bucket, fileName);
+    s3FileRepository.deleteByFileName(fileName);
   }
 }
