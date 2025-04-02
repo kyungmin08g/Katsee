@@ -34,7 +34,7 @@ public class Chatting {
   private Member friend;
 
   @OneToMany(mappedBy = "chatting", orphanRemoval = true)
-  @Column(name = "chat_content")
+  @Column(name = "chat_contents")
   @Comment("채팅 내역")
   private List<ChatContent> chatContents;
 
