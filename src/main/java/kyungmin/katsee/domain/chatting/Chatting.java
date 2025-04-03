@@ -33,9 +33,9 @@ public class Chatting {
   @Comment("친구")
   private Member friend;
 
-  @OneToMany(mappedBy = "chatting", orphanRemoval = true)
-  @Column(name = "chat_contents")
-  @Comment("채팅 내역")
-  private List<ChatContent> chatContents;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id")
+  @Comment("회원")
+  private Member member;
 
 }

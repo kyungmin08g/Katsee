@@ -32,10 +32,6 @@ public class ChatContent {
   @Comment("생성일")
   private LocalDateTime createdAt;
 
-  @LastModifiedDate
-  @Comment("수정일")
-  private LocalDateTime updatedAt;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   @Comment("회원")
@@ -44,6 +40,6 @@ public class ChatContent {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "chatting_id")
   @Comment("채팅")
-  private Chatting chatting;
+  private Chatting room;
 
 }
