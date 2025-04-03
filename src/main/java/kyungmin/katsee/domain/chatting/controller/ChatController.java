@@ -10,10 +10,8 @@ import kyungmin.katsee.domain.chatting.controller.response.GetContentListRespons
 import kyungmin.katsee.domain.chatting.service.ChatService;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.converter.SimpleMessageConverter;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,14 +45,6 @@ public class ChatController {
     return ApiResponse.onSuccess();
   }
 
-  // 채팅 내용 저장
-//  @PostMapping(value = "/content/save")
-//  @Operation(description = "채팅 내용 저장")
-//  public ApiResponse<Void> saveChatting(@RequestBody SaveContentRequest request) {
-//    chatService.saveChattingContent(request);
-//    return ApiResponse.onSuccess();
-//  }
-
   @MessageMapping(value = "/send/{roomId}")
   public ApiResponse<Void> saveChatContent(@DestinationVariable("roomId") String roomId, SaveContentRequest request) {
     chatService.saveChattingContent(request);
@@ -70,7 +60,6 @@ public class ChatController {
     return ApiResponse.onSuccess();
   }
 
-  // 채팅 내용 조회
   @GetMapping(value = "/content/list")
   @Operation(description = "채팅 내용 목록 조회")
   public ApiResponse<List<GetContentListResponse>> getChatContent(@RequestParam String roomId) {
