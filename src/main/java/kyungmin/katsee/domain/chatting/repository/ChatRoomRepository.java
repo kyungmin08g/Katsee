@@ -21,6 +21,13 @@ public class ChatRoomRepository {
       .execute();
   }
 
+  public Chatting findById(Long id) {
+    return queryFactory
+      .selectFrom(chatting)
+      .where(chatting.id.eq(id))
+      .fetchOne();
+  }
+
   public List<Chatting> findByMemberId(String memberId) {
     return queryFactory
       .selectFrom(chatting)
@@ -28,7 +35,7 @@ public class ChatRoomRepository {
       .fetch();
   }
 
-  public void delete(Long roomId) {
+  public void deleteById(Long roomId) {
     queryFactory.delete(chatting)
       .where(chatting.id.eq(roomId))
       .execute();

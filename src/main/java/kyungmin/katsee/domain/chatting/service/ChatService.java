@@ -2,9 +2,12 @@ package kyungmin.katsee.domain.chatting.service;
 
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
+import kyungmin.katsee.domain.chatting.ChatContent;
 import kyungmin.katsee.domain.chatting.Chatting;
+import kyungmin.katsee.domain.chatting.controller.request.SaveContentRequest;
 import kyungmin.katsee.domain.chatting.controller.response.GetChatRoomResponse;
 import kyungmin.katsee.domain.chatting.repository.ChatRoomRepository;
+import kyungmin.katsee.domain.chatting.repository.ChattingRepository;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.utils.SecurityUtil;
@@ -21,6 +24,7 @@ import java.util.List;
 @Transactional
 public class ChatService {
   private final ChatRoomRepository roomRepository;
+  private final ChattingRepository contentRepository;
   private final MemberRepository memberRepository;
 
   public void createChatRoom(String friendId) {
@@ -54,7 +58,24 @@ public class ChatService {
     return chatRooms;
   }
 
-  public void deleteChatRoom(String roomId) {
-    roomRepository.delete(Long.parseLong(roomId));
+  public void deleteChatRoom(Long roomId) {
+    contentRepository.deleteById(roomId);
+    roomRepository.deleteById(roomId);
   }
+
+  public void saveChattingContent(SaveContentRequest request) {
+    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+        .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+    Chatting room = roomRepository.findById(Long.parseLong(request.roomId()));
+
+    contentRepository.save(
+      ChatContent.builder()
+        .room(room)
+        .member(member)
+        .content(request.chatContent())
+        .createdAt(LocalDateTime.now())
+        .build()
+    );
+  }
+
 }

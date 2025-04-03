@@ -5,12 +5,12 @@ import kyungmin.katsee.domain.member.Member;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,8 +38,8 @@ public class ChatContent {
   private Member member;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "chatting_id")
-  @Comment("채팅")
+  @JoinColumn(name = "room_id")
+  @Comment("채팅방")
   private Chatting room;
 
 }
