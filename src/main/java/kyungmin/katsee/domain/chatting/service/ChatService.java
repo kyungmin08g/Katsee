@@ -4,7 +4,6 @@ import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
 import kyungmin.katsee.domain.chatting.Chatting;
 import kyungmin.katsee.domain.chatting.controller.response.GetChatRoomResponse;
-import kyungmin.katsee.domain.chatting.repository.ChatContentRepository;
 import kyungmin.katsee.domain.chatting.repository.ChatRoomRepository;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
@@ -22,7 +21,6 @@ import java.util.List;
 @Transactional
 public class ChatService {
   private final ChatRoomRepository roomRepository;
-  private final ChatContentRepository chatContentRepository;
   private final MemberRepository memberRepository;
 
   public void createChatRoom(String friendId) {
@@ -54,5 +52,9 @@ public class ChatService {
     });
 
     return chatRooms;
+  }
+
+  public void deleteChatRoom(String roomId) {
+    roomRepository.delete(Long.parseLong(roomId));
   }
 }

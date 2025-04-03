@@ -17,20 +17,23 @@ import java.util.List;
 public class ChatController {
   private final ChatService chatService;
 
-  // 채팅방 생성
   @PostMapping(value = "/create")
   @Operation(description = "채팅방 생성")
-  public ApiResponse<?> createChatRoom(@RequestParam String friendId) {
+  public ApiResponse<Void> createChatRoom(@RequestParam String friendId) {
     chatService.createChatRoom(friendId);
     return ApiResponse.onSuccess();
   }
 
-  // 채팅방 목록 조회
   @GetMapping(value = "/rooms")
   @Operation(description = "채팅방 목록 조회")
   public ApiResponse<List<GetChatRoomResponse>> getChatRooms() {
     return ApiResponse.onSuccess(chatService.getChatRooms());
   }
 
-  // 채팅방 삭제
+  @DeleteMapping(value = "/delete")
+  @Operation(description = "채팅방 삭제")
+  public ApiResponse<Void> deleteChatRoom(@RequestParam String roomId) {
+    chatService.deleteChatRoom(roomId);
+    return ApiResponse.onSuccess();
+  }
 }
