@@ -1,9 +1,13 @@
 package kyungmin.katsee.domain.chatting.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kyungmin.katsee.domain.chatting.ChatContent;
+import kyungmin.katsee.domain.chatting.controller.response.GetContentListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 import static kyungmin.katsee.domain.chatting.QChatContent.chatContent;
 
@@ -24,6 +28,20 @@ public class ChattingRepository {
       .selectFrom(chatContent)
       .where(chatContent.id.eq(id))
       .fetchOne();
+  }
+
+  public List<GetContentListResponse> findByRoom(Long roomId) {
+    return queryFactory
+      .select(
+        Projections.fields(
+          GetContentListResponse.class,
+          chatContent.room.id.as("roomId"),
+          chatContent.member.memberId,
+          chatContent.content
+        )
+      ).from(chatContent)
+      .where(chatContent.room.id.eq(roomId))
+      .fetch();
   }
 
   public void deleteById(Long roomId) {

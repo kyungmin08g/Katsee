@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kyungmin.katsee.api_response.ApiResponse;
 import kyungmin.katsee.domain.chatting.controller.request.SaveContentRequest;
 import kyungmin.katsee.domain.chatting.controller.response.GetChatRoomResponse;
+import kyungmin.katsee.domain.chatting.controller.response.GetContentListResponse;
 import kyungmin.katsee.domain.chatting.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +48,9 @@ public class ChatController {
   }
 
   // 채팅 내용 조회
-
+  @GetMapping(value = "/content")
+  @Operation(description = "채팅 내용 목록 조회")
+  public ApiResponse<List<GetContentListResponse>> getChatContent(@RequestParam String roomId) {
+    return ApiResponse.onSuccess(chatService.getChatContentList(Long.parseLong(roomId)));
+  }
 }

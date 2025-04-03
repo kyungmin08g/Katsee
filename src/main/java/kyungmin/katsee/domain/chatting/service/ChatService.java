@@ -6,6 +6,7 @@ import kyungmin.katsee.domain.chatting.ChatContent;
 import kyungmin.katsee.domain.chatting.Chatting;
 import kyungmin.katsee.domain.chatting.controller.request.SaveContentRequest;
 import kyungmin.katsee.domain.chatting.controller.response.GetChatRoomResponse;
+import kyungmin.katsee.domain.chatting.controller.response.GetContentListResponse;
 import kyungmin.katsee.domain.chatting.repository.ChatRoomRepository;
 import kyungmin.katsee.domain.chatting.repository.ChattingRepository;
 import kyungmin.katsee.domain.member.Member;
@@ -59,7 +60,7 @@ public class ChatService {
   }
 
   public void deleteChatRoom(Long roomId) {
-    contentRepository.deleteById(roomId);
+    contentRepository.deleteById(roomId); // 채팅 내용도 같이 삭제
     roomRepository.deleteById(roomId);
   }
 
@@ -78,4 +79,7 @@ public class ChatService {
     );
   }
 
+  public List<GetContentListResponse> getChatContentList(Long roomId) {
+    return contentRepository.findByRoom(roomId);
+  }
 }
