@@ -34,7 +34,7 @@ public class SecurityConfig {
       .requestMatchers(
         "/member/create", "/member/duplicate/**", "/login",
         "/s3/upload", "/s3/delete", "/wss/**", "/send/**",
-        "/sub/**"
+        "/sub/**", "/admin/**", "/user/**", "/images/**"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/Login.css"/>
+    <link rel="stylesheet" type="text/css" href="/user/Login.css"/>
 </head>
 <body>
-    <div class="logo"><img src="/static/images/Logo.png" alt="service-logo" class="service-logo"></div>
+    <div class="logo"><img src="/images/Logo.png"  alt="service-logo" class="service-logo"></div>
     <div class="service-name">Katsee</div>
 
     <div class="input-label">아이디</div>
@@ -21,11 +21,11 @@
         <a href="#" class="signup-link" onclick="changeJoinPage()">회원가입</a>
     </div>
 
-    <script>
-        function login() {
+    <script type="text/javascript">
+        async function login() {
             const userId = document.getElementById('user-id-input');
             const password = document.getElementById('user-password-input');
-            console.log(`userId: ${userId.value}, password: ${password.value}`);
+            console.log(`ID: ${userId.value}, PW: ${password.value}`);
 
             if(userId.value === '' || password.value === '') {
                 alert('필수 입력항목을 체크해주세요');
@@ -35,10 +35,22 @@
             /**
              * @TODO 로그인 API 호출
              */
+            await fetch(`/login?memberId=${userId.value}&password=${password.value}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    const token = response.headers.get("Authorization").split(' ')[1];
+                    if (token != null) { return token; }
+                }
+            }).then(data => {
+                window.localStorage.setItem('AT', data);
+                console.log(`AccessToken: ${window.localStorage.getItem('AT')}`);
+            });
 
             userId.value = '';
             password.value = '';
-            window.location.href = '/UserHome.html';
+            // window.location.href = '/UserHome.html';
         }
 
         function changeJoinPage() {
