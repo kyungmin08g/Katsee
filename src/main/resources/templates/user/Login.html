@@ -40,21 +40,23 @@
                 headers: { 'Content-Type': 'application/json' }
             }).then(response => {
                 if (response.ok) {
-                    const token = response.headers.get("Authorization").split(' ')[1];
+                    const token = response.headers.get('Authorization').split(' ')[1];
                     if (token != null) { return token; }
                 }
             }).then(data => {
                 window.localStorage.setItem('AT', data);
-                console.log(`AccessToken: ${window.localStorage.getItem('AT')}`);
+                userId.value = '';
+                password.value = '';
+            }).catch(error => {
+                console.log(error);
+                alert('아이디나 비밀번호가 다릅니다.');
             });
 
-            userId.value = '';
-            password.value = '';
             // window.location.href = '/UserHome.html';
         }
 
         function changeJoinPage() {
-            location.href = '/SignUpFirstChapter.html';
+            location.href = '/join-1';
         }
     </script>
 </body>

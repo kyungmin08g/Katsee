@@ -10,4 +10,19 @@ public class ViewController {
   public String loginPage() {
     return "/user/Login";
   }
+
+  @GetMapping(value = "/join-1")
+  public String firstJoinPage() {
+    return "/user/JoinFirst";
+  }
+
+  @GetMapping(value = "/join-2")
+  public String secondJoinPage() {
+    return "/user/JoinSecond";
+  }
+
+  @GetMapping(value = "/join-3")
+  public String thirdJoinPage() {
+    return "/user/JoinThird";
+  }
 }

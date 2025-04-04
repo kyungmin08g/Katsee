@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/user/JoinThird.css">
+    <link rel="stylesheet" type="text/css" href="/user/JoinThird.css">
 </head>
 <body>
     <div class="container">
@@ -112,37 +112,82 @@
             return JSON.parse(window.localStorage.getItem(i));
         }
 
-        function nextJoin() {
+        async function nextJoin() {
             if(data.length === 0) {
-                alert('관심사를 선택해주세요');
+                alert('관심사를 선택해주세요.');
                 return;
             }
-            window.localStorage.setItem('thirdMemberData', JSON.stringify({data}));
+            window.localStorage.setItem('thirdData', JSON.stringify({data}));
 
-            let count = ['firstMemberData', 'secondMemberData', 'thirdMemberData'];
+            let count = ['firstData', 'secondData', 'thirdData'];
             let requestBody = {};
+
+            let interestEnumList = [];
+            /**
+             * TODO 관심사 유형 Enum API 호출
+             */
+            await fetch('/enum/interest', {
+                method: 'GET',
+            }).then(response => response.json()).then(data => {
+                data.result.forEach(interest => {
+                    interestEnumList.push(interest.code);
+                });
+            }).catch(error => console.log(error));
+
             count.forEach((i, j) => {
                 switch(j) {
-                    case 0: requestBody.firstMemberData = singleDataParse('firstMemberData');
-                    case 1: requestBody.secondMemberData = singleDataParse('secondMemberData');
+                    case 0: {
+                        requestBody.memberId = singleDataParse('firstData').memberId;
+                        requestBody.password = singleDataParse('firstData').password;
+                    } break;
+                    case 1: {
+                        requestBody.profileUrl = singleDataParse('secondData').profileUrl;
+                        requestBody.nickName = singleDataParse('secondData').nickName;
+                        requestBody.age = singleDataParse('secondData').age;
+                        requestBody.gender = singleDataParse('secondData').gender;
+                        requestBody.introduction = singleDataParse('secondData').introduction;
+                    } break;
                     case 2: {
                         let listData = [];
-                        JSON.parse(window.localStorage.getItem('thirdMemberData')).data.forEach(element => {
-                            listData.push(element.item);
+                        JSON.parse(window.localStorage.getItem('thirdData')).data.forEach(element => {
+                            switch (element.id) {
+                                case 'option-1': listData.push(interestEnumList[1]); break;
+                                case 'option-2': listData.push(interestEnumList[2]); break;
+                                case 'option-3': listData.push(interestEnumList[3]); break;
+                                case 'option-4': listData.push(interestEnumList[5]); break;
+                                case 'option-5': listData.push(interestEnumList[4]); break;
+                                case 'option-6': listData.push(interestEnumList[6]); break;
+                                case 'option-7': listData.push(interestEnumList[8]); break;
+                                case 'option-8': listData.push(interestEnumList[0]); break;
+                                case 'option-9': listData.push(interestEnumList[7]); break;
+                            }
                         });
-
-                        requestBody.thirdMemberData = listData;
-                    };
+                        requestBody.interests = listData;
+                    }
                 }
             });
-            console.log(requestBody);
 
-            window.localStorage.clear();
-            window.location.href = '/Login.html';
+            /**
+             * 회원 등록 API 호출
+             */
+            await fetch('/member/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                contentType: 'application/json',
+                body: JSON.stringify(requestBody)
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                count.forEach(value => {
+                    window.localStorage.removeItem(value);
+                    window.localStorage.removeItem(value);
+                    window.localStorage.removeItem(value);
+                });
+                window.location.href = '/login';
+            }).catch(error => console.log(error));
         }
 
         function prevPage() {
-            window.location.href = '/SignUpSecondChapter.html';
+            window.location.href = '/join-2';
         }
     </script>
 </body>

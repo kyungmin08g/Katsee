@@ -37,6 +37,10 @@ public class SecurityConfig {
         "/sub/**", "/admin/**", "/user/**", "/images/**"
       )
       .permitAll()
+      .requestMatchers( // 화면 관련 엔드포인트 처리
+        "/join-1", "join-2", "join-3"
+      )
+      .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리
         "/create/**", "/detail/**",
         "/detail/list/**", "/update/**",

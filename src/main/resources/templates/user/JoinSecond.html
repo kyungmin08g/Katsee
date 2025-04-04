@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/user/JoinSecond.css">
+    <link rel="stylesheet" type="text/css" href="/user/JoinSecond.css">
 </head>
 <body>
     <div class="container">
@@ -13,7 +13,7 @@
 
         <div class="form-content">
             <div class="profile-section">
-                <img src="/static/images/ProfileImage.png" alt="profile-image" id="profile-icon">
+                <img src="/images/ProfileImage.png" alt="profile-image" id="profile-icon">
                 <form id="uploadForm" action="/upload-profile" method="post" enctype="multipart/form-data" style="display: none;">
                     <input type="file" name="profileImage" id="formFileInput">
                 </form>
@@ -51,30 +51,37 @@
     </div>
 
     <script>
-        let profileImageOriginalName = null;
+        let formData = new FormData();
         document.getElementById('formFileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-icon').src = e.target.result;
-                    profileImageOriginalName = file.name;
-                    console.log(`OriginalName: ${profileImageOriginalName}`);
-                };
+                reader.onload = function(e) { document.getElementById('profile-icon').src = e.target.result; };
                 reader.readAsDataURL(file);
             }
+            formData.append('file', file, file.name);
         });
 
-        function getS3ProfileImageUrl() {
-            const s3ImageUrl = null;
+        async function getS3ProfileImageUrl() {
+            let s3ImageUrl = null;
             /**
-             * @TODO 프로필 사진 조회 API 호출
+             * @TODO 프로필 사진 업로드 API 호출
              */
+            await fetch(`/s3/upload`, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                console.log(data.result.s3Url);
+                s3ImageUrl = data.result.s3Url;
+            }).catch(error => {
+                console.log(error);
+                s3ImageUrl = null;
+            });
 
             return s3ImageUrl;
         }
 
-        function nextJoin() {
+        async function nextJoin() {
             const name = document.getElementById('name-input');
             const age = document.getElementById('age-input');
             const gender = document.getElementById('gender-input');
@@ -85,18 +92,29 @@
                 return;
             }
 
-            window.localStorage.setItem('secondMemberData', JSON.stringify({
-                profileUrl: getS3ProfileImageUrl(),
-                username: name.value,
+            let genderEnumValue = null;
+            switch (gender.value) {
+                case 'male':
+                    genderEnumValue = 'MAN';
+                    break;
+                case 'female':
+                    genderEnumValue = 'FEMALE';
+                    break;
+            }
+
+            const s3Url = await getS3ProfileImageUrl();
+            window.localStorage.setItem('secondData', JSON.stringify({
+                profileUrl: s3Url,
+                nickName: name.value,
                 age: age.value,
-                gender: gender.value,
+                gender: genderEnumValue,
                 introduction: introduction.value
             }));
-            window.location.href = '/SignUpThirdChapter.html';
+            window.location.href = '/join-3';
         }
 
         function prevPage() {
-            window.location.href = '/SignUpFirstChapter.html';
+            window.location.href = '/join-1';
         }
     </script>
 </body>
