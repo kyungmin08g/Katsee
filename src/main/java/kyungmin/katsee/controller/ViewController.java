@@ -1,6 +1,8 @@
 package kyungmin.katsee.controller;
 
+import kyungmin.katsee.utils.SecurityUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -24,5 +26,10 @@ public class ViewController {
   @GetMapping(value = "/join-3")
   public String thirdJoinPage() {
     return "/user/JoinThird";
+  }
+
+  @GetMapping(value = "/my")
+  public String myPage() {
+    return "/user/MyPage";
   }
 }

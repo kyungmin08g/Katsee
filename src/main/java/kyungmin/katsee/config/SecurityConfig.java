@@ -38,7 +38,7 @@ public class SecurityConfig {
       )
       .permitAll()
       .requestMatchers( // 화면 관련 엔드포인트 처리
-        "/join-1", "join-2", "join-3"
+        "/join-1", "join-2", "join-3", "/my"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리
