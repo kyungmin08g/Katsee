@@ -88,4 +88,9 @@ public class ViewController {
     model.addAttribute("noticeId", noticeId);
     return "user/UserNoticeDetails";
   }
+
+  @GetMapping(value = "/recommend")
+  public String friendRecommendPage() {
+    return "user/FriendRecommend";
+  }
 }

@@ -174,7 +174,7 @@ public class RecommendFriendService {
             .profileUrl(friend.getProfileUrl())
             .nickName(friend.getNickName())
             .age(friend.getAge())
-            .gender(friend.getGender())
+            .gender(friend.getGender().value)
             .introduction(friend.getIntroduction())
             .interests(
               friend.getInterest().stream()
