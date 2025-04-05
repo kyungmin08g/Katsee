@@ -1,8 +1,6 @@
 package kyungmin.katsee.controller;
 
-import kyungmin.katsee.utils.SecurityUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -31,5 +29,45 @@ public class ViewController {
   @GetMapping(value = "/my")
   public String myPage() {
     return "/user/MyPage";
+  }
+
+  @GetMapping(value = "/detail-1")
+  public String detailFirstPage() {
+    return "/user/MemberFirstDetails";
+  }
+
+  @GetMapping(value = "/detail-2")
+  public String detailSecondPage() {
+    return "/user/MemberSecondDetails";
+  }
+
+  @GetMapping(value = "/detail-3")
+  public String detailThirdPage() {
+    return "/user/MemberThirdDetails";
+  }
+
+  @GetMapping(value = "/detail-4")
+  public String detailFourthPage() {
+    return "/user/MemberFourthDetails";
+  }
+
+  @GetMapping(value = "/detail-5")
+  public String detailFifthPage() {
+    return "/user/MemberFifthDetails";
+  }
+
+  @GetMapping(value = "/detail-6")
+  public String detailSixthPage() {
+    return "/user/MemberSixthDetails";
+  }
+
+  @GetMapping(value = "/detail-7")
+  public String detailSeventhPage() {
+    return "/user/MemberSeventhDetails";
+  }
+
+  @GetMapping(value = "/detail-8")
+  public String detailEighthPage() {
+    return "/user/MemberEighthDetails";
   }
 }

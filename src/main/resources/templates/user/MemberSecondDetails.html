@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/user/MemberSecondDetails.css">
+    <link rel="stylesheet" type="text/css" href="/user/MemberSecondDetails.css">
 </head>
 <body>
     <div class="container">
@@ -85,11 +85,11 @@
             }
 
             window.localStorage.setItem('talkStyle', JSON.stringify({data}));
-            window.location.href = '/MemberDetails3.html';
+            window.location.href = '/detail-3';
         }
 
         function prevPage() {
-            window.location.href = '/MemberDetails1.html';
+            window.location.href = '/detail-1';
         }
     </script>
 </body>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/user/MemberSixthDetails.css">
+    <link rel="stylesheet" type="text/css" href="/user/MemberSixthDetails.css">
 </head>
 <body>
     <div class="container">
@@ -74,11 +74,11 @@
             }
 
             window.localStorage.setItem('isOffline', interestOptionData);
-            window.location.href = '/MemberDetails7.html';
+            window.location.href = '/detail-7';
         }
 
         function prevPage() {
-            window.location.href = '/MemberDetails5.html';
+            window.location.href = '/detail-5';
         }
     </script>
 </body>
