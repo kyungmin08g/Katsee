@@ -2,6 +2,7 @@ package kyungmin.katsee.domain.member.service;
 
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
+import kyungmin.katsee.domain.matching.repository.MatchingRepository;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.controller.request.MemberCreateRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberDetailRequest;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class MemberService {
   private final MemberRepository memberRepository;
+  private final MatchingRepository matchingRepository;
 
   private final CreateMemberService createService;
   private final DetailMemberService detailMemberService;
@@ -87,8 +89,8 @@ public class MemberService {
     createService.createMemberDetail(request);
   }
 
-  public GetMemberDetailResponse getMemberDetail() {
-    return detailMemberService.getMemberDetail();
+  public GetMemberDetailResponse getMemberDetail(String memberId) {
+    return detailMemberService.getMemberDetail(memberId);
   }
 
   public void updateMemberDetail(UpdateDetailRequest request) {
@@ -97,6 +99,7 @@ public class MemberService {
 
   public List<GetMemberResponse> allMembers() {
     List<GetMemberResponse> responseMembers = new ArrayList<>();
+
     memberRepository.findAll().forEach(member -> {
       if (member.getMemberId().equals("admin")) {} // 관리자는 무시
       else if (!member.getMemberId().equals(SecurityUtil.authMemberId())) {
@@ -117,6 +120,16 @@ public class MemberService {
         );
       }
     });
+
+    for (int i = 0; i < responseMembers.size(); i++) {
+      int finalI = i;
+      matchingRepository.getFriends(SecurityUtil.authMemberId()).forEach(friend -> {
+        if (
+          !friend.getFriend().getMemberId().equals(responseMembers.get(finalI).getMemberId()) ||
+          !responseMembers.get(finalI).getMemberId().equals(SecurityUtil.authMemberId())
+        ) { responseMembers.remove(finalI); }
+      });
+    }
 
     return responseMembers;
   }

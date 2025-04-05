@@ -202,6 +202,10 @@
                 alert('회원 상세정보가 등록되었습니다');
             }).catch(error => console.log(error));
 
+            list.forEach(value => {
+                window.localStorage.removeItem(value);
+            });
+
             window.location.href = '/my';
         }
 

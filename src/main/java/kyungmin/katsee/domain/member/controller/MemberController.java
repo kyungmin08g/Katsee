@@ -58,8 +58,8 @@ public class MemberController {
 
   @GetMapping(value = "/member/detail")
   @Operation(description = "회원 상세 조회")
-  public ApiResponse<GetMemberDetailResponse> getMemberDetail() {
-    return ApiResponse.onSuccess(memberService.getMemberDetail());
+  public ApiResponse<GetMemberDetailResponse> getMemberDetail(@RequestParam String memberId) {
+    return ApiResponse.onSuccess(memberService.getMemberDetail(memberId));
   }
 
   @PatchMapping(value = "/member/update")

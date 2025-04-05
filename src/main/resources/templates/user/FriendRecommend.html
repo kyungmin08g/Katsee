@@ -36,39 +36,18 @@
 
     <script th:inline="javascript">
         const token = window.localStorage.getItem("AT");
+        const container = document.getElementById('container');
+        let friendDataList = [];
         let count = 0;
 
-        let interest = '';
-        let memberInfor = null;
-        member();
-        async function member() {
-            /**
-             * @TODO 회원 기본 정보 조회 API 호출
-             */
-            await fetch('/member', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(response => response.json()).then(date => {
-                console.log(date);
-                memberInfor = date.result;
-            }).catch(error => console.log(error));
-        }
-
-        let memberDataList = [];
         friendDatas();
-        const container = document.getElementById('container');
         async function friendDatas() {
             /**
              * @TODO 친구 추천 API 호출
              */
             await fetch('/recommend/friend', {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             }).then(response => response.json()).then(data => {
                 console.log(data.result);
 
@@ -109,8 +88,8 @@
                         else interest += `${interestEnumValue}`;
                     });
 
-                    memberDataList.push({
-                        id: member.memberId,
+                    friendDataList.push({
+                        friendId: member.friendId,
                         profileUrl: member.profileUrl,
                         nickName: member.nickName,
                         age: member.age,
@@ -129,7 +108,7 @@
         const html = document.querySelector('html');
         function setMemberElement() {
             const card = document.getElementById('card');
-            memberDataList.forEach((data, number) => {
+            friendDataList.forEach((data, number) => {
                 const friendCard = document.createElement('div');
                 friendCard.className = 'friend-card';
 
@@ -195,8 +174,8 @@
                 const detailBtn = document.createElement('button');
                 detailBtn.className = 'detail-btn';
                 detailBtn.textContent = '상세 정보';
-                detailBtn.onclick = function() {
-                    location.href = '/FriendDetailsInfor.html';
+                detailBtn.onclick = () => {
+                    location.href = `/friend/detail/${data.friendId}/${data.suitable}`;
                 };
 
                 matchButtonDiv.appendChild(matchRateDiv);

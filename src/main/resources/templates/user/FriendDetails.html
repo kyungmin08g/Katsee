@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/user/FriendDetails.css">
+    <link rel="stylesheet" type="text/css" href="/user/FriendDetails.css">
 </head>
 <body>
     <div class="header">
-        <a href="/FriendRecommend.html">
-            <img src="/static/images/Left.png" alt="x" class="close-btn">
+        <a href="/recommend">
+            <img src="/images/Left.png" alt="x" class="close-btn">
         </a>
         <h3>친구 추천</h3>
     </div>
@@ -17,29 +17,29 @@
     <div class="profile-container" id="container">
         <div class="profile-header">
             <div class="profile-pic-container">
-                <img src="/static/images/ProfileImage.png" class="profile-pic">
+                <img src="/images/ProfileImage.png" class="profile-pic" id="profile">
             </div>
             <div class="profile-info-main">
                 <div class="profile-info">
                     <div class="user-name">
-                        <p>홍길동</p>
-                        <span class="user-gender-age">남 (18)</span>
+                        <p id="name">-</p>
+                        <span class="user-gender-age" id="gender-and-age">-</span>
                     </div>
-                    <p class="user-bio">안녕하세요. 저는 고등학생 개발자에요!</p>
+                    <p class="user-bio" id="user-bio">-</p>
                 </div>
                 <div class="interest-tag">
-                    <img src="/static/images/Interest-Icon.png" class="interest-icon">
-                    <span>IT</span>
+                    <img src="/images/Interest-Icon.png" class="interest-icon" alt="interest-icon">
+                    <span id="interest">-</span>
                 </div>
             </div>
         </div>
 
         <div class="match-rate-container">
             <div class="match-rate-header">
-                <div class="match-percentage">98%</div>
+                <div class="match-percentage" id="match-percentage">0%</div>
                 <div>
-                    <div class="match-text">추천 적합도 98%</div>
-                    <div class="match-message">조건과 잘 맞아요!</div>
+                    <div class="match-text" id="match-text">추천 적합도 0%</div>
+                    <div class="match-message" id="match-message">-</div>
                 </div>
             </div>
         </div>
@@ -47,35 +47,35 @@
         <div class="profile-sections">
             <div class="section">
                 <div class="section-title">성격 유형</div>
-                <div class="section-content">내향적, 감정적인 편</div>
+                <div class="section-content" id="personality">-</div>
             </div>
             <div class="section">
                 <div class="section-title">대화 스타일</div>
-                <div class="section-content">짧고 가벼운 대화를 선호함</div>
+                <div class="section-content" id="talk-style">-</div>
             </div>
             <div class="section">
                 <div class="section-title">원하는 친구 스타일</div>
-                <div class="section-content">운동 메이트, 게임 친구</div>
+                <div class="section-content" id="friend-style">-</div>
             </div>
             <div class="section">
                 <div class="section-title">원하는 관계 정도</div>
-                <div class="section-content">자주 소통하는 사이</div>
+                <div class="section-content" id="relationship-depth">-</div>
             </div>
             <div class="section">
                 <div class="section-title">음성 / 영상 대화 가능 여부</div>
-                <div class="section-content">영상 통화 가능</div>
+                <div class="section-content" id="online">-</div>
             </div>
             <div class="section">
                 <div class="section-title">오프라인 만남 여부</div>
-                <div class="section-content">온라인 친구만 찾고 싶어요</div>
+                <div class="section-content" id="offline">-</div>
             </div>
             <div class="section">
                 <div class="section-title">관심사 선호도</div>
-                <div class="section-content">보통 관심</div>
+                <div class="section-content" id="interest-preference">-</div>
             </div>
             <div class="section">
                 <div class="section-title">관심사 레벨</div>
-                <div class="section-content">고수</div>
+                <div class="section-content" id="interest-level">-</div>
             </div>
         </div>
 
@@ -84,22 +84,160 @@
         <button class="send-request-btn" onclick="request()">친구 요청 보내기</button>
     </div>
 
-    <script>
-        getMemberDetailData();
+    <script th:inline="javascript">
+        const token = window.localStorage.getItem('AT');
+        const friendId = [[${friendId}]];
+        const fitness = [[${fitness}]];
+
+        const profile = document.getElementById('profile');
+        const genderAndAge = document.getElementById('gender-and-age');
+        const nickName = document.getElementById('name');
+        const introduction = document.getElementById('user-bio');
+
+        const interest = document.getElementById('interest');
+        const personality = document.getElementById('personality');
+        const talkStyle = document.getElementById('talk-style');
+        const friendStyle = document.getElementById('friend-style');
+        const relationshipDepth = document.getElementById('relationship-depth');
+        const online = document.getElementById('online');
+        const offline = document.getElementById('offline');
+        const interestPreference = document.getElementById('interest-preference');
+        const interestLevel = document.getElementById('interest-level');
+
+        const matchPercentage = document.getElementById('match-percentage');
+        const matchText = document.getElementById('match-text');
+        const matchMessage = document.getElementById('match-message');
+
+        getFriendDetailData();
 
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('container');
             container.classList.add('active');
         });
 
-        function getMemberDetailData() {
+        let interestEnumValues = [];
+        let talkStyleEnumValues = [];
+        let friendStylesEnumValues = [];
+        let personalityTypeEnumValues = [];
+        let offlineTalkStyleEnumValues = [];
+        let onlineTalkStyleEnumValues = [];
+        let relationshipDepthEnumValues = [];
+        let interestPreferenceEnumValues = [];
+        let interestLevelEnumValues = [];
+
+        let dataList = [];
+        async function callEnumValue(item, list, values) {
+            /**
+             * @TODO 회원 상세 Enum API 호출
+             */
+            await fetch(`/enum/${item}`, {
+                method: 'GET',
+            }).then(response => response.json()).then(data => {
+                list.forEach(element => {
+                    data.result.forEach(i => {
+                        if (element === i.code) values.push(i.value);
+                    });
+                })
+            }).catch(error => console.log(error));
+            console.log(values);
+
+            switch (item) {
+                case 'interest': detailInfor(values, interest); break;
+                case 'talk-style': detailInfor(values, talkStyle); break;
+                case 'friend-style': detailInfor(values, friendStyle); break;
+                case 'personality-type': detailInfor(values, personality); break;
+                case 'offline-meeting': detailInfor(values, offline); break;
+                case 'online-talk-style': detailInfor(values, online); break;
+                case 'relationship-depth': detailInfor(values, relationshipDepth); break;
+                case 'interest-preference': detailInfor(values, interestPreference); break;
+                case 'interest-level': detailInfor(values, interestLevel); break;
+            }
+        }
+
+        function detailInfor(values, element) {
+            let textVale = '';
+            values.forEach((value, number) => {
+                if (number !== values.length - 1) textVale += `${value}, `;
+                else textVale += `${value}`;
+            });
+            element.textContent = textVale;
+        }
+
+        const typeList = ['interest', 'talk-style', 'friend-style', 'personality-type', 'offline-meeting', 'online-talk-style', 'relationship-depth', 'interest-preference', 'interest-level'];
+        async function getFriendDetailEnum(data) {
+            dataList = [
+                data.result.interests, data.result.talkStyles, data.result.friendStyles,
+                data.result.personalityTypes, data.result.offlineTalkStyles, data.result.onlineTalkStyles,
+                data.result.relationshipDepth, data.result.interestPreference, data.result.interestLevel,
+            ];
+
+            typeList.forEach((type, number) => {
+                switch (type) {
+                    case 'interest': callEnumValue(type, dataList[number], interestEnumValues); break;
+                    case 'talk-style': callEnumValue(type, dataList[number], talkStyleEnumValues); break;
+                    case 'friend-style': callEnumValue(type, dataList[number], friendStylesEnumValues); break;
+                    case 'personality-type': callEnumValue(type, dataList[number], personalityTypeEnumValues); break;
+                    case 'offline-meeting': callEnumValue(type, dataList[number], offlineTalkStyleEnumValues); break;
+                    case 'online-talk-style': callEnumValue(type, dataList[number], onlineTalkStyleEnumValues); break;
+                    case 'relationship-depth': callEnumValue(type, dataList[number], relationshipDepthEnumValues); break;
+                    case 'interest-preference': callEnumValue(type, dataList[number], interestPreferenceEnumValues); break;
+                    case 'interest-level': callEnumValue(type, dataList[number], interestLevelEnumValues); break;
+                }
+            });
+        }
+
+        async function getFriendDetailData() {
             /**
              * @TODO 회원 상세 정보 조회 API 호출
              */
+            await fetch(`/member/detail?memberId=${friendId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then((data) => {
+                console.log(data.result);
+
+                // 회원 기존 정보
+                profile.src = data.result.profileUrl;
+                genderAndAge.textContent = `${data.result.gender} (${data.result.age})`;
+                nickName.textContent = data.result.nickName;
+                introduction.textContent = data.result.introduction;
+                matchPercentage.textContent = `${fitness}%`;
+                matchText.textContent = `추천 적합도 ${fitness}%`;
+                getFriendDetailEnum(data);
+
+                if (fitness >= 50 && fitness < 60) {
+                    matchMessage.textContent = '조건과 조금 비슷해서 추천해요! 😅';
+                } else if (fitness >= 60 && fitness < 70) {
+                    matchMessage.textContent = '조건과 비슷해요! 🙂';
+                } else if (fitness >= 70 && fitness < 80) {
+                    matchMessage.textContent = '조건과 맞아요! 😉';
+                } else if (fitness >= 80 && fitness < 90) {
+                    matchMessage.textContent = '조건과 잘 맞아요! 👍';
+                } else if (fitness >= 90 && fitness <= 100) {
+                    matchMessage.textContent = '조건과 매우 잘 맞아요! 😍';
+                }
+            }).catch(error => console.log(error));
         }
 
         function request() {
+            /**
+             * @TODO 매칭 요청 API 호출
+             */
+            fetch(`/matching/request?friendId=${friendId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then((data) => {
+                console.log(data.result);
+            }).catch(error => console.log(error));
+
             alert('요청을 보냈습니다');
+            window.location.href = '/recommend';
         }
     </script>
 </body>

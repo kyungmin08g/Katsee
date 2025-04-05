@@ -93,4 +93,11 @@ public class ViewController {
   public String friendRecommendPage() {
     return "user/FriendRecommend";
   }
+
+  @GetMapping(value = "/friend/detail/{id}/{fitness}")
+  public String friendDetailPage(@PathVariable("id") String friendId, @PathVariable("fitness") String fitness, Model model) {
+    model.addAttribute("friendId", friendId);
+    model.addAttribute("fitness", fitness);
+    return "user/FriendDetails";
+  }
 }
