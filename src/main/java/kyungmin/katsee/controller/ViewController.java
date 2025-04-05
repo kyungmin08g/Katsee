@@ -70,4 +70,9 @@ public class ViewController {
   public String detailEighthPage() {
     return "/user/MemberEighthDetails";
   }
+
+  @GetMapping(value = "/")
+  public String homePage() {
+    return "/user/UserHome";
+  }
 }

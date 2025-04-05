@@ -12,7 +12,9 @@
 
         <div class="question-container">
             <h1>당신의 관심사에 대한 선호도는 <br>얼마인가요?</h1>
-            <div class="box">김경민님께서 <span>IT</span>에 관심이 있다고 말씀하셨어요!</div>
+            <div class="box">
+                <span id="name">김경민</span>님께서 <span id="interest">IT</span>에 관심이 있다고 말씀하셨어요!
+            </div>
             <div class="sub-text">당신의 관심사 선호도를 선택해주세요 <span class="required">*</span></div>
             <div class="description">더 정확한 매칭을 할 수 있어요</div>
         </div>
@@ -38,6 +40,78 @@
     </div>
 
     <script>
+        const token = window.localStorage.getItem('AT');
+        let interest = '';
+        let memberInfor = null;
+        member();
+        async function member() {
+            /**
+             * @TODO 회원 기본 정보 조회 API 호출
+             */
+            await fetch('/member', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(date => {
+                console.log(date);
+                memberInfor = date.result;
+                const nickName = document.getElementById('name');
+                nickName.textContent = memberInfor.nickName;
+
+                let interestEnumList = [];
+                /**
+                 * TODO 관심사 유형 Enum API 호출
+                 */
+                fetch('/enum/interest', {
+                    method: 'GET',
+                }).then(response => response.json()).then(data => {
+                    data.result.forEach(interest => {
+                        interestEnumList.push(interest.code);
+                    });
+                }).catch(error => console.log(error));
+
+                let interestEnumValue = null;
+                memberInfor.interests.forEach((i, number) => {
+                    switch (i) {
+                        case 'MUSIC':
+                            interestEnumValue = '음악';
+                            break;
+                        case 'GAME':
+                            interestEnumValue = '게임';
+                            break;
+                        case 'MOVIEDRAMA':
+                            interestEnumValue = '영화/드라마';
+                            break;
+                        case 'READING':
+                            interestEnumValue = '독서';
+                            break;
+                        case 'ART':
+                            interestEnumValue = '예술';
+                            break;
+                        case 'WORKOUT':
+                            interestEnumValue = '운동';
+                            break;
+                        case 'TRAVEL':
+                            interestEnumValue = '여행';
+                            break;
+                        case 'FOODEXPLORATION':
+                            interestEnumValue = '맛집 탐방';
+                            break;
+                        case 'IT':
+                            interestEnumValue = 'IT';
+                            break;
+                    }
+                    if (number !== memberInfor.interests.length - 1) interest += `${interestEnumValue}, `;
+                    else interest += `${interestEnumValue}`;
+                });
+
+                const interestE = document.getElementById('interest');
+                interestE.textContent = interest;
+            }).catch(error => console.log(error));
+        }
+
         let interestOptionData = null;
         function choice(option) {
             for(let i = 0; i < 8; i++) {

@@ -74,4 +74,10 @@ public class MemberController {
   public ApiResponse<List<GetRecommendFriendResponse>> recommendFriends() {
     return ApiResponse.onSuccess(recommendService.recommendFriends());
   }
+
+  @GetMapping(value = "/member/all")
+  @Operation(description = "모든 회원 조회")
+  public ApiResponse<List<GetMemberResponse>> allMembers() {
+    return ApiResponse.onSuccess(memberService.allMembers());
+  }
 }

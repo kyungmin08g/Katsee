@@ -15,6 +15,8 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -71,5 +73,30 @@ public class MemberService {
 
   public void updateMemberDetail(UpdateDetailRequest request) {
     detailMemberService.updateMemberDetail(request);
+  }
+
+  public List<GetMemberResponse> allMembers() {
+    List<GetMemberResponse> responseMembers = new ArrayList<>();
+    memberRepository.findAll().forEach(member -> {
+      if (!member.getMemberId().equals(SecurityUtil.authMemberId())) {
+        responseMembers.add(
+          GetMemberResponse.builder()
+            .memberId(member.getMemberId())
+            .profileUrl(member.getProfileUrl())
+            .nickName(member.getNickName())
+            .age(member.getAge())
+            .gender(member.getGender().value)
+            .introduction(member.getIntroduction())
+            .interests(
+              member.getInterest().stream()
+                .flatMap(i ->
+                  Stream.of(Interest.valueOf(i.getInterest().name()))
+                ).toList()
+            ).build()
+        );
+      }
+    });
+
+    return responseMembers;
   }
 }
