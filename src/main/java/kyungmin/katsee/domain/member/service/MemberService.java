@@ -47,6 +47,26 @@ public class MemberService {
       .build();
   }
 
+  public GetMemberResponse getMemberById(String memberId) {
+    Member member = memberRepository.findById(memberId)
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+
+    return GetMemberResponse.builder()
+      .memberId(member.getMemberId())
+      .profileUrl(member.getProfileUrl())
+      .nickName(member.getNickName())
+      .age(member.getAge())
+      .gender(member.getGender().name())
+      .introduction(member.getIntroduction())
+      .interests(
+        member.getInterest().stream()
+          .flatMap(i ->
+            Stream.of(Interest.valueOf(i.getInterest().name()))
+          ).toList()
+      )
+      .build();
+  }
+
   public GetDuplicateIdResponse duplicateId(String id) {
     return (memberRepository.existsById(id)) ?
       GetDuplicateIdResponse.builder()
@@ -78,7 +98,8 @@ public class MemberService {
   public List<GetMemberResponse> allMembers() {
     List<GetMemberResponse> responseMembers = new ArrayList<>();
     memberRepository.findAll().forEach(member -> {
-      if (!member.getMemberId().equals(SecurityUtil.authMemberId())) {
+      if (member.getMemberId().equals("admin")) {} // 관리자는 무시
+      else if (!member.getMemberId().equals(SecurityUtil.authMemberId())) {
         responseMembers.add(
           GetMemberResponse.builder()
             .memberId(member.getMemberId())

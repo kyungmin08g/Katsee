@@ -11,7 +11,7 @@
         <div>마이페이지</div>
         <a class="notification">
             <a href="#" class="logout" onclick="logout()">로그아웃</a>
-            <img src="/images/Bell.png" alt="" class="bell-icon">
+            <img src="/images/Bell.png" alt="" class="bell-icon" onclick="noticePage()">
         </a>
     </div>
 
@@ -339,6 +339,10 @@
 
         function memberInforModify() {
             window.location.href = '/MemberInforModify1.html';
+        }
+
+        function noticePage() {
+            window.location.href = '/notice';
         }
 
         function logout() {

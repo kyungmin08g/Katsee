@@ -55,17 +55,6 @@ body {
     position: relative;
 }
 
-.notification::before {
-    content: '';
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border-radius: 50%;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
 .matches-section {
     background-color: white;
     border-radius: 16px;

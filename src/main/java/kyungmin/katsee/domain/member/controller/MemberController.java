@@ -50,6 +50,12 @@ public class MemberController {
     return ApiResponse.onSuccess(memberService.getMember());
   }
 
+  @GetMapping(value = "/member/{memberId}")
+  @Operation(description = "ID를 통한 회원 조회")
+  public ApiResponse<GetMemberResponse> getMemberById(@PathVariable("memberId") String memberId) {
+    return ApiResponse.onSuccess(memberService.getMemberById(memberId));
+  }
+
   @GetMapping(value = "/member/detail")
   @Operation(description = "회원 상세 조회")
   public ApiResponse<GetMemberDetailResponse> getMemberDetail() {

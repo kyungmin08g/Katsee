@@ -1,7 +1,9 @@
 package kyungmin.katsee.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class ViewController {
@@ -74,5 +76,16 @@ public class ViewController {
   @GetMapping(value = "/")
   public String homePage() {
     return "/user/UserHome";
+  }
+
+  @GetMapping(value = "/notice")
+  public String noticePage() {
+    return "/user/UserNotice";
+  }
+
+  @GetMapping(value = "/notice/detail/{id}")
+  public String noticeDetailPage(@PathVariable("id") String noticeId, Model model) {
+    model.addAttribute("noticeId", noticeId);
+    return "user/UserNoticeDetails";
   }
 }

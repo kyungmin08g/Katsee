@@ -31,7 +31,7 @@ spring:
     check-template-location: true
     cache: false
     mvc:
-      static-path-pattern: "/static/**"
+      static-path-pattern: classpath:/templates/
 
   web:
     resources:
