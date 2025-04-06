@@ -127,4 +127,10 @@ public class ViewController {
     model.addAttribute("noticeId", noticeId);
     return "admin/AdminNoticeDetails";
   }
+
+  @GetMapping(value = "/admin/notice/update/{id}")
+  public String noticeUpdatePage(@PathVariable("id") String noticeId, Model model) {
+    model.addAttribute("noticeId", noticeId);
+    return "admin/AdminNoticeModify";
+  }
 }

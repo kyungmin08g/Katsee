@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="header">
-        <a href="#">
+        <a href="/admin/notice">
             <img src="/images/Left.png" alt="" class="left-icon">
         </a>
         <div class="back-button">공지사항</div>
@@ -195,7 +195,7 @@
         }
 
         function modifyPage() {
-
+            window.location.href = `/admin/notice/update/${noticeId}`;
         }
 
         function deletePage() {

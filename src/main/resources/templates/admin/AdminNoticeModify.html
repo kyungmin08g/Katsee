@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/admin/AdminNoticeModify.css">
+    <link rel="stylesheet" type="text/css" href="/admin/AdminNoticeModify.css">
 </head>
 <body>
     <div class="header">공지사항 수정</div>
@@ -20,49 +20,98 @@
     </div>
 
     <div class="nav-bar">
-        <a href="#" class="nav-item">
+        <a href="/admin" class="nav-item">
             <img src="/images/Home.png" alt="" class="nav-icon">
             <div>홈</div>
         </a>
-        <a href="#" class="nav-item nav-active">
+        <a href="/admin/notice" class="nav-item nav-active">
             <img src="/images/Note.png" alt="" class="nav-icon">
             <div>공지사항</div>
         </a>
     </div>
 
-    <script>
-        let image = null;
+    <script th:inline="javascript">
+        const token = window.localStorage.getItem("AT");
+        const noticeId = [[${noticeId}]];
+        const titleInput = document.getElementById('title-input');
+        const contentInput = document.getElementById('content-input');
+
+        let formData = new FormData();
         function previewImage(input) {
-            const preview = document.getElementById('preview');
+            // const preview = document.getElementById('preview');
             const label = document.querySelector('.file-upload-label');
 
-            if (input.files && input.files[0]) {
+            const file = input.files[0];
+            if (input.files && file) {
                 const reader = new FileReader();
-                reader.onload = function(e) { label.textContent = input.files[0].name; }
-                reader.readAsDataURL(input.files[0]);
+                reader.onload = function(e) { label.textContent = file.name; };
+                reader.readAsDataURL(file);
             }
+            formData.append('file', file, file.name);
+            console.log(file);
         }
 
-        function modify() {
-            console.log('수정');
-            const titleInput = document.getElementById('title-input');
-            const contentInput = document.getElementById('content-input');
-            console.log(`제목: ${titleInput.value}, 내용: ${contentInput.value}`);
-            console.log(image);
+        async function getS3ProfileImageUrl() {
+            let s3ImageUrl = null;
+            /**
+             * @TODO 프로필 사진 업로드 API 호출
+             */
+            await fetch(`/s3/upload`, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                console.log(data.result.s3Url);
+                s3ImageUrl = data.result.s3Url;
+            }).catch(error => {
+                console.log(error);
+                s3ImageUrl = null;
+            });
 
+            return s3ImageUrl;
+        }
+
+        async function modify() {
+            console.log(`제목: ${titleInput.value}, 내용: ${contentInput.value}`);
+            const s3Url = await getS3ProfileImageUrl();
             /**
              * @TODO 공지사항 수정 API 호출
              */
+            fetch(`/notice/update`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: noticeId,
+                    thumbnail_url: s3Url,
+                    title: titleInput.value,
+                    content: contentInput.value,
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            }).catch(error => console.log(error));
 
-            window.location.href = '/AdminNoticeDetailsSelect.html';
+            window.location.href = `/admin/notice/detail/${noticeId}`;
         }
 
+        data();
         function data() {
             /**
              * @TODO 해당 공지사항 조회 API 호출
              */
+            fetch(`/notice/${noticeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                titleInput.value = data.result.title;
+                contentInput.textContent = data.result.content;
+            }).catch(error => console.log(error));
         }
-        data();
     </script>
 </body>
 </html>
