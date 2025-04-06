@@ -54,7 +54,7 @@
         const token = window.localStorage.getItem('AT');
         const commentCount = document.getElementById('comment-count');
         const html = document.querySelector('html');
-        const noticeId = [[${noticeId}]]
+        const noticeId = [[${noticeId}]];
         let noticeData = null;
 
         getNoticeData();
@@ -196,27 +196,7 @@
             count = 0;
             await getNoticeData();
             await getNoticeComments();
-
-            // fetch(`/comment/${}`, {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${token}`
-            //     }
-            // }).then(response => response.json()).then(data => {
-            //     console.log(data);
-            // }).catch(error => console.log(error));
-
             commentInput.value = '';
-
-            // let data = {
-            //     commentId: comment.id,
-            //     memberId: comment.memberId,
-            //     profileUrl: data.result.profileUrl,
-            //     nickName: data.result.nickName,
-            //     content: comment.content,
-            // };
-            // setCommentElement(data);
         }
     </script>
 </body>

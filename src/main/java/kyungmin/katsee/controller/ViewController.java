@@ -116,4 +116,15 @@ public class ViewController {
   public String adminPage() {
     return "admin/AdminHome";
   }
+
+  @GetMapping(value = "/admin/notice")
+  public String adminNoticePage() {
+    return "admin/AdminNotice";
+  }
+
+  @GetMapping(value = "/admin/notice/detail/{id}")
+  public String adminNoticePage(@PathVariable("id") String noticeId, Model model) {
+    model.addAttribute("noticeId", noticeId);
+    return "admin/AdminNoticeDetails";
+  }
 }

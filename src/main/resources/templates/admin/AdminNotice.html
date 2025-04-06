@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/admin/AdminNotice.css">
+    <link rel="stylesheet" type="text/css" href="/admin/AdminNotice.css">
 </head>
 <body>
     <div class="container">
@@ -19,7 +19,7 @@
         <div class="notice-list" id="notice-list"></div>
 
         <div class="nav-bar">
-            <a href="/AdminHome.html" class="nav-item">
+            <a href="/admin" class="nav-item">
                 <img src="/images/Home.png" alt="" class="nav-icon">
                 <div>홈</div>
             </a>
@@ -31,68 +31,56 @@
     </div>
 
     <script>
-        // 테스트 초기 데이터
-        let memberDataList = [
-            {
-                id: 'test1',
-                image: '/static/images/TestImage.png',
-                title: '이번주 특별 이벤트',
-                content: '이번주 특별 이벤트가 있습니다! 참여하고 싶으신 분들은 메일 주세요!',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
-                }
-            },
-            {
-                id: 'test1',
-                image: '/static/images/TestImage.png',
-                title: '이번주 특별 이벤트',
-                content: '이번주 특별 이벤트가 있습니다! 참여하고 싶으신 분들은 메일 주세요!',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
-                }
-            }
-        ];
+        const token = window.localStorage.getItem('AT');
+        let interest = '';
+        let memberInfor = null;
 
-        function noticeData() {
+        member();
+        async function member() {
             /**
-             * @TODO 공지사항 목록 조회 API 호출
+             * @TODO 회원 기본 정보 조회 API 호출
              */
-
-            memberDataList.push({
-                id: 'test1',
-                image: null,
-                title: '이번주 특별 이벤트',
-                content: '이번주 특별 이벤트가 있습니다! 참여하고 싶으신 분들은 메일 주세요!',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
+            await fetch('/member', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-            });
+            }).then(response => response.json()).then(date => {
+                console.log(date);
+                memberInfor = date.result;
+            }).catch(error => console.log(error));
+        }
+
+        let dataList = [];
+        noticeDatas();
+        async function noticeDatas() {
+            /**
+             * @TODO 공지 목록 조회 API 호출
+             */
+            await fetch(`/notice/list`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                data.result.forEach(data => {
+                    dataList.push({
+                        id: data.id,
+                        thumbnailUrl: data.thumbnailUrl,
+                        title: data.title,
+                        content: data.content
+                    });
+                });
+            }).catch(error => console.log(error));
+            setMemberElement();
         }
 
         function setMemberElement() {
             const card = document.getElementById('notice-list');
-            memberDataList.forEach((data, number) => {
+            dataList.forEach((data, number) => {
                 const noticeCard = document.createElement('div');
                 noticeCard.className = 'notice-card';
 
@@ -100,8 +88,8 @@
                 noticeImage.className = 'notice-image';
 
                 const imgElement = document.createElement('img');
-                imgElement.src = data.image;
-                imgElement.alt = '';
+                imgElement.src = data.thumbnailUrl;
+                imgElement.alt = 'image';
                 imgElement.className = 'image-icon';
                 noticeImage.appendChild(imgElement);
 
@@ -115,13 +103,15 @@
 
                 const noticeDescription = document.createElement('div');
                 noticeDescription.className = 'notice-description';
-                noticeDescription.textContent = `${data.content.substring(0, 26)}..`;
+
+                if (data.content.length > 25) noticeDescription.textContent = `${data.content.substring(0, 26)}..`;
+                else noticeDescription.textContent = data.content;
                 noticeContent.appendChild(noticeDescription);
 
                 const noticeButton = document.createElement('button');
                 noticeButton.className = 'notice-button';
                 noticeButton.textContent = '자세히 보기';
-                noticeButton.onclick = () => nextPage();
+                noticeButton.onclick = () => { window.location.href = `/admin/notice/detail/${data.id}`; };
 
                 noticeCard.appendChild(noticeImage);
                 noticeCard.appendChild(noticeContent);
@@ -130,10 +120,6 @@
             });
         }
         setMemberElement();
-
-        function nextPage() {
-            window.location.href = '/AdminNoticeDetailsSelect.html';
-        }
 
         function createPage() {
             window.location.href = '/AdminNoticeDetails.html';
