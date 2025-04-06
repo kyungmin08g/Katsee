@@ -51,10 +51,47 @@
     </div>
 
     <script th:inline="javascript">
+        const token = window.localStorage.getItem('AT');
+
         const memberId = [[${memberId}]];
         const progress = document.getElementById('progress');
         if (memberId === 'null' || memberId === null) progress.value = '60';
         else progress.value = '8';
+
+        const name = document.getElementById('name-input');
+        const age = document.getElementById('age-input');
+        const gender = document.getElementById('gender-input');
+        const introduction = document.getElementById('introduction-input');
+        const profileImage = document.getElementById('profile-icon');
+
+        let imageUrl = null;
+
+        getMemberData();
+        async function getMemberData() {
+            /**
+             * @TODO 회원 기본 정보 조회 API 호출
+             */
+            await fetch(`/member`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+
+                imageUrl = data.result.profileUrl;
+                profileImage.src = data.result.profileUrl;
+                name.value = data.result.nickName;
+                age.value = data.result.age;
+
+                switch (data.result.gender) {
+                    case 'MAN': gender.options[0].text = '남자'; break;
+                    case 'FEMALE': gender.options[1].text = '여자'; break;
+                }
+                introduction.value = data.result.introduction;
+            }).catch(error => console.log(error));
+        }
 
         let formData = new FormData();
         document.getElementById('formFileInput').addEventListener('change', function(event) {
@@ -68,6 +105,7 @@
         });
 
         async function getS3ProfileImageUrl() {
+            if (!formData.has('file')) return imageUrl;
             let s3ImageUrl = null;
             /**
              * @TODO 프로필 사진 업로드 API 호출
@@ -87,11 +125,6 @@
         }
 
         async function nextJoin() {
-            const name = document.getElementById('name-input');
-            const age = document.getElementById('age-input');
-            const gender = document.getElementById('gender-input');
-            const introduction = document.getElementById('introduction-input');
-
             if(name.value === '' || age.value === '') {
                 alert('필수 입력 항목을 확인해주세요');
                 return;
