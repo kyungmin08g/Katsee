@@ -43,7 +43,7 @@ public class SecurityConfig {
         "/detail-6", "/detail-7", "/detail-8", "/", "/notice",
         "/notice/detail/**", "/recommend", "/friend/detail/**", "/request/list",
         "/friend/detail/**", "/admin", "/admin/notice/", "/admin/notice/detail/**",
-        "/admin/notice/update/**"
+        "/admin/notice/update/**", "/admin/notice/create"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리

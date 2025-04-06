@@ -133,4 +133,9 @@ public class ViewController {
     model.addAttribute("noticeId", noticeId);
     return "admin/AdminNoticeModify";
   }
+
+  @GetMapping(value = "/admin/notice/create")
+  public String noticeCreatePage() {
+    return "admin/AdminNoticeRegister";
+  }
 }
