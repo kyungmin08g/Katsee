@@ -152,7 +152,6 @@ public class MemberService {
           ages.add(Integer.parseInt(member.getAge()));
         }
       });
-      System.out.println(ages);
 
       // 주요 연령대 구하기
       Set<Integer> set = new HashSet<>(ages);

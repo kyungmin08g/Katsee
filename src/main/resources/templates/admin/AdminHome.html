@@ -21,11 +21,11 @@
             <div class="matches-stats">
                 <div class="stats-box">
                     <div class="stats-label">전체 사용자</div>
-                    <div class="stats-value" id="stats-value">134명</div>
+                    <div class="stats-value" id="stats-value">-</div>
                 </div>
                 <div class="stats-box">
                     <div class="stats-label">주요 연령대</div>
-                    <div class="stats-value blue-text" id="blue-text">20대</div>
+                    <div class="stats-value blue-text" id="blue-text">-</div>
                 </div>
             </div>
         </div>
@@ -45,6 +45,7 @@
     <script>
         const token = window.localStorage.getItem('AT');
 
+        data();
         function data() {
             const statsValue = document.getElementById('stats-value');
             const blueText = document.getElementById('blue-text');
@@ -58,14 +59,11 @@
                     'Authorization': `Bearer ${token}`
                 }
             }).then(response => response.json()).then(data => {
-                console.log(data.result);
+                console.log(data);
+                statsValue.textContent = `${data.result.allUsers}명`;
+                blueText.textContent = `${data.result.age}대`;
             }).catch(error => console.log(error));
-
-            console.log('데이터 호출 성공');
-            // statsValue.innerText = '134명';
-            // blueText.innerText = '20대';
         }
-        data();
     </script>
 </body>
 </html>
