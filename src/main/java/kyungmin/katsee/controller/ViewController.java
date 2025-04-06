@@ -27,13 +27,15 @@ public class ViewController {
     return "/user/JoinFirst";
   }
 
-  @GetMapping(value = "/join-2")
-  public String secondJoinPage() {
+  @GetMapping(value = "/join-2/{id}")
+  public String secondJoinPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/JoinSecond";
   }
 
-  @GetMapping(value = "/join-3")
-  public String thirdJoinPage() {
+  @GetMapping(value = "/join-3/{id}")
+  public String thirdJoinPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/JoinThird";
   }
 
@@ -42,43 +44,51 @@ public class ViewController {
     return "/user/MyPage";
   }
 
-  @GetMapping(value = "/detail-1")
-  public String detailFirstPage() {
+  @GetMapping(value = "/detail-1/{id}")
+  public String detailFirstPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberFirstDetails";
   }
 
-  @GetMapping(value = "/detail-2")
-  public String detailSecondPage() {
+  @GetMapping(value = "/detail-2/{id}")
+  public String detailSecondPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberSecondDetails";
   }
 
-  @GetMapping(value = "/detail-3")
-  public String detailThirdPage() {
+  @GetMapping(value = "/detail-3/{id}")
+  public String detailThirdPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberThirdDetails";
   }
 
-  @GetMapping(value = "/detail-4")
-  public String detailFourthPage() {
+  @GetMapping(value = "/detail-4/{id}")
+  public String detailFourthPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberFourthDetails";
   }
 
-  @GetMapping(value = "/detail-5")
-  public String detailFifthPage() {
+  @GetMapping(value = "/detail-5/{id}")
+  public String detailFifthPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberFifthDetails";
   }
 
-  @GetMapping(value = "/detail-6")
-  public String detailSixthPage() {
+  @GetMapping(value = "/detail-6/{id}")
+  public String detailSixthPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberSixthDetails";
   }
 
-  @GetMapping(value = "/detail-7")
-  public String detailSeventhPage() {
+  @GetMapping(value = "/detail-7/{id}")
+  public String detailSeventhPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberSeventhDetails";
   }
 
-  @GetMapping(value = "/detail-8")
-  public String detailEighthPage() {
+  @GetMapping(value = "/detail-8/{id}")
+  public String detailEighthPage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
     return "/user/MemberEighthDetails";
   }
 
@@ -146,5 +156,16 @@ public class ViewController {
   @GetMapping(value = "/admin/notice/create")
   public String noticeCreatePage() {
     return "admin/AdminNoticeRegister";
+  }
+
+  @GetMapping(value = "/chat/list")
+  public String chatListPage() {
+    return "user/ChatList";
+  }
+
+  @GetMapping(value = "/member/detail/update/{id}")
+  public String memberDetailUpdatePage(@PathVariable("id") String memberId, Model model) {
+    model.addAttribute("memberId", memberId);
+    return "user/JoinSecond";
   }
 }

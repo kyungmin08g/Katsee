@@ -32,7 +32,9 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+
         let interestOptionData = null;
         function choice(option) {
             for(let i = 0; i < 8; i++) {
@@ -74,11 +76,11 @@
             }
 
             window.localStorage.setItem('isOffline', interestOptionData);
-            window.location.href = '/detail-7';
+            window.location.href = `/detail-7/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/detail-5';
+            window.location.href = `/detail-5/${memberId}`;
         }
     </script>
 </body>

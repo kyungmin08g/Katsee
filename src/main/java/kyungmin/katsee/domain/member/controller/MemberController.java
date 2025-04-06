@@ -84,7 +84,6 @@ public class MemberController {
     return ApiResponse.onSuccess(memberService.allMembers());
   }
 
-  // 전체 사용자/주요 연령대 조회 API
   @GetMapping(value = "/admin/statistics")
   @Operation(description = "전체 사용자 & 주요 연령대 조회")
   public ApiResponse<GetAdminStatisticsResponse> members() {

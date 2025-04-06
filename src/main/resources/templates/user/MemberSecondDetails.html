@@ -36,7 +36,9 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+
         let data = [];
         function choice(option) {
             let isDedication = false;
@@ -85,11 +87,11 @@
             }
 
             window.localStorage.setItem('talkStyle', JSON.stringify({data}));
-            window.location.href = '/detail-3';
+            window.location.href = `/detail-3/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/detail-1';
+            window.location.href = `/detail-1/${memberId}`;
         }
     </script>
 </body>

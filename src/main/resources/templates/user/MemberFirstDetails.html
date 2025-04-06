@@ -49,7 +49,9 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+
         let data = [];
         function choice(option) {
             let isDedication = false;
@@ -98,11 +100,12 @@
             }
 
             window.localStorage.setItem('personality', JSON.stringify({data}));
-            window.location.href = '/detail-2';
+            window.location.href = `/detail-2/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/my';
+            if (memberId === 'null' || memberId === null) window.location.href = '/my';
+            else window.location.href = `/join-3/${memberId}`;
         }
     </script>
 </body>

@@ -50,7 +50,12 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+        const progress = document.getElementById('progress');
+        if (memberId === 'null' || memberId === null) progress.value = '60';
+        else progress.value = '8';
+
         let formData = new FormData();
         document.getElementById('formFileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -110,11 +115,12 @@
                 gender: genderEnumValue,
                 introduction: introduction.value
             }));
-            window.location.href = '/join-3';
+            window.location.href = `/join-3/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/join-1';
+            if (memberId === 'null' || memberId === null) window.location.href = '/join-1';
+            else window.location.href = '/my';
         }
     </script>
 </body>

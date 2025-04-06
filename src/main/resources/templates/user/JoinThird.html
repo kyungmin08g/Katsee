@@ -62,11 +62,20 @@
 
         <div class="button-container">
             <button class="prev-button" onclick="prevPage()">이전</button>
-            <button class="next-button" onclick="nextJoin()">회원가입 완료</button>
+            <button class="next-button" onclick="nextJoin()" id="next-button">회원가입 완료</button>
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+        const progress = document.getElementById('progress');
+        if (memberId === 'null' || memberId === null) progress.value = '90';
+        else {
+            const nextButton = document.getElementById('next-button');
+            nextButton.textContent = '다음';
+            progress.value = '18';
+        }
+
         let data = [];
         function choice(option) {
             let isDedication = false;
@@ -137,8 +146,10 @@
             count.forEach((i, j) => {
                 switch(j) {
                     case 0: {
-                        requestBody.memberId = singleDataParse('firstData').memberId;
-                        requestBody.password = singleDataParse('firstData').password;
+                        if (memberId === 'null' || memberId === null) {
+                            requestBody.memberId = singleDataParse('firstData').memberId;
+                            requestBody.password = singleDataParse('firstData').password;
+                        }
                     } break;
                     case 1: {
                         requestBody.profileUrl = singleDataParse('secondData').profileUrl;
@@ -167,27 +178,30 @@
                 }
             });
 
-            /**
-             * 회원 등록 API 호출
-             */
-            await fetch('/member/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                contentType: 'application/json',
-                body: JSON.stringify(requestBody)
-            }).then(response => response.json()).then(data => {
-                console.log(data);
-                count.forEach(value => {
-                    window.localStorage.removeItem(value);
-                    window.localStorage.removeItem(value);
-                    window.localStorage.removeItem(value);
-                });
-                window.location.href = '/login';
-            }).catch(error => console.log(error));
+            if (memberId === 'null' || memberId === null) {
+                /**
+                 * 회원 등록 API 호출
+                 */
+                await fetch('/member/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    contentType: 'application/json',
+                    body: JSON.stringify(requestBody)
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    count.forEach(value => {
+                        window.localStorage.removeItem(value);
+                        window.localStorage.removeItem(value);
+                        window.localStorage.removeItem(value);
+                    });
+                    window.location.href = '/login';
+                }).catch(error => console.log(error));
+            } else window.location.href = `/detail-1/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/join-2';
+            if (memberId === 'null' || memberId === null) window.location.href = `/join-2/null`;
+            else window.location.href = `/join-2/${memberId}`;
         }
     </script>
 </body>

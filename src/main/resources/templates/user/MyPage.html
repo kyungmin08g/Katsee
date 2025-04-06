@@ -38,7 +38,7 @@
             <img src="/images/Home.png" alt="" class="icon">
             홈
         </a>
-        <a href="/ChattingList.html" class="nav-item">
+        <a href="/chat/list" class="nav-item">
             <img src="/images/Chat.png" alt="" class="icon">
             채팅
         </a>
@@ -111,10 +111,7 @@
             editLink.href = '#';
             editLink.className = 'super-match';
             editLink.textContent = '수정';
-            editLink.onclick = function() {
-                memberInforModify();
-                return false;
-            };
+            editLink.onclick = function() { window.location.href = `/member/detail/update/${date.result.memberId}`; };
             userNameDiv.appendChild(editLink);
 
             const userBioDiv = document.createElement('div');
@@ -337,11 +334,7 @@
         }
 
         function registerMemberDetail() {
-            window.location.href = '/detail-1';
-        }
-
-        function memberInforModify() {
-            window.location.href = '/MemberInforModify1.html';
+            window.location.href = '/detail-1/null';
         }
 
         function noticePage() {

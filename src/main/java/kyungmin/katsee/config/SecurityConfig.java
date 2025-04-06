@@ -38,12 +38,12 @@ public class SecurityConfig {
       )
       .permitAll()
       .requestMatchers( // 화면 관련 엔드포인트 처리
-        "/join-1", "join-2", "join-3", "/my", "/detail-1",
-        "/detail-2", "/detail-3", "/detail-4", "/detail-5",
-        "/detail-6", "/detail-7", "/detail-8", "/", "/notice",
+        "/join-1", "/join-2/**", "/join-3/**", "/join-3/**", "/my", "/detail-1/**",
+        "/detail-2/**", "/detail-3/**", "/detail-4/**", "/detail-5/**",
+        "/detail-6/**", "/detail-7/**", "/detail-8/**", "/", "/notice",
         "/notice/detail/**", "/recommend", "/friend/detail/**", "/request/list",
         "/friend/detail/**", "/admin", "/admin/notice/", "/admin/notice/detail/**",
-        "/admin/notice/update/**", "/admin/notice/create"
+        "/admin/notice/update/**", "/admin/notice/create", "/chat/list", "/member/detail/update/**"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리

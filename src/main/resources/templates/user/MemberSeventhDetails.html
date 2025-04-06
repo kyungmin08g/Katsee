@@ -39,7 +39,9 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+
         const token = window.localStorage.getItem('AT');
         let interest = '';
         let memberInfor = null;
@@ -153,11 +155,11 @@
             }
 
             window.localStorage.setItem('interestPreferences', interestOptionData);
-            window.location.href = '/detail-8';
+            window.location.href = `/detail-8/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/detail-6';
+            window.location.href = `/detail-6/${memberId}`;
         }
     </script>
 </body>

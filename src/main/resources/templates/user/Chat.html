@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/user/Chat.css">
+    <link rel="stylesheet" type="text/css" href="/user/Chat.css">
 </head>
 <body>
     <div class="chat-container">
         <div class="header">
-            <a href="/ChattingList.html" class="back-button">&#10094;</a>
+            <a href="/chat/list" class="back-button">&#10094;</a>
             <div class="profile-pic">
-                <img src="/static/images/ProfileImage.png" alt="profile-icon">
+                <img src="/images/ProfileImage.png" alt="profile-icon">
             </div>
             <div class="user-name">홍길동</div>
         </div>
@@ -21,7 +21,7 @@
         <div class="message-input-container">
             <input type="text" class="message-input" id="message-input" placeholder="메시지를 입력해주세요">
             <a href="#" class="send-button" onclick="send()">
-                <img src="/static/images/Send.png" alt="send" class="send">
+                <img src="/images/Send.png" alt="send" class="send">
             </a>
         </div>
     </div>
@@ -34,7 +34,7 @@
                 contentId: 1,
                 member: {
                     id: 'test1',
-                    profileUrl: '/static/images/ProfileImage.png',
+                    profileUrl: '/images/ProfileImage.png',
                     name: '홍길동',
                     age: 18,
                     gender: '남',
@@ -49,7 +49,7 @@
                 contentId: 2,
                 member: {
                     id: 'test2',
-                    profileUrl: '/static/images/ProfileImage.png',
+                    profileUrl: '/images/ProfileImage.png',
                     name: '남길동',
                     age: 20,
                     gender: '남',
@@ -64,7 +64,7 @@
                 contentId: 1,
                 member: {
                     id: 'test1',
-                    profileUrl: '/static/images/ProfileImage.png',
+                    profileUrl: '/images/ProfileImage.png',
                     name: '홍길동',
                     age: 18,
                     gender: '남',
@@ -88,7 +88,7 @@
                 contentId: 2,
                 member: {
                     id: 'test2',
-                    profileUrl: '/static/images/ProfileImage.png',
+                    profileUrl: '/images/ProfileImage.png',
                     name: '남길동',
                     age: 20,
                     gender: '남',
