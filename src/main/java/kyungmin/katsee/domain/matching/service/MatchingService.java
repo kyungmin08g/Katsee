@@ -164,18 +164,17 @@ public class MatchingService {
     AtomicBoolean duplicate = new AtomicBoolean(false);
     friend.forEach(matching -> {
       System.out.println("회원 ID: " + matching.getFriend().getMemberId() + ", 친구 ID: " + matching.getMember().getMemberId());
-      System.out.println(matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId()));
-      if (!matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
-        System.out.println("0.2 => " + matching.getFriend().getMemberId());
-        duplicate.set(false);
-      } else if (matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
-        System.out.println("0.2 => " + matching.getFriend().getMemberId());
-        duplicate.set(true);
-      } else if (matching.getFriend().getMemberId().equals(friendId)) {
+      if (matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
         System.out.println("1 => " + matching.getFriend().getMemberId());
         duplicate.set(true);
+      } if (!matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
+        System.out.println("2 => " + matching.getFriend().getMemberId());
+        duplicate.set(true);
+      } else if (matching.getFriend().getMemberId().equals(friendId)) {
+        System.out.println("3 => " + matching.getFriend().getMemberId());
+        duplicate.set(true);
       }else if (!matching.getMember().getMemberId().equals(friendId)) {
-        System.out.println("2 => " + matching.getMember().getMemberId());
+        System.out.println("4 => " + matching.getMember().getMemberId());
         duplicate.set(false);
       }
     });

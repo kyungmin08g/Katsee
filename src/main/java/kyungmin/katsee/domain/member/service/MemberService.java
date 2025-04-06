@@ -7,17 +7,20 @@ import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.controller.request.MemberCreateRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberDetailRequest;
 import kyungmin.katsee.domain.member.controller.request.UpdateDetailRequest;
+import kyungmin.katsee.domain.member.controller.response.GetAdminStatisticsResponse;
 import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
 import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
 import kyungmin.katsee.domain.member.enums.Interest;
+import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.*;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -132,5 +135,48 @@ public class MemberService {
     }
 
     return responseMembers;
+  }
+
+  public GetAdminStatisticsResponse getAdminStatistics() {
+    Member admin = memberRepository.findById(SecurityUtil.authMemberId())
+      .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
+
+    AtomicInteger count = new AtomicInteger();
+    Integer age = 0;
+    List<Integer> ages = new ArrayList<>();
+    if (admin.getRole().equals(Role.ADMIN)) {
+      // 전체 사용자 구하기
+      memberRepository.findAll().forEach(member -> {
+        if (!member.getRole().equals(Role.ADMIN)) { // 관리자는 무시
+          count.getAndIncrement();
+          ages.add(Integer.parseInt(member.getAge()));
+        }
+      });
+      System.out.println(ages);
+
+      // 주요 연령대 구하기
+      Set<Integer> set = new HashSet<>(ages);
+      Map<Integer, Integer> map = new HashMap<>();
+      set.forEach(a -> {
+        int sumCount = 0;
+        for (int i = 0; i < ages.size(); i++) {
+          if (ages.get(i).equals(a)) {
+            sumCount++;
+          }
+        }
+        map.put(sumCount, a);
+      });
+
+      Integer max = Arrays.stream(map.keySet().toArray(new Integer[0]))
+        .mapToInt(v -> v)
+        .max()
+        .orElse(0);
+      age = map.get(max);
+    } else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
+
+    return GetAdminStatisticsResponse.builder()
+      .allUsers(count.get())
+      .age(age)
+      .build();
   }
 }

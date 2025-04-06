@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/admin/AdminHome.css">
+    <link rel="stylesheet" type="text/css" href="/admin/AdminHome.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="logo">홈</div>
             <div class="greeting">반가워요, 관리자 님! 🎉</div>
-            <a href="/AdminNotice.html" class="notification">
+            <a href="/admin" class="notification">
                 <img src="/images/Bell.png" alt="bell" class="bell-icon">
             </a>
         </div>
@@ -31,7 +31,7 @@
         </div>
 
         <div class="navigation">
-            <a href="/AdminHome.html" class="nav-item active">
+            <a href="/admin" class="nav-item active">
                 <img src="/images/home1.png" alt="" class="icon">
                 홈
             </a>
@@ -43,12 +43,23 @@
     </div>
 
     <script>
+        const token = window.localStorage.getItem('AT');
+
         function data() {
             const statsValue = document.getElementById('stats-value');
             const blueText = document.getElementById('blue-text');
             /**
              * @TODO 전체 사용자/주요 연령대 조회 API 호출
              */
+            fetch('/admin/statistics', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+            }).catch(error => console.log(error));
 
             console.log('데이터 호출 성공');
             // statsValue.innerText = '134명';

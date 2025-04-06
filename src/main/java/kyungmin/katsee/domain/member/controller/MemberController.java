@@ -6,10 +6,7 @@ import kyungmin.katsee.api_response.ApiResponse;
 import kyungmin.katsee.domain.member.controller.request.MemberDetailRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberCreateRequest;
 import kyungmin.katsee.domain.member.controller.request.UpdateDetailRequest;
-import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
-import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
-import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
-import kyungmin.katsee.domain.member.controller.response.GetRecommendFriendResponse;
+import kyungmin.katsee.domain.member.controller.response.*;
 import kyungmin.katsee.domain.member.service.MemberService;
 import kyungmin.katsee.domain.member.service.RecommendFriendService;
 import lombok.RequiredArgsConstructor;
@@ -85,5 +82,12 @@ public class MemberController {
   @Operation(description = "모든 회원 조회")
   public ApiResponse<List<GetMemberResponse>> allMembers() {
     return ApiResponse.onSuccess(memberService.allMembers());
+  }
+
+  // 전체 사용자/주요 연령대 조회 API
+  @GetMapping(value = "/admin/statistics")
+  @Operation(description = "전체 사용자 & 주요 연령대 조회")
+  public ApiResponse<GetAdminStatisticsResponse> members() {
+    return ApiResponse.onSuccess(memberService.getAdminStatistics());
   }
 }

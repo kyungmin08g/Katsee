@@ -45,14 +45,15 @@
                 }
             }).then(data => {
                 window.localStorage.setItem('AT', data);
-                userId.value = '';
-                password.value = '';
             }).catch(error => {
                 console.log(error);
                 alert('아이디나 비밀번호가 다릅니다.');
             });
 
-            window.location.href = '/';
+            if (userId.value === 'admin') window.location.href = '/admin';
+            else window.location.href = '/';
+            userId.value = '';
+            password.value = '';
         }
 
         function changeJoinPage() {

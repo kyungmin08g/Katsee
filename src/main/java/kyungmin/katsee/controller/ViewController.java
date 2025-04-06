@@ -111,4 +111,9 @@ public class ViewController {
     model.addAttribute("friendId", friendId);
     return "user/FriendRequestDetails";
   }
+
+  @GetMapping(value = "/admin")
+  public String adminPage() {
+    return "admin/AdminHome";
+  }
 }
