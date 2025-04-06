@@ -11,7 +11,7 @@
         <div class="header">
             <div class="logo">홈</div>
             <div class="greeting">반가워요, 관리자 님! 🎉</div>
-            <a href="/admin" class="notification">
+            <a href="/admin/notice" class="notification">
                 <img src="/images/Bell.png" alt="bell" class="bell-icon">
             </a>
         </div>
@@ -61,7 +61,7 @@
             }).then(response => response.json()).then(data => {
                 console.log(data);
                 statsValue.textContent = `${data.result.allUsers}명`;
-                blueText.textContent = `${data.result.age}대`;
+                blueText.textContent = `${data.result.age}세`;
             }).catch(error => console.log(error));
         }
     </script>

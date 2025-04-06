@@ -2,6 +2,9 @@ package kyungmin.katsee.domain.notice.service;
 
 import kyungmin.katsee.api_response.exception.GeneralException;
 import kyungmin.katsee.api_response.status.ErrorStatus;
+import kyungmin.katsee.domain.comments.Comments;
+import kyungmin.katsee.domain.comments.controller.response.GetCommentListResponse;
+import kyungmin.katsee.domain.comments.repository.CommentsRepository;
 import kyungmin.katsee.domain.member.Member;
 import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
@@ -22,6 +25,7 @@ import java.util.List;
 public class NoticeService {
   private final NoticeRepository noticeRepository;
   private final MemberRepository memberRepository;
+  private final CommentsRepository commentsRepository;
 
   public void createNotice(CreateNoticeRequest request) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
@@ -93,8 +97,14 @@ public class NoticeService {
     Notice notice = noticeRepository.findById(Long.parseLong(noticeId))
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST));
 
-    if (notice.getMember().getRole().equals(Role.ADMIN))
+    if (notice.getMember().getRole().equals(Role.ADMIN)) {
+      List<Comments> comments = commentsRepository.findAll().stream()
+        .filter(c ->
+          c.getNotice().getId().equals(Long.parseLong(noticeId))
+        ).toList();
+
+      comments.forEach(comment -> commentsRepository.deleteById(comment.getId()));
       noticeRepository.deleteById(notice.getId());
-    else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
+    } else throw new GeneralException(ErrorStatus.UNAUTHORIZED, "관리자가 아닙니다.");
   }
 }

@@ -202,6 +202,17 @@
             /**
              * @TODO 공지 삭제 API 호출
              */
+            fetch(`/notice/delete/${noticeId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            }).catch(error => console.log(error));
+
+            window.location.href = `/admin/notice`;
         }
     </script>
 </body>
