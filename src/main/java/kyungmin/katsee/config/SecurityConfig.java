@@ -41,7 +41,8 @@ public class SecurityConfig {
         "/join-1", "join-2", "join-3", "/my", "/detail-1",
         "/detail-2", "/detail-3", "/detail-4", "/detail-5",
         "/detail-6", "/detail-7", "/detail-8", "/", "/notice",
-        "/notice/detail/**", "/recommend", "/friend/detail/**"
+        "/notice/detail/**", "/recommend", "/friend/detail/**", "/request/list",
+        "/friend/detail/**"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리

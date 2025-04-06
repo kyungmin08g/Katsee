@@ -131,7 +131,7 @@ html, body {
 }
 
 .detail-btn {
-    margin-top: 56px;
+    margin-top: 86px;
     background-color: #6CA5FF;
     color: white;
     border: none;
@@ -139,6 +139,7 @@ html, body {
     padding: 8px 22px;
     font-size: 14px;
     cursor: pointer;
+    margin-right: 8px;
 }
 
 .navigation {
@@ -187,6 +188,7 @@ html, body {
 
 .interest {
     color: #6CA5FF;
+    font-size: 14px;
 }
 
 .icon {

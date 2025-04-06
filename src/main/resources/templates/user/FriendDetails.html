@@ -206,6 +206,8 @@
                 introduction.textContent = data.result.introduction;
                 matchPercentage.textContent = `${fitness}%`;
                 matchText.textContent = `추천 적합도 ${fitness}%`;
+
+                // 회원 상세 정보
                 getFriendDetailEnum(data);
 
                 if (fitness >= 50 && fitness < 60) {
@@ -222,22 +224,33 @@
             }).catch(error => console.log(error));
         }
 
-        function request() {
-            /**
-             * @TODO 매칭 요청 API 호출
-             */
-            fetch(`/matching/request?friendId=${friendId}`, {
-                method: 'POST',
+        async function request() {
+            await fetch(`/matching/status/duplicate?friendId=${friendId}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
-            }).then(response => response.json()).then((data) => {
+            }).then(response => response.json()).then(data => {
                 console.log(data.result);
-            }).catch(error => console.log(error));
+                if (!data.result) {
+                    /**
+                     * @TODO 매칭 요청 API 호출
+                     */
+                    fetch(`/matching/request?friendId=${friendId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(response => response.json()).then((data) => {
+                        console.log(data.result);
+                    }).catch(error => console.log(error));
 
-            alert('요청을 보냈습니다');
-            window.location.href = '/recommend';
+                    alert('요청을 보냈습니다');
+                    window.location.href = '/recommend';
+                } else alert('이미 친구입니다.');
+            }).catch(error => console.log(error));
         }
     </script>
 </body>

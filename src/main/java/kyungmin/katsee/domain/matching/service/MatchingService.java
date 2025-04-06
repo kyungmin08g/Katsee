@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -88,6 +89,26 @@ public class MatchingService {
   public List<GetMemberResponse> getFriends() {
     List<GetMemberResponse> friends = new ArrayList<>();
     List<Matching> friend = matchingRepository.getFriends(SecurityUtil.authMemberId());
+    List<Matching> member = matchingRepository.getFriendByFriendId(SecurityUtil.authMemberId());
+
+    member.forEach(m -> {
+      friends.add(
+        GetMemberResponse.builder()
+          .memberId(m.getMember().getMemberId())
+          .profileUrl(m.getMember().getProfileUrl())
+          .nickName(m.getMember().getNickName())
+          .age(m.getMember().getAge())
+          .gender(m.getMember().getGender().value)
+          .introduction(m.getMember().getIntroduction())
+          .interests(
+            m.getMember().getInterest().stream()
+              .flatMap(i ->
+                Stream.of(Interest.values()).filter(f -> f.equals(i.getInterest()))
+              ).toList()
+          ).build()
+      );
+    });
+
     friend.forEach(matching -> {
       friends.add(
         GetMemberResponse.builder()
@@ -107,5 +128,57 @@ public class MatchingService {
     });
 
     return friends;
+  }
+
+  public List<GetMemberResponse> getRequestFriends() {
+    List<GetMemberResponse> requestFriends = new ArrayList<>();
+    List<Matching> request = matchingRepository.getRequestFriends();
+    request.forEach(matching -> {
+      System.out.println(matching.getMember().getMemberId());
+      if (!matching.getMember().getMemberId().equals(SecurityUtil.authMemberId())) {
+        requestFriends.add(
+          GetMemberResponse.builder()
+            .memberId(matching.getMember().getMemberId())
+            .profileUrl(matching.getMember().getProfileUrl())
+            .nickName(matching.getMember().getNickName())
+            .age(matching.getMember().getAge())
+            .gender(matching.getMember().getGender().value)
+            .introduction(matching.getMember().getIntroduction())
+            .interests(
+              matching.getMember().getInterest().stream()
+                .flatMap(i ->
+                  Stream.of(Interest.values()).filter(f -> f.equals(i.getInterest()))
+                ).toList()
+            ).build()
+        );
+      }
+    });
+
+    return requestFriends;
+  }
+
+  public boolean matchingStatusDuplicate(String friendId) {
+    List<Matching> friend = matchingRepository.matchingStatusDuplicate(friendId);
+    if (friend.isEmpty()) return false;
+
+    AtomicBoolean duplicate = new AtomicBoolean(false);
+    friend.forEach(matching -> {
+      System.out.println("회원 ID: " + matching.getFriend().getMemberId() + ", 친구 ID: " + matching.getMember().getMemberId());
+      System.out.println(matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId()));
+      if (!matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
+        System.out.println("0.2 => " + matching.getFriend().getMemberId());
+        duplicate.set(false);
+      } else if (matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
+        System.out.println("0.2 => " + matching.getFriend().getMemberId());
+        duplicate.set(true);
+      } else if (matching.getFriend().getMemberId().equals(friendId)) {
+        System.out.println("1 => " + matching.getFriend().getMemberId());
+        duplicate.set(true);
+      }else if (!matching.getMember().getMemberId().equals(friendId)) {
+        System.out.println("2 => " + matching.getMember().getMemberId());
+        duplicate.set(false);
+      }
+    });
+    return duplicate.get();
   }
 }

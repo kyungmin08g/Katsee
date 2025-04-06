@@ -100,4 +100,15 @@ public class ViewController {
     model.addAttribute("fitness", fitness);
     return "user/FriendDetails";
   }
+
+  @GetMapping(value = "/request/list")
+  public String requestListPage() {
+    return "/user/FriendRequestList";
+  }
+
+  @GetMapping(value = "/friend/detail/{id}")
+  public String friendDetailPage(@PathVariable("id") String friendId, Model model) {
+    model.addAttribute("friendId", friendId);
+    return "user/FriendRequestDetails";
+  }
 }

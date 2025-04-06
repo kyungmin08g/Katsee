@@ -47,8 +47,20 @@ public class MatchingController {
   }
 
   @GetMapping(value = "/friends")
-  @Operation(description = "친구 상태 목록 조회")
+  @Operation(description = "친구 목록 조회")
   public ApiResponse<List<GetMemberResponse>> getFriends() {
     return ApiResponse.onSuccess(matchingService.getFriends());
+  }
+
+  @GetMapping(value = "/status/duplicate")
+  @Operation(description = "이미 친구 상태인지 확인")
+  public ApiResponse<Boolean> matchStatusDuplicate(@RequestParam String friendId) {
+    return ApiResponse.onSuccess(matchingService.matchingStatusDuplicate(friendId));
+  }
+
+  @GetMapping(value = "/request/friends")
+  @Operation(description = "요청 대기 중인 목록 조회")
+  public ApiResponse<List<GetMemberResponse>> getRequestFriends() {
+    return ApiResponse.onSuccess(matchingService.getRequestFriends());
   }
 }
