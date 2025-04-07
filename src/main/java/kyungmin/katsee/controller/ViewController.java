@@ -168,4 +168,17 @@ public class ViewController {
     model.addAttribute("memberId", memberId);
     return "user/JoinSecond";
   }
+
+  @GetMapping(value = "/chat/content/{roomId}/{friendId}/{memberId}")
+  public String chattingPage(
+    @PathVariable("roomId") String roomId,
+    @PathVariable("friendId") String friendId,
+    @PathVariable("memberId") String memberId,
+    Model model
+  ) {
+    model.addAttribute("roomId", roomId);
+    model.addAttribute("friendId", friendId);
+    model.addAttribute("memberId", memberId);
+    return "user/Chat";
+  }
 }

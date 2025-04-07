@@ -12,6 +12,7 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,14 +46,14 @@ public class ChatController {
     return ApiResponse.onSuccess();
   }
 
-  @MessageMapping(value = "/send/{roomId}")
-  public ApiResponse<Void> saveChatContent(@DestinationVariable("roomId") String roomId, SaveContentRequest request) {
-    chatService.saveChattingContent(request);
+  @MessageMapping(value = "/{roomId}/{memberId}")
+  public ApiResponse<Void> saveChatContent(@DestinationVariable("roomId") String roomId, @DestinationVariable("memberId") String memberId, SaveContentRequest request) {
+    chatService.saveChattingContent(request, memberId);
     messagingTemplate.convertAndSend(
       "/sub/room/" + roomId,
       GetChatResponse.builder()
         .roomId(Long.parseLong(request.roomId()))
-        .memberId(SecurityUtil.authMemberId())
+        .memberId(memberId)
         .content(request.chatContent())
         .build()
     );

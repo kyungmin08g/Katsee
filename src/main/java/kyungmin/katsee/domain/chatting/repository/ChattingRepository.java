@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static kyungmin.katsee.domain.chatting.QChatContent.chatContent;
+import static kyungmin.katsee.domain.chatting.QChatting.chatting;
 
 @Repository
 @RequiredArgsConstructor

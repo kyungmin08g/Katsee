@@ -301,6 +301,21 @@
                 const detailBtn = document.createElement('button');
                 detailBtn.className = 'detail-btn';
                 detailBtn.textContent = '채팅하기';
+                detailBtn.onclick = () => {
+                    /**
+                     * @TODO 채팅방 생성 API 호출
+                     */
+                    fetch(`/chat/create?friendId=${data.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(response => response.json()).then(data => {
+                        console.log(data);
+                        window.location.href = '/chat/list';
+                    }).catch(error => console.log(error));
+                };
 
                 matchButtonDiv.appendChild(detailBtn);
 

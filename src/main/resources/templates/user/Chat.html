@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/user/Chat.css">
 </head>
 <body>
@@ -11,142 +13,182 @@
         <div class="header">
             <a href="/chat/list" class="back-button">&#10094;</a>
             <div class="profile-pic">
-                <img src="/images/ProfileImage.png" alt="profile-icon">
+                <img src="/images/ProfileImage.png" alt="profile-icon" id="profile">
             </div>
-            <div class="user-name">홍길동</div>
+            <div class="user-name" id="nick-name">-</div>
         </div>
 
         <div class="messages" id="messages"></div>
 
         <div class="message-input-container">
             <input type="text" class="message-input" id="message-input" placeholder="메시지를 입력해주세요">
-            <a href="#" class="send-button" onclick="send()">
+            <a href="#" class="send-button" onclick="sendMessage()">
                 <img src="/images/Send.png" alt="send" class="send">
             </a>
         </div>
     </div>
 
-    <script>
-        // 테스트 초기 데이터
-        let chatList = [
-            {
-                chattingId: 1,
-                contentId: 1,
-                member: {
-                    id: 'test1',
-                    profileUrl: '/images/ProfileImage.png',
-                    name: '홍길동',
-                    age: 18,
-                    gender: '남',
-                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
-                    interest: 'IT',
-                },
-                content: '네^^ 반갑습니다!',
-                createAt: '2025.03.27'
-            },
-            {
-                chattingId: 1,
-                contentId: 2,
-                member: {
-                    id: 'test2',
-                    profileUrl: '/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
-                    interest: 'IT',
-                },
-                content: '안녕하세요! 김경민입니다!',
-                createAt: '2025.03.28'
-            },
-            {
-                chattingId: 1,
-                contentId: 1,
-                member: {
-                    id: 'test1',
-                    profileUrl: '/images/ProfileImage.png',
-                    name: '홍길동',
-                    age: 18,
-                    gender: '남',
-                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
-                    interest: 'IT',
-                },
-                content: '찾고 있었어요ㅠㅠ',
-                createAt: '2025.03.28'
-            }
-        ];
+    <script th:inline="javascript">
+        const token = window.localStorage.getItem('AT');
+        const friendId = [[${friendId}]];
+        const memberId = [[${memberId}]];
+        const roomId = [[${roomId}]];
+        const profileImage = document.getElementById('profile');
+        const nickName = document.getElementById('nick-name');
 
-        // 백엔드에서 나중에 아래처럼 구성하면됨.
-        function memberData() {
+        let chatList = [];
+        let memberJson = {};
+        let friendProfileImage = null;
+        let stompClient = null;
+
+        data()
+        async function data() {
+            /**
+             * @TODO 회원 조회 API 호출
+             */
+            await fetch(`/member/${friendId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                memberJson = {
+                    memberId: data.result.memberId,
+                    profileUrl: data.result.profileUrl,
+                    name: data.result.nickName
+                };
+                console.log(memberJson);
+                profileImage.src = data.result.profileUrl;
+                nickName.textContent = data.result.nickName;
+            }).catch(error => console.log(error));
+
+            await fetch(`/member/${memberId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                friendProfileImage = data.result.profileUrl;
+            }).catch(error => console.log(error));
+        }
+
+        connect();
+        function connect() {
+            const socket = new SockJS('/wss');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function() {
+                stompClient.subscribe(`/sub/room/${roomId}`, async function(message) {
+                    const data = JSON.parse(message.body);
+                    console.log(data);
+
+                    await fetch(`/member/${data.memberId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(response => response.json()).then(res => {
+                        console.log(res.result);
+                        let json = [{
+                            roomId: data.roomId,
+                            member: {
+                                memberId: res.result.memberId,
+                                profileUrl: res.result.profileUrl,
+                                name: res.result.nickName
+                            },
+                            content: data.content,
+                        }];
+                        chattingContents(json);
+                    }).catch(error => console.log(error));
+                });
+            });
+        }
+
+        setting();
+        async function setting() {
             /**
              * @TODO 채팅 내용 조회 API 호출
              */
-
-            // 예시
-            chatList.push({
-                chattingId: 1,
-                contentId: 2,
-                member: {
-                    id: 'test2',
-                    profileUrl: '/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 고등학생 백엔드 개발자입니다!',
-                    interest: 'IT',
-                },
-                content: '안녕하세요! 김경민입니다.',
-                createAt: '2025.03.28'
-            });
-        }
-
-        function chattingContents() {
-            const messages = document.getElementById('messages');
-
-            chatList.forEach((data, number) => {
-                switch(data.contentId) {
-                    case 1: {
-                        const messageRow = document.createElement('div');
-                        messageRow.className = 'message-row';
-
-                        const messageProfile = document.createElement('div');
-                        messageProfile.className = 'message-profile';
-
-                        const profileImg = document.createElement('img');
-                        profileImg.src = data.member.profileUrl;
-                        profileImg.alt = 'profile-icon';
-
-                        const messageContent = document.createElement('div');
-                        messageContent.className = 'message-content';
-
-                        const messageParagraph = document.createElement('p');
-                        messageParagraph.className = 'message received';
-                        messageParagraph.textContent = data.content;
-
-                        messageProfile.appendChild(profileImg);
-                        messageContent.appendChild(messageParagraph);
-                        messageRow.appendChild(messageProfile);
-                        messageRow.appendChild(messageContent);
-                        messages.appendChild(messageRow);
-                        break;
-                    };
-                    case 2: {
-                        const messages = document.getElementById('messages');
-                        const paragraph = document.createElement('p');
-                        paragraph.className = 'message sent';
-                        paragraph.textContent = data.content;
-                        messages.appendChild(paragraph);
-                        break;
-                    };
+            await fetch(`/chat/content/list?roomId=${roomId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-            });
+            }).then(response => response.json()).then(data => {
+                data.result.forEach(async (chat, number) => {
+                    await fetch(`/member/${chat.memberId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(response => response.json()).then(res => {
+                        let json = {
+                            roomId: chat.roomId,
+                            member: {
+                                memberId: chat.memberId,
+                                profileUrl: friendProfileImage,
+                                name: res.result.nickName
+                            },
+                            content: chat.content,
+                        };
+                        chatList.push(json);
+
+                        if (data.result.length - 1 === number) chattingContents(chatList);
+                    }).catch(error => console.log(error));
+                });
+            }).catch(error => console.log(error));
         }
 
-        chattingContents();
+        async function chattingContents(chatList) {
+            const messages = document.getElementById('messages');
+            for (const data of chatList) {
+                if (memberId === data.member.memberId) {
+                    const messages = document.getElementById('messages');
+                    const paragraph = document.createElement('p');
+                    paragraph.className = 'message sent';
+                    paragraph.textContent = data.content;
+                    messages.appendChild(paragraph);
+                } else {
+                    const messageRow = document.createElement('div');
+                    messageRow.className = 'message-row';
 
-        function send() {
+                    const messageProfile = document.createElement('div');
+                    messageProfile.className = 'message-profile';
+
+                    const profileImg = document.createElement('img');
+                    profileImg.src = data.member.profileUrl;
+                    profileImg.alt = 'profile-icon';
+
+                    const messageContent = document.createElement('div');
+                    messageContent.className = 'message-content';
+
+                    const messageParagraph = document.createElement('p');
+                    messageParagraph.className = 'message received';
+                    messageParagraph.textContent = data.content;
+
+                    messageProfile.appendChild(profileImg);
+                    messageContent.appendChild(messageParagraph);
+                    messageRow.appendChild(messageProfile);
+                    messageRow.appendChild(messageContent);
+                    messages.appendChild(messageRow);
+                }
+            }
+        }
+
+        function sendMessage() {
             const messageInput = document.getElementById('message-input');
             console.log(`Message: ${messageInput.value}`);
+
+            stompClient.send(`/send/${roomId}/${memberId}`, {}, JSON.stringify({
+                roomId: roomId,
+                chatContent: messageInput.value
+            }));
             messageInput.value = '';
         }
     </script>

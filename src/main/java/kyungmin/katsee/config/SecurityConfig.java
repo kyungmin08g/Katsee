@@ -33,7 +33,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(auth -> auth
       .requestMatchers(
         "/member/create", "/member/duplicate/**", "/login",
-        "/s3/upload", "/s3/delete", "/wss/**", "/send/**",
+        "/s3/upload", "/s3/delete", "/wss/**", "/chat/send/**",
         "/sub/**", "/admin/**", "/user/**", "/images/**"
       )
       .permitAll()
@@ -43,7 +43,8 @@ public class SecurityConfig {
         "/detail-6/**", "/detail-7/**", "/detail-8/**", "/", "/notice",
         "/notice/detail/**", "/recommend", "/friend/detail/**", "/request/list",
         "/friend/detail/**", "/admin", "/admin/notice/", "/admin/notice/detail/**",
-        "/admin/notice/update/**", "/admin/notice/create", "/chat/list", "/member/detail/update/**"
+        "/admin/notice/update/**", "/admin/notice/create", "/chat/list", "/member/detail/update/**",
+        "/chat/content/**"
       )
       .permitAll()
       .requestMatchers( // 테스트 관련 엔드포인트 처리
