@@ -163,8 +163,6 @@ public class RecommendFriendService {
       if (isRelationshipDepth) fitness += 2;
       else  if (fitness != 0) fitness -= 3;
 
-      System.out.println("친구 ID: " + friend.getMemberId() + ", 매칭 적합도: " + fitness);
-
       // 적합도 50 이하는 추천 목록에서 제거
       if (fitness > 50) {
         recommendFriends.add(
@@ -174,7 +172,7 @@ public class RecommendFriendService {
             .profileUrl(friend.getProfileUrl())
             .nickName(friend.getNickName())
             .age(friend.getAge())
-            .gender(friend.getGender())
+            .gender(friend.getGender().value)
             .introduction(friend.getIntroduction())
             .interests(
               friend.getInterest().stream()

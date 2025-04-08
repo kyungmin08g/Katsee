@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/MemberFirstDetails.css">
+    <link rel="icon" href="/images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="/user/MemberFirstDetails.css">
 </head>
 <body>
     <div class="container">
@@ -49,7 +50,9 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+
         let data = [];
         function choice(option) {
             let isDedication = false;
@@ -98,11 +101,12 @@
             }
 
             window.localStorage.setItem('personality', JSON.stringify({data}));
-            window.location.href = '/MemberDetails2.html';
+            window.location.href = `/detail-2/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/MyPage.html';
+            if (memberId === 'null' || memberId === null) window.location.href = '/my';
+            else window.location.href = `/join-3/${memberId}`;
         }
     </script>
 </body>

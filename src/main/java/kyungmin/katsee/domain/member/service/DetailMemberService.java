@@ -18,8 +18,8 @@ import java.util.stream.Stream;
 public class DetailMemberService {
   private final MemberRepository memberRepository;
 
-  public GetMemberDetailResponse getMemberDetail() {
-    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+  public GetMemberDetailResponse getMemberDetail(String memberId) {
+    Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
     return GetMemberDetailResponse.builder()
@@ -27,7 +27,7 @@ public class DetailMemberService {
       .profileUrl(member.getProfileUrl())
       .nickName(member.getNickName())
       .age(member.getAge())
-      .gender(member.getGender())
+      .gender(member.getGender().value)
       .introduction(member.getIntroduction())
       .interests(
         member.getInterest().stream()

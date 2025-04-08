@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/JoinFirst.css">
+    <link rel="icon" href="/images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="/user/JoinFirst.css">
 </head>
 <body>
     <div class="container">
@@ -34,17 +35,16 @@
     <script>
         document.getElementById('user-id-input').addEventListener('change', function(event) {
             const errorMessage = document.getElementById('id-error-message');
-            /**
-             * @TODO ID 중복 체크 API 호출
-             */
-
-            if(true) errorMessage.style.display = 'none';
-            else errorMessage.style.display = 'block';
+            fetch(`/member/duplicate/${event.target.value}`, {
+                method: 'GET'
+            }).then(response => response.json()).then(data => {
+                if(!data.result.isDuplicate) errorMessage.style.display = 'none';
+                else errorMessage.style.display = 'block';
+            });
         });
 
         document.getElementById('user-password-input').addEventListener('input', function(event) {
             const errorMessage = document.getElementById('password-error-message');
-
             if(this.value.length >= 8) errorMessage.style.display = 'none';
             else errorMessage.style.display = 'block';
         });
@@ -52,27 +52,26 @@
         function nextJoin() {
             const userId = document.getElementById('user-id-input');
             const password = document.getElementById('user-password-input');
-
             const idErrorMessage = document.getElementById('id-error-message');
-            const psswordErrorMessage = document.getElementById('password-error-message');
+            const passwordErrorMessage = document.getElementById('password-error-message');
 
             if(userId.value === '' || password.value === '' ||
                 idErrorMessage.style.display === 'block' ||
-                psswordErrorMessage.style.display === 'block'
+                passwordErrorMessage.style.display === 'block'
             ) {
                 alert('필수 입력 항목을 확인해주세요');
                 return;
             }
 
-            window.localStorage.setItem('firstMemberData', JSON.stringify({
-                userId: userId.value,
+            window.localStorage.setItem('firstData', JSON.stringify({
+                memberId: userId.value,
                 password: password.value
             }));
-            window.location.href = '/SignUpSecondChapter.html';
+            window.location.href = '/join-2/null';
         }
 
         function prevPage() {
-            window.location.href = '/Login.html';
+            window.location.href = '/login';
         }
     </script>
 </body>

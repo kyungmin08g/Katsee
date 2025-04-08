@@ -31,7 +31,7 @@ public class GetRecommendFriendResponse {
   private String age;
 
   @Schema(description = "성별")
-  private Gender gender;
+  private String gender;
 
   @Schema(description = "소개")
   private String introduction;

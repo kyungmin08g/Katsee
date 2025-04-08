@@ -19,7 +19,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/wss")
-      .setAllowedOriginPatterns("*");
-//      .withSockJS(); // 버전이 낮은 브라우저도 돌아가게 하겠다~ 이 소리임.
+      .setAllowedOriginPatterns("*")
+      .withSockJS();
   }
 }

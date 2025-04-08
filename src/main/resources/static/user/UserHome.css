@@ -55,17 +55,6 @@ body {
     position: relative;
 }
 
-.notification::before {
-    content: '';
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border-radius: 50%;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
 .matches-section {
     background-color: white;
     border-radius: 16px;
@@ -283,7 +272,7 @@ body {
 }
 
 .user-bio {
-    width: 140px;
+    width: 150px;
     font-size: 13px;
     margin-top: 3px;
     font-weight: 400;
@@ -308,6 +297,11 @@ body {
     margin-right: 4px;
 }
 
+.interest {
+    font-size: 14px;
+    color: #6CA5FF;
+}
+
 .match-rate {
     background-color: #e8f1ff;
     color: #6CA5FF;
@@ -319,7 +313,7 @@ body {
 }
 
 .detail-btn {
-    margin-top: 56px;
+    margin-top: 85px;
     background-color: #6CA5FF;
     color: white;
     border: none;
@@ -327,4 +321,9 @@ body {
     padding: 8px 22px;
     font-size: 14px;
     cursor: pointer;
+}
+
+.greeting span {
+    padding: 0;
+    margin: 0;
 }

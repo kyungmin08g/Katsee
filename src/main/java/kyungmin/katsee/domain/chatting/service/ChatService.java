@@ -47,13 +47,23 @@ public class ChatService {
     List<GetChatRoomResponse> chatRooms = new ArrayList<>();
     List<Chatting> rooms = roomRepository.findByMemberId(SecurityUtil.authMemberId());
     rooms.forEach(room -> {
-      chatRooms.add(
-        GetChatRoomResponse.builder()
-          .roomId(room.getId())
-          .friendId(room.getFriend().getMemberId())
-          .createdAt(room.getCreatedAt())
-          .build()
-      );
+      if (room.getMember().getMemberId().equals(SecurityUtil.authMemberId())) {
+        chatRooms.add(
+          GetChatRoomResponse.builder()
+            .roomId(room.getId())
+            .friendId(room.getFriend().getMemberId())
+            .createdAt(room.getCreatedAt())
+            .build()
+        );
+      } else {
+        chatRooms.add(
+          GetChatRoomResponse.builder()
+            .roomId(room.getId())
+            .friendId(room.getMember().getMemberId())
+            .createdAt(room.getCreatedAt())
+            .build()
+        );
+      }
     });
 
     return chatRooms;
@@ -64,8 +74,8 @@ public class ChatService {
     roomRepository.deleteById(roomId);
   }
 
-  public void saveChattingContent(SaveContentRequest request) {
-    Member member = memberRepository.findById(SecurityUtil.authMemberId())
+  public void saveChattingContent(SaveContentRequest request, String memberId) {
+    Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
     Chatting room = roomRepository.findById(Long.parseLong(request.roomId()));
 

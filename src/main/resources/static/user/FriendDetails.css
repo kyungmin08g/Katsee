@@ -84,6 +84,7 @@ body {
 
 .profile-info-main {
     display: flex;
+    width: 100%;
 }
 
 .profile-info {
@@ -116,13 +117,15 @@ body {
 }
 
 .interest-tag {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     background: none;
-    font-size: 16px;
     color: #6CA5FF;
     margin-right: 5px;
-    margin-top: 26px;
+}
+
+#interest {
+    font-size: 14px;
 }
 
 .interest-icon {
@@ -133,7 +136,7 @@ body {
 
 .match-rate-container {
     background-color: #F0F7FF;
-    border-radius: 10px;
+    border-radius: 14px;
     padding: 12px;
 }
 
@@ -187,7 +190,7 @@ body {
 }
 
 .section-content {
-    font-size: 15px;
+    font-size: 14px;
     color: #000000;
     font-weight: 500;
 }

@@ -31,8 +31,10 @@ public class ChatRoomRepository {
   public List<Chatting> findByMemberId(String memberId) {
     return queryFactory
       .selectFrom(chatting)
-      .where(chatting.member.memberId.eq(memberId))
-      .fetch();
+      .where(
+        chatting.member.memberId.eq(memberId)
+          .or(chatting.friend.memberId.eq(memberId))
+      ).fetch();
   }
 
   public void deleteById(Long roomId) {

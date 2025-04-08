@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/ChatList.css">
+    <link rel="icon" href="/images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" href="/user/ChatList.css">
 </head>
 <body>
     <h2 class="header">채팅</h2>
@@ -12,125 +13,143 @@
 
     <div class="card-container" id="card-container">
         <div class="card-div" id="card-div">
-            <p class="card-p">진행중인 채팅이 없어요 🥲</p>
+            <p class="card-p" id="card-p">진행중인 채팅이 없어요 🥲</p>
         </div>
     </div>
 
     <div class="navigation">
-        <a href="/FriendRecommend.html" class="nav-item">
-            <img src="/static/images/Friends.png" alt="" class="icon">
+        <a href="/recommend" class="nav-item">
+            <img src="/images/Friends.png" alt="" class="icon">
             친구 추천
         </a>
-        <a href="/RequestList.html" class="nav-item">
-            <img src="/static/images/Love.png" alt="" class="icon">
+        <a href="/request/list" class="nav-item">
+            <img src="/images/Love.png" alt="" class="icon">
             친구 요청
         </a>
-        <a href="/UserHome.html" class="nav-item">
-            <img src="/static/images/Home.png" alt="" class="icon">
+        <a href="/" class="nav-item">
+            <img src="/images/Home.png" alt="" class="icon">
             홈
         </a>
-        <a href="/ChattingList.html" class="nav-item active">
-            <img src="/static/images/chat1.png" alt="" class="icon">
+        <a href="/chat/list" class="nav-item active">
+            <img src="/images/chat1.png" alt="" class="icon">
             채팅
         </a>
-        <a href="/MyPage.html" class="nav-item">
-            <img src="/static/images/User.png" alt="" class="icon">
+        <a href="/my" class="nav-item">
+            <img src="/images/User.png" alt="" class="icon">
             마이페이지
         </a>
     </div>
 
     <script>
-        // 테스트 초기 데이터
-        let memberDataList = [
-            {
-                id: 'test1',
-                profileUrl: '/static/images/ProfileImage.png',
-                name: '홍길동',
-                createAt: '2025.03.27'
-            },
-            {
-                id: 'test2',
-                profileUrl: '/static/images/ProfileImage.png',
-                name: '남길동',
-                createAt: '2025.03.19'
-            }
-        ];
+        const token = localStorage.getItem("AT");
+        let memberDataList = [];
+        let memberId = null;
 
-        // 백엔드에서 나중에 아래처럼 구성하면됨.
-        function memberData() {
-            /**
-             * @TODO 채팅 목록 조회 API 호출
-             */
+        memberData();
+        async function memberData() {
+            await fetch(`/member`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                memberId = data.result.memberId;
+            }).catch(error => console.log(error));
 
-            memberDataList.push({
-                id: 'test1',
-                profileUrl: '/static/images/ProfileImage.png',
-                name: '홍길동',
-                createAt: '2025.03.19'
-            });
+            await fetch(`/chat/rooms`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+
+                if (data.result.length === 0) setMemberElement(null);
+                else {
+                    data.result.forEach(member => {
+                        fetch(`/member/${member.friendId}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            }
+                        }).then(response => response.json()).then(res => {
+                            console.log(res.result);
+
+                            let json = {
+                                roomId: member.roomId,
+                                friendId: res.result.memberId,
+                                profileUrl: res.result.profileUrl,
+                                name: res.result.nickName
+                            };
+                            setMemberElement(json);
+                        }).catch(error => console.log(error));
+                    });
+                }
+            }).catch(error => console.log(error));
         }
 
-        function setMemberElement() {
+        async function setMemberElement(data) {
+            const cardP = document.getElementById("card-p");
             const cardDiv = document.getElementById('card-div');
-            if(memberDataList.length === 0) {
+            if(data === null) {
+                cardP.style.display = 'flex';
                 cardDiv.style.display = 'flex';
-            }
-
-            const card = document.getElementById('card-container');
-            memberDataList.forEach((data, number) => {
+            } else {
+                const card = document.getElementById('card-container');
+                console.log(memberDataList);
                 const chatCard = document.createElement('div');
                 chatCard.className = 'chat-card';
                 chatCard.id = 'chat-card';
 
-                // 프로필 사진 영역 생성
                 const profilePic = document.createElement('div');
                 profilePic.className = 'profile-pic bear-profile';
 
-                // 프로필 이미지 생성
                 const profileImg = document.createElement('img');
                 profileImg.src = data.profileUrl;
                 profileImg.alt = 'profile-icon';
                 profileImg.id = 'profile-icon';
 
-                // 채팅 정보 영역 생성
                 const chatInfo = document.createElement('div');
                 chatInfo.className = 'chat-info';
 
-                // 채팅 이름 생성
                 const chatName = document.createElement('div');
                 chatName.className = 'chat-name';
                 chatName.id = 'chat-name';
                 chatName.textContent = data.name;
                 chatName.onclick = function() {
-                    window.location.href = '/Chatting.html';
+                    window.location.href = `/chat/content/${data.roomId}/${data.friendId}/${memberId}`;
                 };
 
-                // 채팅 메시지 생성
-                const chatMessage = document.createElement('div');
-                chatMessage.className = 'chat-message';
-                chatMessage.id = 'chat-content';
-                chatMessage.textContent = data.createAt;
-
-                // 삭제 버튼 생성
                 const deleteBtn = document.createElement('a');
                 deleteBtn.href = '#';
                 deleteBtn.className = 'status';
                 deleteBtn.id = 'delete-btn';
                 deleteBtn.textContent = '삭제';
+                deleteBtn.onclick = function() {
+                    fetch(`/chat/delete?roomId=${data.roomId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(response => response.json()).then(data => {
+                        console.log(data);
+                    }).catch(error => console.log(error));
+                    window.location.href = '/chat/list';
+                };
 
-                // 요소들을 구조에 맞게 추가
                 profilePic.appendChild(profileImg);
                 chatInfo.appendChild(chatName);
-                chatInfo.appendChild(chatMessage);
-
                 chatCard.appendChild(profilePic);
                 chatCard.appendChild(chatInfo);
                 chatCard.appendChild(deleteBtn);
                 card.appendChild(chatCard);
-            });
+            }
         }
-
-        setMemberElement();
     </script>
 </body>
 </html>

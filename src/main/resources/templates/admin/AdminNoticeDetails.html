@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/admin/AdminNoticeDetails.css">
+    <link rel="stylesheet" type="text/css" href="/admin/AdminNoticeDetails.css">
 </head>
 <body>
     <div class="header">
-        <a href="#">
+        <a href="/admin/notice">
             <img src="/images/Left.png" alt="" class="left-icon">
         </a>
         <div class="back-button">공지사항</div>
@@ -18,27 +18,27 @@
         </div>
     </div>
 
-    <div class="notice-title">📌 이번주 특별 이벤트가 있어요!!</div>
-    <div class="notice-content">이번주에 특별한 이벤트가 있어요! 친구 10명 이상 모으시 특별 혜택을 드립니다!!</div>
+    <div class="notice-title" id="title"></div>
+    <div class="notice-content" id="content"></div>
 
     <div class="comments-section">
         <div class="comments-header">
-            댓글 <span class="comment-count">(3)</span>
+            댓글 <span class="comment-count" id="comment-count">(0)</span>
         </div>
 
-        <textarea class="comment-input" placeholder="내용을 입력해주세요"></textarea>
-        <button class="comment-button">등록</button>
+        <textarea class="comment-input" placeholder="내용을 입력해주세요" id="comment-input"></textarea>
+        <button class="comment-button" onclick="sendComment()">등록</button>
 
         <div style="clear: both;"></div>
 
         <div id="comments"></div>
 
         <div class="navigation">
-            <a href="#" class="nav-item">
+            <a href="/admin" class="nav-item">
                 <img src="/images/Home.png" alt="" class="icon">
                 홈
             </a>
-            <a href="#" class="nav-item active">
+            <a href="/admin/notice" class="nav-item active">
                 <img src="/images/taking1.png" alt="" class="icon">
                 공지사항
             </a>
@@ -46,142 +46,156 @@
     </div>
 
     <script>
-        // 테스트 초기 데이터
-        let memberDataList = [
-            {
-                id: 'test1',
-                content: '와!! 드디어 특별 이벤트이구나!!',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
-                }
-            },
-            {
-                id: 'test2',
-                content: '헉!! 신나요 ㅋㅋ',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
-                }
-            },
-            {
-                id: 'test3',
-                content: 'ㅋㅋㅋㅋㅋㅋ',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
-                }
-            },
-            {
-                id: 'test3',
-                content: '오~ 기대된당!',
-                createAt: '2025.03.23',
-                member: {
-                    id: 'test2',
-                    profileUrl:'/static/images/ProfileImage.png',
-                    name: '남길동',
-                    age: 20,
-                    gender: '남',
-                    introduction: '안녕하세요. 현재 개발자로 일하고 있습니다!',
-                    interest: 'IT'
-                }
-            }
-        ];
-
+        const token = window.localStorage.getItem('AT');
+        const commentCount = document.getElementById('comment-count');
+        const html = document.querySelector('html');
+        const noticeId = [[${noticeId}]];
         let noticeData = null;
-        function getNoticeData() {
-            /**
-             * @TODO 공지사항 조회 API 호출
-             */
 
-            noticeData = {
-
-            };
+        getNoticeData();
+        async function getNoticeData() {
+            const title = document.getElementById('title');
+            const content = document.getElementById('content');
+            await fetch(`/notice/${noticeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                title.textContent = data.result.title;
+                content.textContent = data.result.content;
+                noticeData = {
+                    id: data.result.id,
+                    thumbnailUrl: data.result.thumbnailUrl,
+                    title: data.result.title,
+                    content: data.result.content,
+                };
+            }).catch(error => console.log(error));
         }
 
-        function setMemberElement() {
-            const card = document.getElementById('comments');
-            memberDataList.forEach((data, number) => {
-                const comment = document.createElement('div');
-                comment.className = 'comment';
+        let datas = [];
+        getNoticeComments();
+        async function getNoticeComments() {
+            await fetch(`/comment/list/${noticeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                datas = data.result;
+            }).catch(error => console.log(error));
+            setElement();
+        }
 
-                const commentAvatar = document.createElement('div');
-                commentAvatar.className = 'comment-avatar';
+        function setElement() {
+            datas.forEach(comment => {
+                fetch(`/member/${comment.memberId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    let json = {
+                        commentId: comment.id,
+                        memberId: comment.memberId,
+                        profileUrl: data.result.profileUrl,
+                        nickName: data.result.nickName,
+                        content: comment.content,
+                    };
 
-                const avatarImage = document.createElement('img');
-                avatarImage.src = '/static/images/ProfileImage.png';
-                avatarImage.alt = 'profile-image';
-                commentAvatar.appendChild(avatarImage);
-
-                const commentContent = document.createElement('div');
-                commentContent.className = 'comment-content';
-
-                const commentUser = document.createElement('div');
-                commentUser.className = 'comment-user';
-                commentUser.textContent = `${data.member.name} `;
-
-                const commentDate = document.createElement('span');
-                commentDate.className = 'comment-date';
-                commentDate.textContent = '2025.03.08';
-                commentUser.appendChild(commentDate);
-
-                const commentText = document.createElement('div');
-                commentText.className = 'comment-text';
-                commentText.textContent = data.content;
-
-                commentContent.appendChild(commentUser);
-                commentContent.appendChild(commentText);
-                comment.appendChild(commentAvatar);
-                comment.appendChild(commentContent);
-                card.appendChild(comment);
+                    setCommentElement(json);
+                }).catch(error => console.log(error));
             });
         }
-        setMemberElement();
+
+        let commentCounts = 0;
+        let count = 0;
+        const card = document.getElementById('comments');
+        function setCommentElement(data) {
+            const comment = document.createElement('div');
+            comment.className = 'comment';
+
+            const commentAvatar = document.createElement('div');
+            commentAvatar.className = 'comment-avatar';
+
+            const avatarImage = document.createElement('img');
+            avatarImage.src = data.profileUrl;
+            avatarImage.alt = 'profile-image';
+            commentAvatar.appendChild(avatarImage);
+
+            const commentContent = document.createElement('div');
+            commentContent.className = 'comment-content';
+
+            const commentUser = document.createElement('div');
+            commentUser.className = 'comment-user';
+            commentUser.textContent = `${data.nickName} `;
+
+            const commentText = document.createElement('div');
+            commentText.className = 'comment-text';
+            commentText.textContent = data.content;
+
+            commentContent.appendChild(commentUser);
+            commentContent.appendChild(commentText);
+            comment.appendChild(commentAvatar);
+            comment.appendChild(commentContent);
+            card.appendChild(comment);
+
+            commentCounts++;
+            commentCount.textContent = `(${commentCounts})`;
+            count += 50;
+            html.style.height = `calc(100% + ${count}px)`;
+        }
 
         function prevPage() {
-            window.location.href = '/UserNotice.html';
+            window.location.href = '/notice';
+        }
+
+        async function sendComment() {
+            const commentInput = document.getElementById('comment-input');
+            await fetch(`/comment/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    noticeId: `${noticeId}`,
+                    content: `${commentInput.value}`
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            }).catch(error => console.log(error));
+
+            card.innerText = '';
+            commentCounts = 0;
+            count = 0;
+            await getNoticeData();
+            await getNoticeComments();
+            commentInput.value = '';
         }
 
         function modifyPage() {
-            window.location.href = '/AdminNoticeModify.html';
+            window.location.href = `/admin/notice/update/${noticeId}`;
         }
 
         function deletePage() {
-            window.location.href = '/AdminHome.html';
-        }
+            fetch(`/notice/delete/${noticeId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            }).catch(error => console.log(error));
 
-        function sendComment() {
-            const commentInput = document.getElementById('comment-input');
-            console.log(`${commentInput.value}`);
-            /**
-             * @TODO 댓글 등록 API 호출
-             * @TODO 댓글 조회 API 호출
-             */
-
-            commentInput.value = '';
-
-            // 데이터 추가
-            // memberDataList.push({
-
-            // });
+            window.location.href = `/admin/notice`;
         }
     </script>
 </body>

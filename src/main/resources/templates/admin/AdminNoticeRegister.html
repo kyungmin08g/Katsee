@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/admin/AdminNoticeRegister.css">
+    <link rel="stylesheet" type="text/css" href="/admin/AdminNoticeRegister.css">
 </head>
 <body>
     <div class="header">공지사항 작성</div>
@@ -21,42 +21,69 @@
     </div>
 
     <div class="nav-bar">
-        <a href="/AdminHome.html" class="nav-item">
+        <a href="/admin" class="nav-item">
             <img src="/images/Home.png" alt="" class="nav-icon">
             <div>홈</div>
         </a>
-        <a href="/AdminNotice.html" class="nav-item nav-active">
+        <a href="/admin/notice" class="nav-item nav-active">
             <img src="/images/taking1.png" alt="" class="nav-icon">
             <div>공지사항</div>
         </a>
     </div>
 
     <script>
-        let image = null;
-        function previewImage(input) {
-            const preview = document.getElementById('preview');
-            const label = document.querySelector('.file-upload-label');
+        const token = window.localStorage.getItem('AT');
+        const titleInput = document.getElementById('title-input');
+        const contentInput = document.getElementById('content-input');
 
-            if (input.files && input.files[0]) {
+        let formData = new FormData();
+        function previewImage(input) {
+            const label = document.querySelector('.file-upload-label');
+            const file = input.files[0];
+
+            if (input.files && file) {
                 const reader = new FileReader();
-                reader.onload = function(e) { label.textContent = input.files[0].name; }
-                reader.readAsDataURL(input.files[0]);
-                image = input.files[0];
-                console.log(image);
+                reader.onload = function() { label.textContent = file.name; }
+                reader.readAsDataURL(file);
             }
+
+            formData.append('file', file, file.name);
         }
 
-        function createNotice() {
-            const titleInput = document.getElementById('title-input');
-            const contentInput = document.getElementById('content-input');
-            console.log(`제목: ${titleInput.value}, 내용: ${contentInput.value}`);
-            console.log(image);
+        async function getS3ProfileImageUrl() {
+            let s3ImageUrl = null;
+            await fetch(`/s3/upload`, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                s3ImageUrl = data.result.s3Url;
+            }).catch(error => {
+                console.log(error);
+                s3ImageUrl = null;
+            });
 
-            /**
-             * @TODO 공지사항 등록 API 호출
-             */
+            return s3ImageUrl;
+        }
 
-            window.location.href = '/AdminNotice.html';
+        async function createNotice() {
+            const s3Url = await getS3ProfileImageUrl();
+            fetch(`/notice/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    thumbnail_url: s3Url,
+                    title: titleInput.value,
+                    content: contentInput.value,
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            }).catch(error => console.log(error));
+
+            window.location.href = '/admin/notice';
         }
     </script>
 </body>

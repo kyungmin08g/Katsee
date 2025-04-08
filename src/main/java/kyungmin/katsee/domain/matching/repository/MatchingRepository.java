@@ -1,8 +1,12 @@
 package kyungmin.katsee.domain.matching.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kyungmin.katsee.domain.matching.Matching;
 import kyungmin.katsee.domain.matching.controller.request.UpdateMatchingStatusRequest;
+import kyungmin.katsee.domain.matching.enums.MatchStatus;
+import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
+import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -43,8 +47,49 @@ public class MatchingRepository {
     queryFactory.update(matching)
       .set(matching.matchStatus, request.status())
       .where(
-        matching.member.memberId.eq(memberId),
-        matching.friend.memberId.eq(request.friendId())
+//        matching.member.memberId.eq(memberId),
+        matching.member.memberId.eq(request.friendId())
       ).execute();
   }
+
+  public List<Matching> getFriends(String memberId) {
+    return queryFactory.select(matching)
+      .from(matching)
+      .where(
+        matching.member.memberId.eq(memberId),
+        matching.matchStatus.eq(MatchStatus.FRIEND)
+      ).fetch();
+  }
+
+  public List<Matching> getFriendByFriendId(String memberId) {
+    return queryFactory.select(matching)
+      .from(matching)
+      .where(
+        matching.friend.memberId.eq(memberId),
+        matching.matchStatus.eq(MatchStatus.FRIEND)
+      ).fetch();
+  }
+
+  public List<Matching> getRequestFriends() {
+    return queryFactory.selectFrom(matching)
+      .where(
+        matching.matchStatus.eq(MatchStatus.ATMOSPHERE)
+      ).fetch();
+  }
+
+  public List<Matching> matchingStatusDuplicate(String friendId) {
+    return queryFactory.selectFrom(matching)
+      .where(
+        matching.friend.memberId.eq(friendId).or(matching.member.memberId.eq(friendId)),
+        matching.matchStatus.eq(MatchStatus.FRIEND)
+      ).fetch();
+  }
+
+//  public Matching matchingStatusDuplicateByMemberId(String memberId) {
+//    return queryFactory.selectFrom(matching)
+//      .where(
+//        matching.member.memberId.eq(memberId),
+//        matching.matchStatus.eq(MatchStatus.FRIEND)
+//      ).fetchOne();
+//  }
 }

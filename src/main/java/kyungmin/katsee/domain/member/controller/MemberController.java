@@ -6,10 +6,7 @@ import kyungmin.katsee.api_response.ApiResponse;
 import kyungmin.katsee.domain.member.controller.request.MemberDetailRequest;
 import kyungmin.katsee.domain.member.controller.request.MemberCreateRequest;
 import kyungmin.katsee.domain.member.controller.request.UpdateDetailRequest;
-import kyungmin.katsee.domain.member.controller.response.GetDuplicateIdResponse;
-import kyungmin.katsee.domain.member.controller.response.GetMemberDetailResponse;
-import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
-import kyungmin.katsee.domain.member.controller.response.GetRecommendFriendResponse;
+import kyungmin.katsee.domain.member.controller.response.*;
 import kyungmin.katsee.domain.member.service.MemberService;
 import kyungmin.katsee.domain.member.service.RecommendFriendService;
 import lombok.RequiredArgsConstructor;
@@ -50,10 +47,16 @@ public class MemberController {
     return ApiResponse.onSuccess(memberService.getMember());
   }
 
+  @GetMapping(value = "/member/{memberId}")
+  @Operation(description = "ID를 통한 회원 조회")
+  public ApiResponse<GetMemberResponse> getMemberById(@PathVariable("memberId") String memberId) {
+    return ApiResponse.onSuccess(memberService.getMemberById(memberId));
+  }
+
   @GetMapping(value = "/member/detail")
   @Operation(description = "회원 상세 조회")
-  public ApiResponse<GetMemberDetailResponse> getMemberDetail() {
-    return ApiResponse.onSuccess(memberService.getMemberDetail());
+  public ApiResponse<GetMemberDetailResponse> getMemberDetail(@RequestParam String memberId) {
+    return ApiResponse.onSuccess(memberService.getMemberDetail(memberId));
   }
 
   @PatchMapping(value = "/member/update")
@@ -73,5 +76,17 @@ public class MemberController {
   @Operation(description = "친구 추천")
   public ApiResponse<List<GetRecommendFriendResponse>> recommendFriends() {
     return ApiResponse.onSuccess(recommendService.recommendFriends());
+  }
+
+  @GetMapping(value = "/member/all")
+  @Operation(description = "모든 회원 조회")
+  public ApiResponse<List<GetMemberResponse>> allMembers() {
+    return ApiResponse.onSuccess(memberService.allMembers());
+  }
+
+  @GetMapping(value = "/admin/statistics")
+  @Operation(description = "전체 사용자 & 주요 연령대 조회")
+  public ApiResponse<GetAdminStatisticsResponse> members() {
+    return ApiResponse.onSuccess(memberService.getAdminStatistics());
   }
 }
