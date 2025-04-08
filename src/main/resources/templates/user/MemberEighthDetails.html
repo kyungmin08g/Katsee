@@ -39,8 +39,8 @@
 
     <script th:inline="javascript">
         const memberId = [[${memberId}]];
-
         const token = window.localStorage.getItem('AT');
+
         let interestOptionData = null;
         function choice(option) {
             for(let i = 0; i < 8; i++) {
@@ -77,9 +77,8 @@
 
         function listDataJsonParse(i) {
             let listData = [];
-            JSON.parse(window.localStorage.getItem(i)).data.forEach(element => {
-                listData.push(element.id);
-            });
+            JSON.parse(window.localStorage.getItem(i)).data
+                .forEach(element => listData.push(element.id));
 
             return listData;
         }
@@ -139,15 +138,10 @@
         let interestLevelEnumCodes = [];
 
         async function getEnumCodes(enumType, enumCodeList) {
-            /**
-             * @TODO 회원 상세 Enum API 호출
-             */
             await fetch(`/enum/${enumType}`, {
                 method: 'GET',
             }).then(response => response.json()).then(data => {
-                data.result.forEach(element => {
-                    enumCodeList.push(element.code);
-                });
+                data.result.forEach(element => enumCodeList.push(element.code));
             }).catch(error => console.log(error));
 
             return enumCodeList;
@@ -169,7 +163,7 @@
             });
         }
 
-        getEnumCode(); // Enum Code 조회
+        getEnumCode();
         async function register() {
             if(interestOptionData == null) {
                 alert('관심사 레벨을 선택해주세요');
@@ -202,9 +196,6 @@
                     }
                 });
 
-                /**
-                 * @TODO 회원 상세 정보 등록 API 호출
-                 */
                 await fetch('/member/create/detail', {
                     method: 'POST',
                     headers: {
@@ -218,9 +209,7 @@
                     alert('회원 상세정보가 등록되었습니다');
                 }).catch(error => console.log(error));
 
-                list.forEach(value => {
-                    window.localStorage.removeItem(value);
-                });
+                list.forEach(value => window.localStorage.removeItem(value));
                 window.location.href = '/my';
             } else {
                 let personalityTypeEnumCodeList = [];
@@ -233,15 +222,10 @@
                 let interestLevelEnumCode = [];
 
                 let interestEnumList = [];
-                /**
-                 * TODO 관심사 유형 Enum API 호출
-                 */
                 await fetch('/enum/interest', {
                     method: 'GET',
                 }).then(response => response.json()).then(data => {
-                    data.result.forEach(interest => {
-                        interestEnumList.push(interest.code);
-                    });
+                    data.result.forEach(interest => interestEnumList.push(interest.code));
                 }).catch(error => console.log(error));
 
                 const baseList = ['secondData', 'thirdData'];
@@ -288,9 +272,6 @@
                     }
                 });
 
-                /**
-                 * @TODO 회원 정보 수정 API 호출
-                 */
                 await fetch('/member/update', {
                     method: 'PATCH',
                     headers: {
@@ -304,14 +285,8 @@
                     alert('회원 정보가 수정되었습니다');
                 }).catch(error => console.log(error));
 
-                baseList.forEach(value => {
-                    window.localStorage.removeItem(value);
-                });
-
-                updateList.forEach(value => {
-                    window.localStorage.removeItem(value);
-                });
-
+                baseList.forEach(value => window.localStorage.removeItem(value));
+                updateList.forEach(value => window.localStorage.removeItem(value));
                 window.location.href = '/my';
             }
             console.log(requestBody);

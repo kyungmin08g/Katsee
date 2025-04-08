@@ -33,9 +33,6 @@
                 return;
             }
 
-            /**
-             * @TODO 로그인 API 호출
-             */
             await fetch(`/login?memberId=${userId.value}&password=${password.value}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }

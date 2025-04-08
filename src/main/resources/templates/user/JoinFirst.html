@@ -35,9 +35,6 @@
     <script>
         document.getElementById('user-id-input').addEventListener('change', function(event) {
             const errorMessage = document.getElementById('id-error-message');
-            /**
-             * @TODO ID 중복 체크 API 호출
-             */
             fetch(`/member/duplicate/${event.target.value}`, {
                 method: 'GET'
             }).then(response => response.json()).then(data => {
@@ -55,7 +52,6 @@
         function nextJoin() {
             const userId = document.getElementById('user-id-input');
             const password = document.getElementById('user-password-input');
-
             const idErrorMessage = document.getElementById('id-error-message');
             const passwordErrorMessage = document.getElementById('password-error-message');
 

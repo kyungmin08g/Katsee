@@ -47,9 +47,6 @@
 
         friendDatas();
         async function friendDatas() {
-            /**
-             * @TODO 친구 추천 API 호출
-             */
             await fetch('/matching/request/friends', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -176,20 +173,15 @@
                 const detailBtn = document.createElement('button');
                 detailBtn.className = 'detail-btn';
                 detailBtn.textContent = '상세 정보';
-                detailBtn.onclick = function() {
-                    location.href = `/friend/detail/${data.friendId}`;
-                };
+                detailBtn.onclick = function() { location.href = `/friend/detail/${data.friendId}`; };
 
                 matchButtonDiv.appendChild(detailBtn);
-
                 friendCard.appendChild(profilePicDiv);
                 friendCard.appendChild(userInfoDiv);
                 friendCard.appendChild(matchButtonDiv);
                 card.appendChild(friendCard);
             });
         }
-
-        // setMemberElement();
     </script>
 </body>
 </html>

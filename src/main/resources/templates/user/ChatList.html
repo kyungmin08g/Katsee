@@ -47,9 +47,6 @@
 
         memberData();
         async function memberData() {
-            /**
-             * @TODO 채팅 목록 조회 API 호출
-             */
             await fetch(`/member`, {
                 method: 'GET',
                 headers: {
@@ -73,9 +70,6 @@
                 if (data.result.length === 0) setMemberElement(null);
                 else {
                     data.result.forEach(member => {
-                        /**
-                         * @TODO 회원 기본 정보 조회 API 호출
-                         */
                         fetch(`/member/${member.friendId}`, {
                             method: 'GET',
                             headers: {
@@ -136,9 +130,6 @@
                 deleteBtn.id = 'delete-btn';
                 deleteBtn.textContent = '삭제';
                 deleteBtn.onclick = function() {
-                    /**
-                     * @TODO 채팅방 삭제 API 호출
-                     */
                     fetch(`/chat/delete?roomId=${data.roomId}`, {
                         method: 'DELETE',
                         headers: {
@@ -153,7 +144,6 @@
 
                 profilePic.appendChild(profileImg);
                 chatInfo.appendChild(chatName);
-
                 chatCard.appendChild(profilePic);
                 chatCard.appendChild(chatInfo);
                 chatCard.appendChild(deleteBtn);

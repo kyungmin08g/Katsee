@@ -71,7 +71,6 @@
         </div>
 
         <p class="note">* 친구 맺을 시 채팅이 가능합니다.</p>
-
         <button class="send-request-btn1" onclick="refuse()">거절</button>
         <button class="send-request-btn2" onclick="approval()">친구 맺기</button>
     </div>
@@ -113,9 +112,6 @@
 
         let dataList = [];
         async function callEnumValue(item, list, values) {
-            /**
-             * @TODO 회원 상세 Enum API 호출
-             */
             await fetch(`/enum/${item}`, {
                 method: 'GET',
             }).then(response => response.json()).then(data => {
@@ -173,9 +169,6 @@
         }
 
         async function getFriendDetailData() {
-            /**
-             * @TODO 회원 상세 정보 조회 API 호출
-             */
             await fetch(`/member/detail?memberId=${friendId}`, {
                 method: 'GET',
                 headers: {
@@ -199,9 +192,6 @@
         let approvalCode = null;
         let refuseCode = null;
         async function callMatchingStatusEnums() {
-            /**
-             * @TODO 매칭 상태 Enum API 호출
-             */
             await fetch(`/enum/matching-status`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
@@ -214,9 +204,6 @@
         callMatchingStatusEnums();
 
         async function approval() {
-            /**
-             * @TODO 매칭 상태 변경 API 호출
-             */
             await fetch(`/matching/status/update`, {
                 method: 'PATCH',
                 headers: {
@@ -236,9 +223,6 @@
         }
 
         async function refuse() {
-            /**
-             * @TODO 매칭 상태 변경 API 호출
-             */
             await fetch(`/matching/status/update`, {
                 method: 'PATCH',
                 headers: {

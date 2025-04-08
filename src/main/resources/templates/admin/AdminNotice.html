@@ -37,9 +37,6 @@
 
         member();
         async function member() {
-            /**
-             * @TODO 회원 기본 정보 조회 API 호출
-             */
             await fetch('/member', {
                 method: 'GET',
                 headers: {
@@ -55,9 +52,6 @@
         let dataList = [];
         noticeDatas();
         async function noticeDatas() {
-            /**
-             * @TODO 공지 목록 조회 API 호출
-             */
             await fetch(`/notice/list`, {
                 method: 'GET',
                 headers: {

@@ -44,14 +44,11 @@
 
     <script>
         const token = window.localStorage.getItem('AT');
+        const statsValue = document.getElementById('stats-value');
+        const blueText = document.getElementById('blue-text');
 
         data();
         function data() {
-            const statsValue = document.getElementById('stats-value');
-            const blueText = document.getElementById('blue-text');
-            /**
-             * @TODO 전체 사용자/주요 연령대 조회 API 호출
-             */
             fetch('/admin/statistics', {
                 method: 'GET',
                 headers: {

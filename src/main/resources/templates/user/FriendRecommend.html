@@ -43,9 +43,6 @@
 
         friendDatas();
         async function friendDatas() {
-            /**
-             * @TODO 친구 추천 API 호출
-             */
             await fetch('/recommend/friend', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -175,13 +172,10 @@
                 const detailBtn = document.createElement('button');
                 detailBtn.className = 'detail-btn';
                 detailBtn.textContent = '상세 정보';
-                detailBtn.onclick = () => {
-                    location.href = `/friend/detail/${data.friendId}/${data.suitable}`;
-                };
+                detailBtn.onclick = () => { location.href = `/friend/detail/${data.friendId}/${data.suitable}`; };
 
                 matchButtonDiv.appendChild(matchRateDiv);
                 matchButtonDiv.appendChild(detailBtn);
-
                 friendCard.appendChild(profilePicDiv);
                 friendCard.appendChild(userInfoDiv);
                 friendCard.appendChild(matchButtonDiv);

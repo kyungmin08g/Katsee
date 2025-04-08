@@ -133,15 +133,10 @@
             let requestBody = {};
 
             let interestEnumList = [];
-            /**
-             * TODO 관심사 유형 Enum API 호출
-             */
             await fetch('/enum/interest', {
                 method: 'GET',
             }).then(response => response.json()).then(data => {
-                data.result.forEach(interest => {
-                    interestEnumList.push(interest.code);
-                });
+                data.result.forEach(interest => interestEnumList.push(interest.code));
             }).catch(error => console.log(error));
 
             count.forEach((i, j) => {
@@ -180,9 +175,6 @@
             });
 
             if (memberId === 'null' || memberId === null) {
-                /**
-                 * 회원 등록 API 호출
-                 */
                 await fetch('/member/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -195,6 +187,7 @@
                         window.localStorage.removeItem(value);
                         window.localStorage.removeItem(value);
                     });
+
                     window.location.href = '/login';
                 }).catch(error => console.log(error));
             } else window.location.href = `/detail-1/${memberId}`;

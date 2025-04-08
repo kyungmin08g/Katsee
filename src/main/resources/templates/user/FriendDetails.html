@@ -81,7 +81,6 @@
         </div>
 
         <p class="note">* 친구 맺을 시 채팅이 가능합니다.</p>
-
         <button class="send-request-btn" onclick="request()">친구 요청 보내기</button>
     </div>
 
@@ -110,7 +109,6 @@
         const matchMessage = document.getElementById('match-message');
 
         getFriendDetailData();
-
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('container');
             container.classList.add('active');
@@ -128,9 +126,6 @@
 
         let dataList = [];
         async function callEnumValue(item, list, values) {
-            /**
-             * @TODO 회원 상세 Enum API 호출
-             */
             await fetch(`/enum/${item}`, {
                 method: 'GET',
             }).then(response => response.json()).then(data => {
@@ -188,9 +183,6 @@
         }
 
         async function getFriendDetailData() {
-            /**
-             * @TODO 회원 상세 정보 조회 API 호출
-             */
             await fetch(`/member/detail?memberId=${friendId}`, {
                 method: 'GET',
                 headers: {
@@ -235,9 +227,6 @@
             }).then(response => response.json()).then(data => {
                 console.log(data.result);
                 if (!data.result) {
-                    /**
-                     * @TODO 매칭 요청 API 호출
-                     */
                     fetch(`/matching/request?friendId=${friendId}`, {
                         method: 'POST',
                         headers: {

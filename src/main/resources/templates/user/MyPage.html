@@ -57,9 +57,6 @@
         let count = 0;
         member();
         async function member() {
-            /**
-             * 회원 기본 정보 조회 API 호출
-             */
             await fetch('/member', {
                 method: 'GET',
                 headers: {
@@ -139,15 +136,10 @@
             interestDiv.appendChild(interestIcon);
 
             let interestEnumList = [];
-            /**
-             * TODO 관심사 유형 Enum API 호출
-             */
             await fetch('/enum/interest', {
                 method: 'GET',
             }).then(response => response.json()).then(data => {
-                data.result.forEach(interest => {
-                    interestEnumList.push(interest.code);
-                });
+                data.result.forEach(interest => interestEnumList.push(interest.code));
             }).catch(error => console.log(error));
 
             let interestEnumValue = null;
@@ -200,9 +192,6 @@
         let memberDataList = [];
         memberData();
         async function memberData() {
-            /**
-             * @TODO 친구 조회 API 호출
-             */
             await fetch(`/matching/friends`, {
                 method: 'GET',
                 headers: {
@@ -303,9 +292,6 @@
                 detailBtn.className = 'detail-btn';
                 detailBtn.textContent = '채팅하기';
                 detailBtn.onclick = () => {
-                    /**
-                     * @TODO 채팅방 생성 API 호출
-                     */
                     fetch(`/chat/create?friendId=${data.id}`, {
                         method: 'POST',
                         headers: {
@@ -319,7 +305,6 @@
                 };
 
                 matchButtonDiv.appendChild(detailBtn);
-
                 userInfoDiv.appendChild(userNameDiv);
                 userInfoDiv.appendChild(userBioDiv);
                 userInfoDiv.appendChild(matchButtonDiv);

@@ -64,14 +64,10 @@
         const gender = document.getElementById('gender-input');
         const introduction = document.getElementById('introduction-input');
         const profileImage = document.getElementById('profile-icon');
-
         let imageUrl = null;
 
         getMemberData();
         async function getMemberData() {
-            /**
-             * @TODO 회원 기본 정보 조회 API 호출
-             */
             await fetch(`/member`, {
                 method: 'GET',
                 headers: {
@@ -108,14 +104,11 @@
         async function getS3ProfileImageUrl() {
             if (!formData.has('file')) return imageUrl;
             let s3ImageUrl = null;
-            /**
-             * @TODO 프로필 사진 업로드 API 호출
-             */
             await fetch(`/s3/upload`, {
                 method: 'POST',
                 body: formData
             }).then(response => response.json()).then(data => {
-                console.log(data.result.s3Url);
+                console.log(data.result);
                 s3ImageUrl = data.result.s3Url;
             }).catch(error => {
                 console.log(error);

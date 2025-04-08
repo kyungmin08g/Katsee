@@ -38,29 +38,25 @@
 
         let formData = new FormData();
         function previewImage(input) {
-            // const preview = document.getElementById('preview');
             const label = document.querySelector('.file-upload-label');
-
             const file = input.files[0];
+
             if (input.files && file) {
                 const reader = new FileReader();
                 reader.onload = function(e) { label.textContent = file.name; };
                 reader.readAsDataURL(file);
             }
+
             formData.append('file', file, file.name);
-            console.log(file);
         }
 
         async function getS3ProfileImageUrl() {
             let s3ImageUrl = null;
-            /**
-             * @TODO 프로필 사진 업로드 API 호출
-             */
             await fetch(`/s3/upload`, {
                 method: 'POST',
                 body: formData
             }).then(response => response.json()).then(data => {
-                console.log(data.result.s3Url);
+                console.log(data.result);
                 s3ImageUrl = data.result.s3Url;
             }).catch(error => {
                 console.log(error);
@@ -71,11 +67,7 @@
         }
 
         async function modify() {
-            console.log(`제목: ${titleInput.value}, 내용: ${contentInput.value}`);
             const s3Url = await getS3ProfileImageUrl();
-            /**
-             * @TODO 공지사항 수정 API 호출
-             */
             fetch(`/notice/update`, {
                 method: 'PATCH',
                 headers: {
@@ -97,9 +89,6 @@
 
         data();
         function data() {
-            /**
-             * @TODO 해당 공지사항 조회 API 호출
-             */
             fetch(`/notice/${noticeId}`, {
                 method: 'GET',
                 headers: {

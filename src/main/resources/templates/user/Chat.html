@@ -44,9 +44,6 @@
 
         data()
         async function data() {
-            /**
-             * @TODO 회원 조회 API 호출
-             */
             await fetch(`/member/${friendId}`, {
                 method: 'GET',
                 headers: {
@@ -60,7 +57,6 @@
                     profileUrl: data.result.profileUrl,
                     name: data.result.nickName
                 };
-                console.log(memberJson);
                 profileImage.src = data.result.profileUrl;
                 nickName.textContent = data.result.nickName;
             }).catch(error => console.log(error));
@@ -84,7 +80,6 @@
             stompClient.connect({}, function() {
                 stompClient.subscribe(`/sub/room/${roomId}`, async function(message) {
                     const data = JSON.parse(message.body);
-                    console.log(data);
 
                     await fetch(`/member/${data.memberId}`, {
                         method: 'GET',
@@ -111,9 +106,6 @@
 
         setting();
         async function setting() {
-            /**
-             * @TODO 채팅 내용 조회 API 호출
-             */
             await fetch(`/chat/content/list?roomId=${roomId}`, {
                 method: 'GET',
                 headers: {
@@ -184,12 +176,11 @@
 
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
-            console.log(`Message: ${messageInput.value}`);
-
             stompClient.send(`/send/${roomId}/${memberId}`, {}, JSON.stringify({
                 roomId: roomId,
                 chatContent: messageInput.value
             }));
+
             messageInput.value = '';
         }
     </script>

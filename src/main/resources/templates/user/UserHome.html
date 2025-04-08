@@ -88,9 +88,6 @@
             const friend = document.getElementById('button-green');
             const refusal = document.getElementById('button-red');
 
-            /**
-             * @TODO 매칭 현황 관련 API 호출
-             */
             fetch('/matching/statistics', {
                 method: 'GET',
                 headers: {
@@ -121,9 +118,7 @@
         let memberInfor = null;
         member();
         async function member() {
-            /**
-             * @TODO 회원 기본 정보 조회 API 호출
-             */
+            const nickName = document.getElementById('name');
             await fetch('/member', {
                 method: 'GET',
                 headers: {
@@ -133,7 +128,6 @@
             }).then(response => response.json()).then(date => {
                 console.log(date);
                 memberInfor = date.result;
-                const nickName = document.getElementById('name');
                 nickName.textContent = memberInfor.nickName;
             }).catch(error => console.log(error));
         }
@@ -142,9 +136,6 @@
         memberDatas();
         const container = document.getElementById('container');
         async function memberDatas() {
-            /**
-             * @TODO 친구 조회 API 호출
-             */
             await fetch(`/member/all`, {
                 method: 'GET',
                 headers: {
@@ -269,9 +260,7 @@
                 const detailBtn = document.createElement('button');
                 detailBtn.className = 'detail-btn';
                 detailBtn.textContent = '상세 정보';
-                detailBtn.onclick = function() {
-                    location.href = `/friend/detail/${data.id}/-`;
-                };
+                detailBtn.onclick = function() { location.href = `/friend/detail/${data.id}/-`; };
 
                 matchButtonDiv.appendChild(detailBtn);
 

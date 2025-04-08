@@ -42,15 +42,13 @@
 
     <script th:inline="javascript">
         const memberId = [[${memberId}]];
-
         const token = window.localStorage.getItem('AT');
         let interest = '';
         let memberInfor = null;
+
         member();
         async function member() {
-            /**
-             * @TODO 회원 기본 정보 조회 API 호출
-             */
+            const nickName = document.getElementById('name');
             await fetch('/member', {
                 method: 'GET',
                 headers: {
@@ -60,19 +58,13 @@
             }).then(response => response.json()).then(date => {
                 console.log(date);
                 memberInfor = date.result;
-                const nickName = document.getElementById('name');
                 nickName.textContent = memberInfor.nickName;
 
                 let interestEnumList = [];
-                /**
-                 * TODO 관심사 유형 Enum API 호출
-                 */
                 fetch('/enum/interest', {
                     method: 'GET',
                 }).then(response => response.json()).then(data => {
-                    data.result.forEach(interest => {
-                        interestEnumList.push(interest.code);
-                    });
+                    data.result.forEach(interest => interestEnumList.push(interest.code));
                 }).catch(error => console.log(error));
 
                 let interestEnumValue = null;

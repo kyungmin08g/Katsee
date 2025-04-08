@@ -45,9 +45,6 @@
 
         member();
         async function member() {
-            /**
-             * @TODO 회원 기본 정보 조회 API 호출
-             */
             await fetch('/member', {
                 method: 'GET',
                 headers: {
@@ -63,9 +60,6 @@
         let dataList = [];
         noticeDatas();
         async function noticeDatas() {
-            /**
-             * @TODO 공지 목록 조회 API 호출
-             */
             await fetch(`/notice/list`, {
                 method: 'GET',
                 headers: {
@@ -119,9 +113,7 @@
                 const noticeButton = document.createElement('button');
                 noticeButton.className = 'notice-button';
                 noticeButton.textContent = '자세히 보기';
-                noticeButton.onclick = () => {
-                    window.location.href = `/notice/detail/${data.id}`;
-                };
+                noticeButton.onclick = () => { window.location.href = `/notice/detail/${data.id}`; };
 
                 noticeCard.appendChild(noticeImage);
                 noticeCard.appendChild(noticeContent);

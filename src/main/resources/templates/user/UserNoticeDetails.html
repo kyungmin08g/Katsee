@@ -62,9 +62,7 @@
         async function getNoticeData() {
             const title = document.getElementById('title');
             const content = document.getElementById('content');
-            /**
-             * @TODO 공지사항 조회 API 호출
-             */
+
             await fetch(`/notice/${noticeId}`, {
                 method: 'GET',
                 headers: {
@@ -82,16 +80,11 @@
                     content: data.result.content,
                 };
             }).catch(error => console.log(error));
-
-            console.log(noticeData);
         }
 
         let datas = [];
         getNoticeComments();
         async function getNoticeComments() {
-            /**
-             * @TODO 댓글 조회 API 호출
-             */
             await fetch(`/comment/list/${noticeId}`, {
                 method: 'GET',
                 headers: {
@@ -172,11 +165,6 @@
 
         async function sendComment() {
             const commentInput = document.getElementById('comment-input');
-            console.log(`${commentInput.value}`);
-            /**
-             * @TODO 댓글 등록 API 호출
-             * @TODO 댓글 조회 API 호출
-             */
             await fetch(`/comment/create`, {
                 method: 'POST',
                 headers: {
@@ -191,7 +179,6 @@
                 console.log(data);
             }).catch(error => console.log(error));
 
-            // 전체 댓글 다시 로드
             card.innerText = '';
             commentCounts = 0;
             count = 0;
