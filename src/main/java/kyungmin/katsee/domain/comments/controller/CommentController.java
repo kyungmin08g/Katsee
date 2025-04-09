@@ -27,7 +27,7 @@ public class CommentController {
    */
   @PostMapping(value = "/create")
   @Operation(description = "댓글 생성")
-  public ApiResponse<?> crateComment(@RequestBody CreateCommentRequest request) {
+  public ApiResponse<Void> crateComment(@RequestBody CreateCommentRequest request) {
     commentService.createComment(request);
     return ApiResponse.onSuccess();
   }
@@ -61,7 +61,7 @@ public class CommentController {
    */
   @PatchMapping(value = "/update")
   @Operation(description = "댓글 수정")
-  public ApiResponse<?> updateComment(@RequestBody UpdateCommentRequest request) {
+  public ApiResponse<Void> updateComment(@RequestBody UpdateCommentRequest request) {
     commentService.updateComment(request);
     return ApiResponse.onSuccess();
   }
@@ -73,7 +73,7 @@ public class CommentController {
    */
   @DeleteMapping(value = "/delete/{commentId}")
   @Operation(description = "댓글 삭제")
-  public ApiResponse<?> deleteComment(@PathVariable("commentId") String id) {
+  public ApiResponse<Void> deleteComment(@PathVariable("commentId") String id) {
     commentService.deleteComment(id);
     return ApiResponse.onSuccess();
   }

@@ -26,7 +26,7 @@ public class NoticeController {
    */
   @PostMapping(value = "/create")
   @Operation(description = "공지 생성")
-  public ApiResponse<?> create(@RequestBody CreateNoticeRequest request) {
+  public ApiResponse<Void> create(@RequestBody CreateNoticeRequest request) {
     noticeService.createNotice(request);
     return ApiResponse.onSuccess();
   }
@@ -59,7 +59,7 @@ public class NoticeController {
    */
   @PatchMapping(value = "/update")
   @Operation(description = "공지 수정")
-  public ApiResponse<?> update(@RequestBody UpdateNoticeRequest request) {
+  public ApiResponse<Void> update(@RequestBody UpdateNoticeRequest request) {
     noticeService.updateNotice(request);
     return ApiResponse.onSuccess();
   }
@@ -71,7 +71,7 @@ public class NoticeController {
    */
   @DeleteMapping(value = "/delete/{id}")
   @Operation(description = "공지 삭제")
-  public ApiResponse<?> delete(@PathVariable("id") String noticeId) {
+  public ApiResponse<Void> delete(@PathVariable("id") String noticeId) {
     noticeService.deleteNotice(noticeId);
     return ApiResponse.onSuccess();
   }

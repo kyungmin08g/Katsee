@@ -67,7 +67,7 @@ public class ChatController {
    */
   @MessageMapping(value = "/{roomId}/{memberId}")
   public ApiResponse<Void> saveChatContent(@DestinationVariable("roomId") String roomId, @DestinationVariable("memberId") String memberId, SaveContentRequest request) {
-    chatService.saveChattingContent(request, memberId);
+    chatService.saveChattingContent(request, memberId); // 채팅 메시지 저장
     messagingTemplate.convertAndSend(
       "/sub/room/" + roomId,
       GetChatResponse.builder()
@@ -81,7 +81,7 @@ public class ChatController {
   }
 
   /**
-   * 채팅 내용 목록 - 채팅방에 채팅 내용 목록을 조회 (채팅방에 들어올시 호출)
+   * 채팅 내용 목록 - 채팅방에 채팅 내용 목록을 조회
    * @param roomId : 채팅방 아이디
    * @return : 성공시 채팅 내용 목록 반환
    */

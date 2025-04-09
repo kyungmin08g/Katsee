@@ -29,7 +29,7 @@ public class MemberController {
    */
   @PostMapping(value = "/login")
   @Operation(description = "로그인")
-  public ApiResponse<?> login(@RequestParam String memberId, @RequestParam String password) {
+  public ApiResponse<Void> login(@RequestParam String memberId, @RequestParam String password) {
     return ApiResponse.onSuccess();
   }
 
@@ -40,7 +40,7 @@ public class MemberController {
    */
   @PostMapping(value = "/member/create")
   @Operation(description = "회원 등록")
-  public ApiResponse<?> createMember(@RequestBody MemberCreateRequest request) {
+  public ApiResponse<Void> createMember(@RequestBody MemberCreateRequest request) {
     memberService.createMember(request);
     return ApiResponse.onSuccess();
   }
@@ -52,7 +52,7 @@ public class MemberController {
    */
   @PostMapping(value = "/member/create/detail")
   @Operation(description = "회원 상세 정보 등록")
-  public ApiResponse<?> createMemberDetails(@RequestBody MemberDetailRequest request) {
+  public ApiResponse<Void> createMemberDetails(@RequestBody MemberDetailRequest request) {
     memberService.createMemberDetail(request);
     return ApiResponse.onSuccess();
   }
@@ -106,7 +106,7 @@ public class MemberController {
    */
   @PatchMapping(value = "/member/update")
   @Operation(description = "회원 정보 수정")
-  public ApiResponse<?> updateMemberDetail(@RequestBody UpdateDetailRequest request) {
+  public ApiResponse<Void> updateMemberDetail(@RequestBody UpdateDetailRequest request) {
     memberService.updateMemberDetail(request);
     return ApiResponse.onSuccess();
   }

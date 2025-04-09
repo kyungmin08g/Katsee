@@ -27,7 +27,7 @@ public class MatchingController {
    */
   @PostMapping(value = "/request")
   @Operation(description = "매칭 요청")
-  public ApiResponse<?> matchingRequest(@RequestParam String friendId) {
+  public ApiResponse<Void> matchingRequest(@RequestParam String friendId) {
     matchingService.matching(friendId);
     return ApiResponse.onSuccess();
   }
@@ -59,7 +59,7 @@ public class MatchingController {
    */
   @PatchMapping(value = "/status/update")
   @Operation(description = "매칭 상태 변경")
-  public ApiResponse<?> matchingStatus(@RequestBody UpdateMatchingStatusRequest request) {
+  public ApiResponse<Void> matchingStatus(@RequestBody UpdateMatchingStatusRequest request) {
     matchingService.updateMatchingStatus(request);
     return ApiResponse.onSuccess();
   }
