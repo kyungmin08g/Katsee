@@ -38,11 +38,6 @@ public class Comments {
   @Comment("수정일")
   private LocalDateTime updatedAt;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "parents_comments_id")
-//  @Comment("부모 댓글")
-//  private Comments parentsCommentsId;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "notice_id")
   @Comment("공지사항")

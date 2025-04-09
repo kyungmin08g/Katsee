@@ -14,6 +14,7 @@ import kyungmin.katsee.domain.member.enums.Interest;
 import kyungmin.katsee.domain.member.repository.MemberRepository;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +28,18 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MatchingService {
   private final MatchingRepository matchingRepository;
   private final MemberRepository memberRepository;
 
+  // 회원 조회
   private Member getMember(String memberId) {
     return memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
   }
 
+  // 매칭 요청 보내기
   public void matching(String friendId) {
     matchingRepository.save(
       Matching.builder()
@@ -46,10 +50,11 @@ public class MatchingService {
     );
   }
 
+  // 매칭 현황(통계) 조회
   public GetMatchingStatisticsResponse getMatchingStatistics() {
     AtomicInteger fullStatistics = new AtomicInteger();
     AtomicInteger newStatistics = new AtomicInteger();
-    String now = LocalDateTime.now().toString().split("T")[0];
+    String now = LocalDateTime.now().toString().split("T")[0]; // 날짜만 얻기
 
     matchingRepository.findByMemberId(SecurityUtil.authMemberId()).forEach(matching -> {
       if (matching.getCreatedAt().toString().split("T")[0].equals(now)) newStatistics.getAndIncrement();
@@ -62,6 +67,7 @@ public class MatchingService {
       .build();
   }
 
+  // 매칭 상태 조회
   public GetMatchingStatusResponse getMatchingStatus() {
     AtomicInteger atmosphere = new AtomicInteger();
     AtomicInteger friend = new AtomicInteger();
@@ -82,10 +88,12 @@ public class MatchingService {
       .build();
   }
 
+  // 매칭 상태 수정
   public void updateMatchingStatus(UpdateMatchingStatusRequest request) {
-    matchingRepository.update(SecurityUtil.authMemberId(), request);
+    matchingRepository.update(request);
   }
 
+  // 친구 조회
   public List<GetMemberResponse> getFriends() {
     List<GetMemberResponse> friends = new ArrayList<>();
     List<Matching> friend = matchingRepository.getFriends(SecurityUtil.authMemberId());
@@ -130,11 +138,12 @@ public class MatchingService {
     return friends;
   }
 
+  // 친구 요청 보내기
   public List<GetMemberResponse> getRequestFriends() {
     List<GetMemberResponse> requestFriends = new ArrayList<>();
     List<Matching> request = matchingRepository.getRequestFriends();
+
     request.forEach(matching -> {
-      System.out.println(matching.getMember().getMemberId());
       if (!matching.getMember().getMemberId().equals(SecurityUtil.authMemberId())) {
         requestFriends.add(
           GetMemberResponse.builder()
@@ -157,27 +166,26 @@ public class MatchingService {
     return requestFriends;
   }
 
+  // 친구 상태인지 확인
   public boolean matchingStatusDuplicate(String friendId) {
     List<Matching> friend = matchingRepository.matchingStatusDuplicate(friendId);
     if (friend.isEmpty()) return false;
 
     AtomicBoolean duplicate = new AtomicBoolean(false);
     friend.forEach(matching -> {
-      System.out.println("회원 ID: " + matching.getFriend().getMemberId() + ", 친구 ID: " + matching.getMember().getMemberId());
+      log.info("회원: {}, 친구: {}", matching.getFriend().getNickName(), matching.getMember().getNickName());
+
       if (matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
-        System.out.println("1 => " + matching.getFriend().getMemberId());
         duplicate.set(true);
       } if (!matching.getFriend().getMemberId().equals(SecurityUtil.authMemberId())) {
-        System.out.println("2 => " + matching.getFriend().getMemberId());
         duplicate.set(true);
       } else if (matching.getFriend().getMemberId().equals(friendId)) {
-        System.out.println("3 => " + matching.getFriend().getMemberId());
         duplicate.set(true);
-      }else if (!matching.getMember().getMemberId().equals(friendId)) {
-        System.out.println("4 => " + matching.getMember().getMemberId());
+      } else if (!matching.getMember().getMemberId().equals(friendId)) {
         duplicate.set(false);
       }
     });
+
     return duplicate.get();
   }
 }

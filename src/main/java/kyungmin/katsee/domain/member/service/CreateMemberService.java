@@ -10,6 +10,7 @@ import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.*;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +23,19 @@ public class CreateMemberService {
   private final BCryptPasswordEncoder passwordEncoder;
   private final MemberInterestRepository interestRepository;
 
+  @Value("${cloud.aws.s3.default-profile-url}")
+  private String defaultProfileUrl;
+
+  // 회원 등록
   public void createMember(MemberCreateRequest request) {
+    String profileUrl = defaultProfileUrl;
+    if (request.profileUrl() != null) profileUrl = request.profileUrl();
+
     memberRepository.save(
       Member.builder()
         .memberId(request.memberId())
         .password(passwordEncoder.encode(request.password()))
-        .profileUrl(request.profileUrl())
+        .profileUrl(profileUrl)
         .nickName(request.nickName())
         .age(request.age())
         .gender(Gender.valueOf(request.gender()))
@@ -49,6 +57,7 @@ public class CreateMemberService {
     });
   }
 
+  // 회원 상세 정보 등록
   public void createMemberDetail(MemberDetailRequest request) {
     String memberId = SecurityUtil.authMemberId();
     Member member = memberRepository.findById(memberId)

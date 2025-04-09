@@ -57,7 +57,10 @@
         const memberId = [[${memberId}]];
         const progress = document.getElementById('progress');
         if (memberId === 'null' || memberId === null) progress.value = '60';
-        else progress.value = '8';
+        else {
+            progress.value = '8';
+            getMemberData();
+        }
 
         const name = document.getElementById('name-input');
         const age = document.getElementById('age-input');
@@ -66,7 +69,6 @@
         const profileImage = document.getElementById('profile-icon');
         let imageUrl = null;
 
-        getMemberData();
         async function getMemberData() {
             await fetch(`/member`, {
                 method: 'GET',

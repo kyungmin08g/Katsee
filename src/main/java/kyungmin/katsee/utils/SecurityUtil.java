@@ -15,6 +15,7 @@ public class SecurityUtil {
     return authentication;
   }
 
+  // 로그인된 회원 아이디 얻기
   public static String authMemberId() {
     return getAuthentication().getName();
   }

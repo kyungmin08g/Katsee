@@ -21,22 +21,27 @@ public class TestService {
   private final UpdateTestRepository updateTestRepository;
   private final DeleteTestRepository deleteTestRepository;
 
+  // 생성
   public void create(CreateTestRequest request) {
     createTestRepository.create(request);
   }
 
+  // 상세 조회
   public GetDetailsTestResponse details(Long id) {
     return detailsTestRepository.details(id);
   }
 
+  // 상세 목록 조회
   public List<GetDetailTestList> listDetail(Long id) {
     return listDetailTestRepository.listDetail(id);
   }
 
+  // 수정
   public void update(TestEntity entity) {
     updateTestRepository.update(entity);
   }
 
+  // 삭제
   public void delete(Long id) {
     deleteTestRepository.delete(id);
   }

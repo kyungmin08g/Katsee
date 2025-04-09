@@ -27,6 +27,7 @@ public class S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
+  // 이미지 업로드
   public GetS3FileResponse upload(MultipartFile file) {
     if (file.isEmpty()) throw new GeneralException(ErrorStatus.BAD_REQUEST, "파일이 비어있습니다.");
 
@@ -39,7 +40,7 @@ public class S3Service {
     objectMetadata.setContentLength(file.getSize());
 
     try {
-      amazonS3.putObject(bucket, fileName, file.getInputStream(), objectMetadata);
+      amazonS3.putObject(bucket, fileName, file.getInputStream(), objectMetadata); // S3 버킷에 이미지 파일 저장
       s3FileRepository.save(
         S3File.builder()
           .originalName(originalFileName)
@@ -47,7 +48,7 @@ public class S3Service {
           .fileUrl(amazonS3.getUrl(bucket, fileName).toString())
           .build()
       );
-    } catch (IOException e) {
+    } catch (IOException e) { // S3 버킷에 업로드 실패시 예외 처리
       throw new GeneralException(ErrorStatus.INTERNAL_ERROR, "S3 이미지 업로드가 실패했습니다.");
     }
 
@@ -58,9 +59,10 @@ public class S3Service {
       .build();
   }
 
+  // 파일 경로를 사용해서 이미지 삭제
   public void delete(String fileUrl) {
     String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-    amazonS3.deleteObject(bucket, fileName);
-    s3FileRepository.deleteByFileName(fileName);
+    amazonS3.deleteObject(bucket, fileName); // S3 버킷에서 삭제
+    s3FileRepository.deleteByFileName(fileName); // DB에서 삭제
   }
 }

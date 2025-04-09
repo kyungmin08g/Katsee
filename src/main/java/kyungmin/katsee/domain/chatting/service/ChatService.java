@@ -28,6 +28,7 @@ public class ChatService {
   private final ChattingRepository contentRepository;
   private final MemberRepository memberRepository;
 
+  // 채팅방 생성
   public void createChatRoom(String friendId) {
     Member friend = memberRepository.findById(friendId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "친구를 찾을 수 없습니다."));
@@ -43,6 +44,7 @@ public class ChatService {
     );
   }
 
+  // 채팅방 목록 조회
   public List<GetChatRoomResponse> getChatRooms() {
     List<GetChatRoomResponse> chatRooms = new ArrayList<>();
     List<Chatting> rooms = roomRepository.findByMemberId(SecurityUtil.authMemberId());
@@ -69,11 +71,13 @@ public class ChatService {
     return chatRooms;
   }
 
+  // 채팅방 삭제
   public void deleteChatRoom(Long roomId) {
     contentRepository.deleteById(roomId); // 채팅 내용도 같이 삭제
     roomRepository.deleteById(roomId);
   }
 
+  // 채팅 저장
   public void saveChattingContent(SaveContentRequest request, String memberId) {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
@@ -89,6 +93,7 @@ public class ChatService {
     );
   }
 
+  // 채팅 목록 조회
   public List<GetContentListResponse> getChatContentList(Long roomId) {
     return contentRepository.findByRoom(roomId);
   }
