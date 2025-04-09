@@ -26,6 +26,7 @@ public class CommentService {
   private final NoticeRepository noticeRepository;
   private final MemberRepository memberRepository;
 
+  // 댓글 생성
   public void createComment(CreateCommentRequest request) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
         .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
@@ -41,6 +42,7 @@ public class CommentService {
     );
   }
 
+  // 댓글 조회
   public GetCommentResponse getComment(String commentId) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
@@ -56,6 +58,7 @@ public class CommentService {
       .build();
   }
 
+  // 댓글 목록 조회
   public List<GetCommentListResponse> getCommentList(String noticeId) {
     List<GetCommentListResponse> commentList = new ArrayList<>();
     List<Comments> comment = commentRepository.findAll().stream()
@@ -77,6 +80,7 @@ public class CommentService {
     return commentList;
   }
 
+  // 댓글 수정
   public void updateComment(UpdateCommentRequest request) {
     Member member = memberRepository.findById(SecurityUtil.authMemberId())
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
@@ -95,6 +99,7 @@ public class CommentService {
     );
   }
 
+  // 댓글 삭제
   public void deleteComment(String commentId) {
     commentRepository.deleteById(Long.parseLong(commentId));
   }
