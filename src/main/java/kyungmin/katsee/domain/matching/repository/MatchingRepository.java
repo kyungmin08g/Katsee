@@ -1,12 +1,9 @@
 package kyungmin.katsee.domain.matching.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kyungmin.katsee.domain.matching.Matching;
 import kyungmin.katsee.domain.matching.controller.request.UpdateMatchingStatusRequest;
 import kyungmin.katsee.domain.matching.enums.MatchStatus;
-import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
-import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -43,13 +40,11 @@ public class MatchingRepository {
       ).execute();
   }
 
-  public void update(String memberId, UpdateMatchingStatusRequest request) {
+  public void update(UpdateMatchingStatusRequest request) {
     queryFactory.update(matching)
       .set(matching.matchStatus, request.status())
-      .where(
-//        matching.member.memberId.eq(memberId),
-        matching.member.memberId.eq(request.friendId())
-      ).execute();
+      .where(matching.member.memberId.eq(request.friendId()))
+      .execute();
   }
 
   public List<Matching> getFriends(String memberId) {
@@ -72,9 +67,8 @@ public class MatchingRepository {
 
   public List<Matching> getRequestFriends() {
     return queryFactory.selectFrom(matching)
-      .where(
-        matching.matchStatus.eq(MatchStatus.ATMOSPHERE)
-      ).fetch();
+      .where(matching.matchStatus.eq(MatchStatus.ATMOSPHERE))
+      .fetch();
   }
 
   public List<Matching> matchingStatusDuplicate(String friendId) {
@@ -84,12 +78,4 @@ public class MatchingRepository {
         matching.matchStatus.eq(MatchStatus.FRIEND)
       ).fetch();
   }
-
-//  public Matching matchingStatusDuplicateByMemberId(String memberId) {
-//    return queryFactory.selectFrom(matching)
-//      .where(
-//        matching.member.memberId.eq(memberId),
-//        matching.matchStatus.eq(MatchStatus.FRIEND)
-//      ).fetchOne();
-//  }
 }
