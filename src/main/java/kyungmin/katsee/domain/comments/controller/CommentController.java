@@ -20,6 +20,11 @@ import java.util.List;
 public class CommentController {
   private final CommentService commentService;
 
+  /**
+   *  댓글 생성
+   * @param request : 댓글 생성 요청 객체
+   * @return : 성공시 성공 JSON 반환
+   */
   @PostMapping(value = "/create")
   @Operation(description = "댓글 생성")
   public ApiResponse<?> crateComment(@RequestBody CreateCommentRequest request) {
@@ -27,18 +32,33 @@ public class CommentController {
     return ApiResponse.onSuccess();
   }
 
+  /**
+   * 특정 댓글 조회 - 특정 댓글 아이디를 사용하여 댓글 조회
+   * @param commentId : 댓글 아이디
+   * @return : 성공시 댓글 조회 응답 객체 반환
+   */
   @GetMapping(value = "/{id}")
   @Operation(description = "댓글 조회")
   public ApiResponse<GetCommentResponse> getComment(@PathVariable("id") String commentId) {
     return ApiResponse.onSuccess(commentService.getComment(commentId));
   }
 
+  /**
+   * 댓글 목록 조회 - 특정 공지에 대한 댓글 목록 조회
+   * @param noticeId : 공지 아이디
+   * @return : 성공시 댓글 목록 응답 객체 반환
+   */
   @GetMapping(value = "/list/{id}")
   @Operation(description = "공지에 대한 댓글 목록 조회")
   public ApiResponse<List<GetCommentListResponse>> getCommentList(@PathVariable("id") String noticeId) {
     return ApiResponse.onSuccess(commentService.getCommentList(noticeId));
   }
 
+  /**
+   * 댓글 수정 - 댓글 아이디를 사용하여 댓글 수정
+   * @param request : 댓글 수정 요청 객체
+   * @return : 성공시 성공 JSON 반환
+   */
   @PatchMapping(value = "/update")
   @Operation(description = "댓글 수정")
   public ApiResponse<?> updateComment(@RequestBody UpdateCommentRequest request) {
@@ -46,9 +66,14 @@ public class CommentController {
     return ApiResponse.onSuccess();
   }
 
-  @DeleteMapping(value = "/delete/{noticeId}")
+  /**
+   * 특정 댓글 삭제 - 댓글 아이디를 사용하여 댓글 삭제
+   * @param id : 댓글 아이디
+   * @return : 성공시 성공 JSON 반환
+   */
+  @DeleteMapping(value = "/delete/{commentId}")
   @Operation(description = "댓글 삭제")
-  public ApiResponse<?> deleteComment(@PathVariable("noticeId") String id) {
+  public ApiResponse<?> deleteComment(@PathVariable("commentId") String id) {
     commentService.deleteComment(id);
     return ApiResponse.onSuccess();
   }
