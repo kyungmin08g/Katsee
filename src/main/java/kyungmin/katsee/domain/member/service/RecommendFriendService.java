@@ -11,9 +11,7 @@ import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -23,6 +21,7 @@ public class RecommendFriendService {
   private final RecommendFriendRepository recommendFriendRepository;
   private final MemberRepository memberRepository;
 
+  // 친구 추천
   public List<GetRecommendFriendResponse> recommendFriends() {
     List<GetRecommendFriendResponse> recommendFriends = new ArrayList<>();
     Member member = memberRepository.findById(SecurityUtil.authMemberId())

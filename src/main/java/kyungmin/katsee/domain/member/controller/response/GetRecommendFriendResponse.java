@@ -1,7 +1,6 @@
 package kyungmin.katsee.domain.member.controller.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kyungmin.katsee.domain.member.enums.Gender;
 import kyungmin.katsee.domain.member.enums.Interest;
 import lombok.Builder;
 import lombok.Getter;

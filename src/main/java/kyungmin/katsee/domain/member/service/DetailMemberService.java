@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 public class DetailMemberService {
   private final MemberRepository memberRepository;
 
+  // 회원 상세 정보 조회
   public GetMemberDetailResponse getMemberDetail(String memberId) {
     Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
@@ -85,11 +86,13 @@ public class DetailMemberService {
       ).build();
   }
 
+  // 회원 상세 정보 수정
   public void updateMemberDetail(UpdateDetailRequest request) {
     String memberId = SecurityUtil.authMemberId();
     Member member = memberRepository.findById(memberId)
       .orElseThrow(() -> new GeneralException(ErrorStatus.KEY_NOT_EXIST, "회원을 찾을 수 없습니다."));
 
+    // 일단 모든 상세 정보 클리어
     member.getInterest().clear();
     member.getPersonalityType().clear();
     member.getTalkStyle().clear();
@@ -100,6 +103,7 @@ public class DetailMemberService {
     member.getInterestPreference().clear();
     member.getInterestLevel().clear();
 
+    // 수정된 상세 정보 저장
     memberRepository.save(
       member.toBuilder()
         .memberId(memberId)

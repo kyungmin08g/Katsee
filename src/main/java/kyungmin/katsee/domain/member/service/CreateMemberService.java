@@ -26,6 +26,7 @@ public class CreateMemberService {
   @Value("${cloud.aws.s3.default-profile-url}")
   private String defaultProfileUrl;
 
+  // 회원 등록
   public void createMember(MemberCreateRequest request) {
     String profileUrl = defaultProfileUrl;
     if (request.profileUrl() != null) profileUrl = request.profileUrl();
@@ -56,6 +57,7 @@ public class CreateMemberService {
     });
   }
 
+  // 회원 상세 정보 등록
   public void createMemberDetail(MemberDetailRequest request) {
     String memberId = SecurityUtil.authMemberId();
     Member member = memberRepository.findById(memberId)
