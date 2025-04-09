@@ -31,7 +31,7 @@ public class SecurityConfig {
     http.httpBasic(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(auth -> auth
-      .requestMatchers(
+      .requestMatchers( // API 관련 엔드포인트 처리
         "/member/create", "/member/duplicate/**", "/login",
         "/s3/upload", "/s3/delete", "/wss/**", "/chat/send/**",
         "/sub/**", "/admin/**", "/user/**", "/images/**"
