@@ -151,4 +151,5 @@ html, body {
 .card-p {
     font-weight: bold;
     font-size: 18px;
+    display: none;
 }

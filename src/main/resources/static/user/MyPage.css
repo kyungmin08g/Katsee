@@ -188,6 +188,17 @@ html, body {
     color: #555;
 }
 
+.interest {
+    text-align: center;
+    font-size: 13px;
+}
+
+.interest-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .category {
     display: flex;
     align-items: center;
@@ -195,6 +206,7 @@ html, body {
     font-size: 16px;
     color: #6CA5FF;
     margin-right: 10px;
+    max-width: 30%;
 }
 
 .category img {

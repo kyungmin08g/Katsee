@@ -31,9 +31,30 @@ spring:
     check-template-location: true
     cache: false
     mvc:
-      static-path-pattern: /static/**
+      static-path-pattern: classpath:/templates/
+
+  web:
+    resources:
+      static-locations: classpath:/static/
+  mvc:
+    contentnegotiation:
+      favor-path-extension: true
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expire-time: ${JWT_ACCESS_EXPIRE_TIME}
   refresh-token-expire-time: ${JWT_REFRESH_EXPIRE_TIME}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+      default-profile-url: https://katsee.s3.ap-northeast-2.amazonaws.com/free-icon-user-727399.png
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

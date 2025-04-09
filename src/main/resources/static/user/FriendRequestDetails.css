@@ -124,6 +124,10 @@ body {
     margin-top: 26px;
 }
 
+.interest {
+    font-size: 14px;
+}
+
 .interest-icon {
     width: 20px;
     height: 20px;
@@ -186,7 +190,7 @@ body {
 }
 
 .section-content {
-    font-size: 15px;
+    font-size: 14px;
     color: #000000;
     font-weight: 500;
 }

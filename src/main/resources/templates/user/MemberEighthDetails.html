@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/MemberEighthDetails.css">
+    <link rel="icon" href="/images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="/user/MemberEighthDetails.css">
 </head>
 <body>
     <div class="container">
@@ -36,7 +37,10 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+        const token = window.localStorage.getItem('AT');
+
         let interestOptionData = null;
         function choice(option) {
             for(let i = 0; i < 8; i++) {
@@ -73,51 +77,223 @@
 
         function listDataJsonParse(i) {
             let listData = [];
-            JSON.parse(window.localStorage.getItem(i)).data.forEach(element => {
-                listData.push(element.item);
-            });
+            JSON.parse(window.localStorage.getItem(i)).data
+                .forEach(element => listData.push(element.id));
 
             return listData;
         }
 
         function singleDataParse(i) {
-            return JSON.parse(window.localStorage.getItem(i)).item;
+            return JSON.parse(window.localStorage.getItem(i)).id;
         }
 
-        function register() {
+        function createEnumList(number, i, enumList, enumCodes) {
+            listDataJsonParse(i).forEach(element => {
+                switch (element) {
+                    case 'option-1': enumList.push(enumCodes[0]); break;
+                    case 'option-2': enumList.push(enumCodes[1]); break;
+                    case 'option-3': enumList.push(enumCodes[2]); break;
+                    case 'option-4': enumList.push(enumCodes[3]); break;
+                    case 'option-6': enumList.push(enumCodes[4]); break;
+                    case 'option-7': enumList.push(enumCodes[5]); break;
+                    case 'option-8': enumList.push(enumCodes[6]); break;
+                }
+            });
+            return enumList;
+        }
+
+        function createEnum(number, i, enumCode, enumValue) {
+            switch (singleDataParse(i)) {
+                case 'option-1': enumCode = enumValue[0]; break;
+                case 'option-2': enumCode = enumValue[1]; break;
+                case 'option-3': enumCode = enumValue[2]; break;
+                case 'option-4': enumCode = enumValue[3]; break;
+                case 'option-6': enumCode = enumValue[4]; break;
+                case 'option-7': enumCode = enumValue[5]; break;
+                case 'option-8': enumCode = enumValue[6]; break;
+            }
+            return enumCode;
+        }
+
+        function createEnumUpdate(number, i, enumCode, enumValue) {
+            switch (singleDataParse(i)) {
+                case 'option-1': enumCode.push(enumValue[0]); break;
+                case 'option-2': enumCode.push(enumValue[1]); break;
+                case 'option-3': enumCode.push(enumValue[2]); break;
+                case 'option-4': enumCode.push(enumValue[3]); break;
+                case 'option-6': enumCode.push(enumValue[4]); break;
+                case 'option-7': enumCode.push(enumValue[5]); break;
+                case 'option-8': enumCode.push(enumValue[6]); break;
+            }
+            return enumCode;
+        }
+
+        let personalityTypeEnumCodes = [];
+        let talkStyleEnumCodes = [];
+        let friendStyleEnumCodes = [];
+        let relationshipDepthEnumCodes = [];
+        let onlineTalkStyleEnumCodes = [];
+        let offlineMeetingEnumCodes = [];
+        let interestPreferenceEnumCodes = [];
+        let interestLevelEnumCodes = [];
+
+        async function getEnumCodes(enumType, enumCodeList) {
+            await fetch(`/enum/${enumType}`, {
+                method: 'GET',
+            }).then(response => response.json()).then(data => {
+                data.result.forEach(element => enumCodeList.push(element.code));
+            }).catch(error => console.log(error));
+
+            return enumCodeList;
+        }
+
+        function getEnumCode() {
+            const enumList = ['personality-type', 'talk-style', 'friend-style', 'relationship-depth', 'online-talk-style', 'offline-meeting', 'interest-preference', 'interest-level'];
+            enumList.forEach((element, number) => {
+                switch(number) {
+                    case 0: getEnumCodes(element, personalityTypeEnumCodes).then(data => { return data }); break;
+                    case 1: getEnumCodes(element, talkStyleEnumCodes).then(data => { return data }); break;
+                    case 2: getEnumCodes(element, friendStyleEnumCodes).then(data => { return data }); break;
+                    case 3: getEnumCodes(element, relationshipDepthEnumCodes).then(data => { return data }); break;
+                    case 4: getEnumCodes(element, onlineTalkStyleEnumCodes).then(data => { return data }); break;
+                    case 5: getEnumCodes(element, offlineMeetingEnumCodes).then(data => { return data }); break;
+                    case 6: getEnumCodes(element, interestPreferenceEnumCodes).then(data => { return data }); break;
+                    case 7: getEnumCodes(element, interestLevelEnumCodes).then(data => { return data }); break;
+                }
+            });
+        }
+
+        getEnumCode();
+        async function register() {
             if(interestOptionData == null) {
                 alert('관심사 레벨을 선택해주세요');
                 return;
             }
             window.localStorage.setItem('interestLevel', interestOptionData);
 
-            let count = ['personality', 'talkStyle', 'friendStyle', 'relationshipDepth', 'voiceOrVideoTalk', 'isOffline', 'interestPreferences', 'interestLevel'];
             let requestBody = {};
-            count.forEach((i, j) => {
-                switch(j) {
-                    case 0: requestBody.personality = listDataJsonParse(i);
-                    case 1: requestBody.talkStyle = listDataJsonParse(i);
-                    case 2: requestBody.friendStyle = listDataJsonParse(i);
-                    case 3: requestBody.relationshipDepth = singleDataParse(i); break;
-                    case 4: requestBody.voiceOrVideoTalk = listDataJsonParse(i);
-                    case 5: requestBody.isOffline = singleDataParse(i); break;
-                    case 6: requestBody.interestPreferences = singleDataParse(i); break;
-                    case 7: requestBody.interestLevel = singleDataParse(i); break;
-                }
-            });
+            if (memberId === 'null' || memberId === null) {
+                let personalityTypeEnumCodeList = [];
+                let talkStyleEnumCodeList = [];
+                let friendStyleEnumCodeList = [];
+                let relationshipDepthEnumCode = null;
+                let onlineTalkStyleEnumCodeList = [];
+                let offlineMeetingEnumCode = null;
+                let interestPreferenceEnumCode = null;
+                let interestLevelEnumCode = null;
+
+                const list = ['personality', 'talkStyle', 'friendStyle', 'relationshipDepth', 'voiceOrVideoTalk', 'isOffline', 'interestPreferences', 'interestLevel'];
+                list.forEach((i, number) => {
+                    switch(number) {
+                        case 0: requestBody.personality = createEnumList(number, i, personalityTypeEnumCodeList, personalityTypeEnumCodes); break;
+                        case 1: requestBody.talkStyle = createEnumList(number, i, talkStyleEnumCodeList, talkStyleEnumCodes); break;
+                        case 2: requestBody.friendStyle = createEnumList(number, i, friendStyleEnumCodeList, friendStyleEnumCodes); break;
+                        case 3: requestBody.relationshipDepth = createEnum(number, i, relationshipDepthEnumCode, relationshipDepthEnumCodes); break;
+                        case 4: requestBody.voiceOrVideoTalk = createEnumList(number, i, onlineTalkStyleEnumCodeList, onlineTalkStyleEnumCodes); break;
+                        case 5: requestBody.isOffline = createEnum(number, i, offlineMeetingEnumCode, offlineMeetingEnumCodes); break;
+                        case 6: requestBody.interestPreferences = createEnum(number, i, interestPreferenceEnumCode, interestPreferenceEnumCodes); break;
+                        case 7: requestBody.interestLevel = createEnum(number, i, interestLevelEnumCode, interestLevelEnumCodes); break;
+                    }
+                });
+
+                await fetch('/member/create/detail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    contentType: 'application/json',
+                    body: JSON.stringify(requestBody)
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    alert('회원 상세정보가 등록되었습니다');
+                }).catch(error => console.log(error));
+
+                list.forEach(value => window.localStorage.removeItem(value));
+                window.location.href = '/my';
+            } else {
+                let personalityTypeEnumCodeList = [];
+                let talkStyleEnumCodeList = [];
+                let friendStyleEnumCodeList = [];
+                let relationshipDepthEnumCode = [];
+                let onlineTalkStyleEnumCodeList = [];
+                let offlineMeetingEnumCode = [];
+                let interestPreferenceEnumCode = [];
+                let interestLevelEnumCode = [];
+
+                let interestEnumList = [];
+                await fetch('/enum/interest', {
+                    method: 'GET',
+                }).then(response => response.json()).then(data => {
+                    data.result.forEach(interest => interestEnumList.push(interest.code));
+                }).catch(error => console.log(error));
+
+                const baseList = ['secondData', 'thirdData'];
+                baseList.forEach((i, number) => {
+                    switch(number) {
+                        case 0: {
+                            requestBody.profileUrl = JSON.parse(window.localStorage.getItem(i)).profileUrl;
+                            requestBody.nickName = JSON.parse(window.localStorage.getItem(i)).nickName;
+                            requestBody.age = JSON.parse(window.localStorage.getItem(i)).age;
+                            requestBody.gender = JSON.parse(window.localStorage.getItem(i)).gender;
+                            requestBody.introduction = JSON.parse(window.localStorage.getItem(i)).introduction;
+                        } break;
+                        case 1: {
+                            let listData = [];
+                            JSON.parse(window.localStorage.getItem('thirdData')).data.forEach(element => {
+                                switch (element.id) {
+                                    case 'option-1': listData.push(interestEnumList[1]); break;
+                                    case 'option-2': listData.push(interestEnumList[2]); break;
+                                    case 'option-3': listData.push(interestEnumList[3]); break;
+                                    case 'option-4': listData.push(interestEnumList[5]); break;
+                                    case 'option-5': listData.push(interestEnumList[4]); break;
+                                    case 'option-6': listData.push(interestEnumList[6]); break;
+                                    case 'option-7': listData.push(interestEnumList[8]); break;
+                                    case 'option-8': listData.push(interestEnumList[0]); break;
+                                    case 'option-9': listData.push(interestEnumList[7]); break;
+                                }
+                            });
+                            requestBody.interests = listData;
+                        } break;
+                    }
+                });
+
+                const updateList = ['personality', 'talkStyle', 'friendStyle', 'relationshipDepth', 'voiceOrVideoTalk', 'isOffline', 'interestPreferences', 'interestLevel'];
+                updateList.forEach((i, number) => {
+                    switch(number) {
+                        case 0: requestBody.personalityTypes = createEnumList(number, i, personalityTypeEnumCodeList, personalityTypeEnumCodes); break;
+                        case 1: requestBody.talkStyles = createEnumList(number, i, talkStyleEnumCodeList, talkStyleEnumCodes); break;
+                        case 2: requestBody.friendStyles = createEnumList(number, i, friendStyleEnumCodeList, friendStyleEnumCodes); break;
+                        case 3: requestBody.relationshipDepth = createEnumUpdate(number, i, relationshipDepthEnumCode, relationshipDepthEnumCodes); break;
+                        case 4: requestBody.onlineTalkStyles = createEnumList(number, i, onlineTalkStyleEnumCodeList, onlineTalkStyleEnumCodes); break;
+                        case 5: requestBody.offlineTalkStyles = createEnumUpdate(number, i, offlineMeetingEnumCode, offlineMeetingEnumCodes); break;
+                        case 6: requestBody.interestPreference = createEnumUpdate(number, i, interestPreferenceEnumCode, interestPreferenceEnumCodes); break;
+                        case 7: requestBody.interestLevel = createEnumUpdate(number, i, interestLevelEnumCode, interestLevelEnumCodes); break;
+                    }
+                });
+
+                await fetch('/member/update', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    contentType: 'application/json',
+                    body: JSON.stringify(requestBody)
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    alert('회원 정보가 수정되었습니다');
+                }).catch(error => console.log(error));
+
+                baseList.forEach(value => window.localStorage.removeItem(value));
+                updateList.forEach(value => window.localStorage.removeItem(value));
+                window.location.href = '/my';
+            }
             console.log(requestBody);
-
-            /**
-             * @TODO 회원 상세 정보 등록 API 호출
-             */
-
-            alert('회원 상세정보가 등록되었습니다');
-            window.localStorage.clear();
-            window.location.href = '/MyPage.html';
         }
 
         function prevPage() {
-            window.location.href = '/MemberDetails7.html';
+            window.location.href = `/detail-7/${memberId}`;
         }
     </script>
 </body>

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/MemberThirdDetails.css">
+    <link rel="icon" href="/images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="/user/MemberThirdDetails.css">
 </head>
 <body>
     <div class="container">
@@ -52,7 +53,9 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const memberId = [[${memberId}]];
+
         let data = [];
         function choice(option) {
             let isDedication = false;
@@ -101,11 +104,11 @@
             }
 
             window.localStorage.setItem('friendStyle', JSON.stringify({data}));
-            window.location.href = '/MemberDetails4.html';
+            window.location.href = `/detail-4/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/MemberDetails2.html';
+            window.location.href = `/detail-2/${memberId}`;
         }
     </script>
 </body>

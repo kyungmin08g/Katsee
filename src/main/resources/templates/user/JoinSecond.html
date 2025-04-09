@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katsee</title>
-    <link rel="stylesheet" href="/static/user/JoinSecond.css">
+    <link rel="icon" href="/images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" type="text/css" href="/user/JoinSecond.css">
 </head>
 <body>
     <div class="container">
@@ -13,7 +14,7 @@
 
         <div class="form-content">
             <div class="profile-section">
-                <img src="/static/images/ProfileImage.png" alt="profile-image" id="profile-icon">
+                <img src="/images/ProfileImage.png" alt="profile-image" id="profile-icon">
                 <form id="uploadForm" action="/upload-profile" method="post" enctype="multipart/form-data" style="display: none;">
                     <input type="file" name="profileImage" id="formFileInput">
                 </form>
@@ -50,53 +51,105 @@
         </div>
     </div>
 
-    <script>
-        let profileImageOriginalName = null;
+    <script th:inline="javascript">
+        const token = window.localStorage.getItem('AT');
+
+        const memberId = [[${memberId}]];
+        const progress = document.getElementById('progress');
+        if (memberId === 'null' || memberId === null) progress.value = '60';
+        else {
+            progress.value = '8';
+            getMemberData();
+        }
+
+        const name = document.getElementById('name-input');
+        const age = document.getElementById('age-input');
+        const gender = document.getElementById('gender-input');
+        const introduction = document.getElementById('introduction-input');
+        const profileImage = document.getElementById('profile-icon');
+        let imageUrl = null;
+
+        async function getMemberData() {
+            await fetch(`/member`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+
+                imageUrl = data.result.profileUrl;
+                profileImage.src = data.result.profileUrl;
+                name.value = data.result.nickName;
+                age.value = data.result.age;
+
+                switch (data.result.gender) {
+                    case 'MAN': gender.options[0].text = '남자'; break;
+                    case 'FEMALE': gender.options[1].text = '여자'; break;
+                }
+                introduction.value = data.result.introduction;
+            }).catch(error => console.log(error));
+        }
+
+        let formData = new FormData();
         document.getElementById('formFileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-icon').src = e.target.result;
-                    profileImageOriginalName = file.name;
-                    console.log(`OriginalName: ${profileImageOriginalName}`);
-                };
+                reader.onload = function(e) { document.getElementById('profile-icon').src = e.target.result; };
                 reader.readAsDataURL(file);
             }
+            formData.append('file', file, file.name);
         });
 
-        function getS3ProfileImageUrl() {
-            const s3ImageUrl = null;
-            /**
-             * @TODO 프로필 사진 조회 API 호출
-             */
+        async function getS3ProfileImageUrl() {
+            if (!formData.has('file')) return imageUrl;
+            let s3ImageUrl = null;
+            await fetch(`/s3/upload`, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                console.log(data.result);
+                s3ImageUrl = data.result.s3Url;
+            }).catch(error => {
+                console.log(error);
+                s3ImageUrl = null;
+            });
 
             return s3ImageUrl;
         }
 
-        function nextJoin() {
-            const name = document.getElementById('name-input');
-            const age = document.getElementById('age-input');
-            const gender = document.getElementById('gender-input');
-            const introduction = document.getElementById('introduction-input');
-
+        async function nextJoin() {
             if(name.value === '' || age.value === '') {
                 alert('필수 입력 항목을 확인해주세요');
                 return;
             }
 
-            window.localStorage.setItem('secondMemberData', JSON.stringify({
-                profileUrl: getS3ProfileImageUrl(),
-                username: name.value,
+            let genderEnumValue = null;
+            switch (gender.value) {
+                case 'male':
+                    genderEnumValue = 'MAN';
+                    break;
+                case 'female':
+                    genderEnumValue = 'FEMALE';
+                    break;
+            }
+
+            const s3Url = await getS3ProfileImageUrl();
+            window.localStorage.setItem('secondData', JSON.stringify({
+                profileUrl: s3Url,
+                nickName: name.value,
                 age: age.value,
-                gender: gender.value,
+                gender: genderEnumValue,
                 introduction: introduction.value
             }));
-            window.location.href = '/SignUpThirdChapter.html';
+            window.location.href = `/join-3/${memberId}`;
         }
 
         function prevPage() {
-            window.location.href = '/SignUpFirstChapter.html';
+            if (memberId === 'null' || memberId === null) window.location.href = '/join-1';
+            else window.location.href = '/my';
         }
     </script>
 </body>
