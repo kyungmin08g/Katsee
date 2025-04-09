@@ -123,7 +123,7 @@ public class EnumService {
       .toList();
   }
 
-  // 관계 깊이 조회
+  // 관계 깊이 유형 조회
   public List<GetEnumResponse> getRelationshipDepthEnums() {
     return Stream.of(RelationshipDepth.values())
       .flatMap(relationshipDepth ->
