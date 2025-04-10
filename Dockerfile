@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+# 2025년 기준 최신 버전
+FROM ubuntu:24.04
 
 RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
