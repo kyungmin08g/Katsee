@@ -52,7 +52,7 @@ cloud:
       secret-key: ${AWS_SECRET_KEY}
     s3:
       bucket: ${AWS_S3_BUCKET}
-      default-profile-url: https://katsee.s3.ap-northeast-2.amazonaws.com/free-icon-user-727399.png
+      default-profile-url: ${PROFILE_URL}
     region:
       static: ap-northeast-2
       auto: false

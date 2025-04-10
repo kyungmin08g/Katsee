@@ -343,7 +343,17 @@
         }
 
         function logout() {
-            window.location.href = '/login';
+            fetch('/member/logout', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                window.localStorage.removeItem('AT');
+                window.location.href = '/login';
+            }).catch(error => console.log(error));
         }
     </script>
 </body>
