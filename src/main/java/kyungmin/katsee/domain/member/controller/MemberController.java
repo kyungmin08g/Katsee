@@ -141,4 +141,15 @@ public class MemberController {
   public ApiResponse<List<GetRecommendFriendResponse>> recommendFriends() {
     return ApiResponse.onSuccess(recommendService.recommendFriends());
   }
+
+  /**
+   * 회원 로그아웃
+   * @return : 성공시 성공 JSON 반환
+   */
+  @DeleteMapping(value = "/member/logout")
+  @Operation(description = "로그아웃")
+  public ApiResponse<Void> logout() {
+    memberService.logout();
+    return ApiResponse.onSuccess();
+  }
 }
