@@ -14,6 +14,7 @@ import kyungmin.katsee.domain.member.controller.response.GetMemberResponse;
 import kyungmin.katsee.domain.member.enums.Interest;
 import kyungmin.katsee.domain.member.enums.Role;
 import kyungmin.katsee.domain.member.repository.*;
+import kyungmin.katsee.domain.member.security.redis.RedisService;
 import kyungmin.katsee.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 public class MemberService {
   private final MemberRepository memberRepository;
   private final MatchingRepository matchingRepository;
+  private final RedisService redisService;
 
   private final CreateMemberService createService;
   private final DetailMemberService detailMemberService;
@@ -185,5 +187,10 @@ public class MemberService {
       .allUsers(count.get())
       .age(age)
       .build();
+  }
+
+  // 로그아웃
+  public void logout() {
+    redisService.deleteRefreshToken(SecurityUtil.authMemberId());
   }
 }
