@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY build/libs/*.jar /app/app.jar
+COPY build/libs/Katsee-1.0.0.jar /app/app.jar
 
 EXPOSE 8080
 
