@@ -1,2 +1,2 @@
 **관심사 동일 친구 매칭 서비스**
-![Uploading Screenshot 2025-04-14 at 7.00.55 PM.png…]()
+<img width="1098" alt="Image" src="https://github.com/user-attachments/assets/a7e47a3d-0e64-4d18-b21d-93b295314709" />
