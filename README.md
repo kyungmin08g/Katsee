@@ -9,3 +9,5 @@
 **BE** : Java, Spring, JPA, MySQL, QueryDSL <br>
 **라이브러리 및 도구** 
 - OAuth2.0 Client, JWT, AWS EC2, Swagger UI, Stomp
+
+자세한 정보는 https://quiver-venom-5e6.notion.site/Katsee-1a9286b626a68065a2f3c9f5135c6cf9
